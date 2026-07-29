@@ -1,0 +1,20 @@
+build/
+out/
+*.exe
+*.obj
+*.lib
+*.dll
+*.pdb
+*.ilk
+*.exp
+*.log
+compile_commands.json
+.cache/
+.vscode/
+.idea/
+tmp/
+
+# 本地 AI 配置 + 本地 CMake preset（不污染仓库）
+AGENTS.md
+CLAUDE.md
+CMakeUserPresets.json
