@@ -1,0 +1,1426 @@
+#include <agent/result.hpp>
+#include <agent/tools.hpp>
+#include <doctest/doctest.h>
+
+using agent::Desc;
+using agent::Result;
+using agent::Errc;
+using agent::Tools;
+using agent::ToolInfo;
+
+// ================================================================== //
+// 测试用的反射结构体：覆盖 PLAN.md 定义的所有类型组合
+// ================================================================== //
+
+enum class Color { Red, Green, Blue };
+enum class Unit { Celsius, Fahrenheit };
+
+// ── 1. 原始标量 ── //
+struct PrimitiveTypes
+{
+    [[= Desc("名字")]]           std::string name;
+    [[= Desc("数量")]]           int         count;
+    [[= Desc("比率")]]           double      ratio;
+    [[= Desc("是否启用")]]       bool        enabled;
+    [[= Desc("描述")]]           std::string desc = "默认描述";
+    [[= Desc("步进")]]           int         step = 10;
+};
+
+// ── 2. 枚举 ── //
+struct WithEnum
+{
+    [[= Desc("颜色选择")]]       Color       color;
+    [[= Desc("温度单位")]]       Unit        unit = Unit::Celsius;
+};
+
+// ── 3. Optional 全系列 ── //
+struct WithOptional
+{
+    [[= Desc("名称")]]                      std::string             name;
+    [[= Desc("年龄")]]                      std::optional<int>      age;
+    [[= Desc("是否激活")]]                  std::optional<bool>     active;
+    [[= Desc("喜欢的颜色")]]                std::optional<Color>    favorite_color;
+    [[= Desc("备注")]]                      std::optional<std::string> comment;
+};
+
+// ── 4. Vector ── //
+struct TaskItem
+{
+    [[= Desc("任务标题")]]                  std::string             title;
+    [[= Desc("优先级")]]                    int                     priority;
+};
+
+struct WithVector
+{
+    [[= Desc("项目名称")]]                  std::string             project_name;
+    [[= Desc("任务列表")]]                  std::vector<TaskItem>   tasks;
+    [[= Desc("分数列表")]]                  std::vector<int>        scores;
+    [[= Desc("标签")]]                      std::vector<std::string> tags;
+};
+
+// ── 5. std::array ── //
+struct Coordinate
+{
+    [[= Desc("X 坐标")]]                    double                  x;
+    [[= Desc("Y 坐标")]]                    double                  y;
+};
+
+struct WithArray
+{
+    [[= Desc("名称")]]                      std::string             name;
+    [[= Desc("RGB")]]                       std::array<int, 3>      rgb;
+    [[= Desc("范围")]]                      std::array<double, 2>   range;
+    [[= Desc("四个角")]]                    std::array<Coordinate, 4> corners;
+};
+
+// ── 6. vector<optional<T>> ── //
+struct WithVecOptional
+{
+    [[= Desc("可选标签")]]                  std::vector<std::optional<std::string>> tags;
+    [[= Desc("可选分数")]]                  std::vector<std::optional<int>>         scores;
+};
+
+// ── 7. struct 包含 struct ── //
+struct NestedStruct
+{
+    [[= Desc("内部坐标")]]                  Coordinate              coord;
+    [[= Desc("内部标签")]]                  std::string             label;
+};
+
+// ── 8. 5 层深嵌套：Organization → vector<Department>
+//              → array<Team,3> → vector<Project>
+//              → array<Milestone,4> → optional<string> ── //
+
+/// 第 4 层：里程碑
+struct Milestone
+{
+    [[= Desc("里程碑名称")]]                std::string             name;
+    [[= Desc("截止日期")]]                  std::optional<std::string> due_date;
+};
+
+/// 第 3 层：项目，含固定数量里程碑
+struct Project
+{
+    [[= Desc("项目名称")]]                  std::string                 name;
+    [[= Desc("里程碑列表")]]                std::array<Milestone, 4>    milestones;
+    [[= Desc("项目描述")]]                  std::optional<std::string>  description;
+};
+
+/// 第 2 层：团队，含项目列表
+struct Team
+{
+    [[= Desc("团队名称")]]                  std::string                 name;
+    [[= Desc("项目列表")]]                  std::vector<Project>        projects;
+    [[= Desc("负责人")]]                    std::optional<std::string>  lead;
+};
+
+/// 第 1 层：部门，含固定数量团队
+struct Department
+{
+    [[= Desc("部门名称")]]                  std::string                 name;
+    [[= Desc("团队")]]                      std::array<Team, 3>         teams;
+    [[= Desc("预算编号")]]                  std::optional<std::string>  budget_code;
+};
+
+/// 第 0 层：组织，vector<Department> 结尾，共 5 层反射嵌套
+struct OrganizationTree
+{
+    [[= Desc("组织名称")]]                  std::string                 name;
+    [[= Desc("部门列表")]]                  std::vector<Department>     departments;
+    [[= Desc("备注")]]                      std::optional<std::string>  description;
+};
+
+// ── 9. 递归类型（编译期应拒绝）── //
+struct RecursiveBad
+{
+    std::string                    name;
+    std::vector<RecursiveBad>      children;
+};
+
+// ── 10. 综合大爆炸 ── //
+struct MegaWeather
+{
+    [[= Desc("城市名，如「杭州」")]]        std::string             location;
+    [[= Desc("温度值")]]                    double                  temperature;
+    [[= Desc("温度单位")]]                  Unit                    unit = Unit::Celsius;
+    [[= Desc("是否启用")]]                  std::optional<bool>     enabled;
+    [[= Desc("小时级温度")]]                std::vector<int>        hourly;
+    [[= Desc("坐标")]]                      std::array<double, 2>  coord;
+    [[= Desc("描述的标签")]]                std::optional<std::string> description;
+    [[= Desc("子任务")]]                    std::vector<TaskItem>   sub_tasks;
+};
+
+// ================================================================== //
+// 以下是模版套模版的极端嵌套模式，PLAN.md 没有覆盖
+// ================================================================== //
+
+// ── 11. optional<vector<T>> ── //
+struct WithOptVector
+{
+    [[= Desc("名称")]]                      std::string                    name;
+    [[= Desc("分数列表")]]                  std::optional<std::vector<int>> scores;
+};
+
+// ── 12. optional<array<T, N>> ── //
+struct WithOptArray
+{
+    [[= Desc("名称")]]                      std::string                       name;
+    [[= Desc("坐标")]]                      std::optional<std::array<int, 4>> coords;
+};
+
+// ── 13. optional<struct> ── //
+struct WithOptStruct
+{
+    [[= Desc("名称")]]                      std::string               name;
+    [[= Desc("中心点")]]                    std::optional<Coordinate> center;
+};
+
+// ── 14. vector<vector<T>>（嵌套 vector）── //
+struct WithNestedVec
+{
+    [[= Desc("名称")]]                      std::string                   name;
+    [[= Desc("矩阵")]]                      std::vector<std::vector<int>> matrix;
+};
+
+// ── 15. vector<array<T, N>> ── //
+struct WithVecArray
+{
+    [[= Desc("名称")]]                      std::string                     name;
+    [[= Desc("点集")]]                      std::vector<std::array<int, 3>> points;
+};
+
+// ── 16. array<vector<T>, N> ── //
+struct WithArrayVec
+{
+    [[= Desc("名称")]]                      std::string                     name;
+    [[= Desc("分组")]]                      std::array<std::vector<int>, 2> groups;
+};
+
+// ── 17. 二维 array（array<array<T, N>, M>）── //
+struct With2DArray
+{
+    [[= Desc("名称")]]                      std::string                          name;
+    [[= Desc("网格")]]                      std::array<std::array<int, 3>, 2>    grid;
+};
+
+// ── 18. double optional ── //
+struct WithDoubleOpt
+{
+    [[= Desc("名称")]]                      std::string                                 name;
+    [[= Desc("别名")]]                      std::optional<std::optional<std::string>>   nick;
+};
+
+// ── 19. 枚举在容器中 ── //
+struct WithEnumContainer
+{
+    [[= Desc("名称")]]                      std::string            name;
+    [[= Desc("颜色列表")]]                  std::vector<Color>     colors;
+    [[= Desc("前三")]]                      std::array<Color, 3>   top3;
+    [[= Desc("最爱")]]                      std::optional<Color>   favorite;
+};
+
+// ── 20. optional 枚举在 array 中 ── //
+struct WithOptEnumArray
+{
+    [[= Desc("名称")]]                      std::string                       name;
+    [[= Desc("颜色槽")]]                    std::array<std::optional<Color>, 3> slots;
+};
+
+// ── 21. vector<optional<enum>> ── //
+struct WithVecOptEnum
+{
+    [[= Desc("名称")]]                      std::string                        name;
+    [[= Desc("可选颜色")]]                  std::vector<std::optional<Color>>  colors;
+};
+
+// ── 22. 终极嵌套怪 ── //
+struct UltimateNested
+{
+    [[= Desc("ID")]]                                                std::string                                              id;
+    [[= Desc("颜色矩阵")]]                                          std::optional<std::vector<std::array<std::optional<Color>, 2>>> color_grids;
+    [[= Desc("二维矩阵")]]                                          std::vector<std::vector<int>>                            matrix;
+    [[= Desc("标签")]]                                              std::array<std::optional<std::string>, 3>                labels;
+    [[= Desc("额外里程碑")]]                                        std::optional<Milestone>                               extra_milestone;
+};
+
+// ── 23. null 用于非 optional 字段 ── //
+struct WithRequired
+{
+    [[= Desc("名称")]]                      std::string             name;
+    [[= Desc("数量")]]                      int                     count;
+};
+
+// ================================================================== //
+// 以下测试：tools.hpp 不存在时编译即 RED
+// ================================================================== //
+
+// ── schema_of：PrimitiveTypes ── //
+
+static_assert(agent::detail::reflect_members<PrimitiveTypes>().size() == 6,
+    "reflect_members should see 6 fields");
+
+TEST_CASE("schema_of PrimitiveTypes")
+{
+    auto j = agent::schema_of<PrimitiveTypes>();
+    CHECK(j.is_object());
+    CHECK(j["type"] == "object");
+    CHECK(j["properties"].size() == 6);
+    CHECK(j["properties"]["name"]["type"] == "string");
+    CHECK(j["properties"]["name"]["description"] == "名字");
+    CHECK(j["properties"]["count"]["type"] == "integer");
+    CHECK(j["properties"]["ratio"]["type"] == "number");
+    CHECK(j["properties"]["enabled"]["type"] == "boolean");
+    CHECK(j["properties"]["desc"]["default"] == "默认描述");
+    CHECK(j["properties"]["desc"]["default"] == "默认描述");
+    CHECK(j["properties"]["step"]["default"] == 10);
+    CHECK(j["required"].size() == 4);
+    CHECK(j["required"][0] == "name");
+    CHECK(j["required"][1] == "count");
+    CHECK(j["required"][2] == "ratio");
+    CHECK(j["required"][3] == "enabled");
+}
+
+// ── assign_from_json：PrimitiveTypes ── //
+
+TEST_CASE("assign_from_json<PrimitiveTypes> valid")
+{
+    auto r = agent::assign_from_json<PrimitiveTypes>({
+        {"name", "test"}, {"count", 42}, {"ratio", 3.14}, {"enabled", true}
+    });
+    REQUIRE(r.has_value());
+    CHECK(r->name == "test");
+    CHECK(r->count == 42);
+    CHECK(r->ratio == doctest::Approx(3.14));
+    CHECK(r->enabled == true);
+    CHECK(r->desc == "默认描述");
+    CHECK(r->step == 10);
+}
+
+TEST_CASE("assign_from_json<PrimitiveTypes> missing required")
+{
+    auto r = agent::assign_from_json<PrimitiveTypes>({{"name", "test"}});
+    CHECK(!r.has_value());
+    if (!r.has_value()) CHECK(r.error().code == Errc::InvalidArgs);
+}
+
+TEST_CASE("assign_from_json<PrimitiveTypes> wrong type")
+{
+    auto r = agent::assign_from_json<PrimitiveTypes>({
+        {"name", 123}, {"count", "not_int"}, {"ratio", false}, {"enabled", 1}
+    });
+    CHECK(!r.has_value());
+    if (!r.has_value()) CHECK(r.error().code == Errc::InvalidArgs);
+}
+
+TEST_CASE("assign_from_json<PrimitiveTypes> int overflow")
+{
+    auto r = agent::assign_from_json<PrimitiveTypes>({
+        {"name", "x"}, {"count", 999999999999}, {"ratio", 1.0}, {"enabled", true}
+    });
+    CHECK(!r.has_value());
+    if (!r.has_value()) CHECK(r.error().code == Errc::InvalidArgs);
+}
+
+
+// ── schema_of：WithEnum ── //
+
+TEST_CASE("schema_of WithEnum")
+{
+    auto j = agent::schema_of<WithEnum>();
+    CHECK(j.is_object());
+    auto const& props = j["properties"];
+    CHECK(props.contains("color"));
+    CHECK(props.contains("unit"));
+    if (props.contains("color")) {
+        auto const& c = props["color"];
+        CHECK(c.value("type", std::string("")) == "string");
+    }
+}
+
+TEST_CASE("assign_from_json<WithEnum> valid")
+{
+    auto r = agent::assign_from_json<WithEnum>({
+        {"color", "Red"}, {"unit", "Fahrenheit"}
+    });
+    REQUIRE(r.has_value());
+    CHECK(r->color == Color::Red);
+    CHECK(r->unit == Unit::Fahrenheit);
+}
+
+TEST_CASE("assign_from_json<WithEnum> invalid enum value")
+{
+    auto r = agent::assign_from_json<WithEnum>({{"color", "Purple"}});
+    CHECK(!r.has_value());
+    if (!r.has_value()) CHECK(r.error().code == Errc::InvalidArgs);
+}
+
+TEST_CASE("assign_from_json<WithEnum> wrong enum type")
+{
+    auto r = agent::assign_from_json<WithEnum>({{"color", 42}});
+    CHECK(!r.has_value());
+    if (!r.has_value()) CHECK(r.error().code == Errc::InvalidArgs);
+}
+
+
+// ── schema_of：WithOptional ── //
+
+TEST_CASE("schema_of WithOptional")
+{
+    auto j = agent::schema_of<WithOptional>();
+    CHECK(j["properties"]["name"]["type"] == "string");
+    CHECK(j["properties"]["age"]["type"].is_array());
+    CHECK(j["properties"]["age"]["type"][0] == "integer");
+    CHECK(j["properties"]["age"]["type"][1] == "null");
+    CHECK(j["required"].size() == 1);
+    CHECK(j["required"][0] == "name");
+}
+
+TEST_CASE("assign_from_json<WithOptional> valid with all fields")
+{
+    auto r = agent::assign_from_json<WithOptional>({
+        {"name", "hello"}, {"age", 25}, {"active", true},
+        {"favorite_color", "Green"}, {"comment", "nice"}
+    });
+    REQUIRE(r.has_value());
+    CHECK(r->name == "hello");
+    CHECK(r->age == 25);
+    CHECK(r->active == true);
+    CHECK(r->favorite_color == Color::Green);
+    CHECK(r->comment == "nice");
+}
+
+TEST_CASE("assign_from_json<WithOptional> null optionals")
+{
+    auto r = agent::assign_from_json<WithOptional>({
+        {"name", "hello"}, {"age", nullptr}, {"active", nullptr},
+        {"favorite_color", nullptr}, {"comment", nullptr}
+    });
+    REQUIRE(r.has_value());
+    CHECK(r->name == "hello");
+    CHECK(!r->age.has_value());
+    CHECK(!r->active.has_value());
+    CHECK(!r->favorite_color.has_value());
+    CHECK(!r->comment.has_value());
+}
+
+TEST_CASE("assign_from_json<WithOptional> missing optionals")
+{
+    auto r = agent::assign_from_json<WithOptional>({{"name", "hello"}});
+    REQUIRE(r.has_value());
+    CHECK(!r->age.has_value());
+}
+
+TEST_CASE("assign_from_json<WithOptional> missing required")
+{
+    auto r = agent::assign_from_json<WithOptional>({});
+    CHECK(!r.has_value());
+}
+
+
+// ── schema_of：WithVector ── //
+
+TEST_CASE("schema_of WithVector")
+{
+    auto j = agent::schema_of<WithVector>();
+    CHECK(j["properties"]["scores"]["type"] == "array");
+    CHECK(j["properties"]["scores"]["items"]["type"] == "integer");
+    CHECK(j["properties"]["tasks"]["items"]["type"] == "object");
+}
+
+TEST_CASE("assign_from_json<WithVector> valid")
+{
+    auto r = agent::assign_from_json<WithVector>({
+        {"project_name", "proj"},
+        {"tasks", nlohmann::json::array({
+            {{"title", "t1"}, {"priority", 1}},
+            {{"title", "t2"}, {"priority", 2}}
+        })},
+        {"scores", {90, 80, 70}},
+        {"tags", {"c++", "test"}}
+    });
+    REQUIRE(r.has_value());
+    CHECK(r->project_name == "proj");
+    CHECK(r->tasks.size() == 2);
+    CHECK(r->tasks[0].title == "t1");
+    CHECK(r->tasks[0].priority == 1);
+    CHECK(r->tasks[1].priority == 2);
+    CHECK(r->scores.size() == 3);
+    CHECK(r->tags[1] == "test");
+}
+
+TEST_CASE("assign_from_json<WithVector> empty arrays")
+{
+    auto r = agent::assign_from_json<WithVector>({
+        {"project_name", "empty"},
+        {"tasks", nlohmann::json::array()},
+        {"scores", nlohmann::json::array()},
+        {"tags", nlohmann::json::array()}
+    });
+    REQUIRE(r.has_value());
+    CHECK(r->tasks.empty());
+    CHECK(r->scores.empty());
+    CHECK(r->tags.empty());
+}
+
+TEST_CASE("assign_from_json<WithVector> array element wrong type")
+{
+    auto r = agent::assign_from_json<WithVector>({
+        {"project_name", "x"},
+        {"tasks", nlohmann::json::array()},
+        {"scores", {"not_int"}},
+        {"tags", nlohmann::json::array()}
+    });
+    CHECK(!r.has_value());
+}
+
+TEST_CASE("assign_from_json<WithVector> missing required in nested")
+{
+    auto r = agent::assign_from_json<WithVector>({
+        {"project_name", "x"},
+        {"tasks", nlohmann::json::array({
+            {{"title", "t1"}}
+        })},
+        {"scores", {1}},
+        {"tags", {"a"}}
+    });
+    CHECK(!r.has_value());
+}
+
+
+// ── schema_of：WithArray ── //
+
+TEST_CASE("schema_of WithArray")
+{
+    auto j = agent::schema_of<WithArray>();
+    CHECK(j["properties"]["rgb"]["type"] == "array");
+    CHECK(j["properties"]["rgb"]["minItems"] == 3);
+    CHECK(j["properties"]["rgb"]["maxItems"] == 3);
+    CHECK(j["properties"]["range"]["minItems"] == 2);
+    CHECK(j["properties"]["corners"]["minItems"] == 4);
+}
+
+TEST_CASE("assign_from_json<WithArray> valid")
+{
+    auto r = agent::assign_from_json<WithArray>({
+        {"name", "arr"},
+        {"rgb", {255, 128, 0}},
+        {"range", {-1.0, 1.0}},
+        {"corners", nlohmann::json::array({
+            {{"x", 0.0}, {"y", 0.0}},
+            {{"x", 1.0}, {"y", 0.0}},
+            {{"x", 1.0}, {"y", 1.0}},
+            {{"x", 0.0}, {"y", 1.0}}
+        })}
+    });
+    REQUIRE(r.has_value());
+    CHECK(r->rgb[0] == 255);
+    CHECK(r->rgb[1] == 128);
+    CHECK(r->rgb[2] == 0);
+    CHECK(r->range[0] == doctest::Approx(-1.0));
+    CHECK(r->corners[3].x == doctest::Approx(0.0));
+}
+
+TEST_CASE("assign_from_json<WithArray> wrong length")
+{
+    auto r = agent::assign_from_json<WithArray>({
+        {"name", "x"},
+        {"rgb", {1, 2}},
+        {"range", {0.0, 1.0}},
+        {"corners", nlohmann::json::array({
+            {{"x", 0}, {"y", 0}},
+            {{"x", 0}, {"y", 0}},
+            {{"x", 0}, {"y", 0}},
+            {{"x", 0}, {"y", 0}}
+        })}
+    });
+    CHECK(!r.has_value());
+}
+
+TEST_CASE("assign_from_json<WithArray> element wrong type")
+{
+    auto r = agent::assign_from_json<WithArray>({
+        {"name", "x"},
+        {"rgb", {"red", "green", "blue"}},
+        {"range", {0.0, 1.0}},
+        {"corners", nlohmann::json::array({
+            {{"x", 0}, {"y", 0}},
+            {{"x", 0}, {"y", 0}},
+            {{"x", 0}, {"y", 0}},
+            {{"x", 0}, {"y", 0}}
+        })}
+    });
+    CHECK(!r.has_value());
+}
+
+
+// ── schema_of：WithVecOptional ── //
+
+TEST_CASE("schema_of WithVecOptional")
+{
+    auto j = agent::schema_of<WithVecOptional>();
+    CHECK(j["properties"]["tags"]["type"] == "array");
+    CHECK(j["properties"]["tags"]["items"]["type"].is_array());
+    CHECK(j["properties"]["tags"]["items"]["type"][0] == "string");
+    CHECK(j["properties"]["tags"]["items"]["type"][1] == "null");
+}
+
+TEST_CASE("assign_from_json<WithVecOptional> with null elements")
+{
+    auto r = agent::assign_from_json<WithVecOptional>({
+        {"tags", {"a", nullptr, "b"}},
+        {"scores", {1, nullptr, 3}}
+    });
+    REQUIRE(r.has_value());
+    CHECK(r->tags.size() == 3);
+    CHECK(r->tags[0] == "a");
+    CHECK(!r->tags[1].has_value());
+    CHECK(r->tags[2] == "b");
+    CHECK(!r->scores[1].has_value());
+}
+
+TEST_CASE("assign_from_json<WithVecOptional> empty array")
+{
+    auto r = agent::assign_from_json<WithVecOptional>({
+        {"tags", nlohmann::json::array()},
+        {"scores", nlohmann::json::array()}
+    });
+    REQUIRE(r.has_value());
+    CHECK(r->tags.empty());
+}
+
+
+// ── schema_of：NestedStruct ── //
+
+TEST_CASE("schema_of NestedStruct")
+{
+    auto j = agent::schema_of<NestedStruct>();
+    CHECK(j["properties"]["coord"]["type"] == "object");
+    CHECK(j["properties"]["coord"]["properties"]["x"]["type"] == "number");
+}
+
+TEST_CASE("assign_from_json<NestedStruct> valid")
+{
+    auto r = agent::assign_from_json<NestedStruct>({
+        {"coord", {{"x", 1.5}, {"y", 2.5}}},
+        {"label", "pt"}
+    });
+    REQUIRE(r.has_value());
+    CHECK(r->coord.x == doctest::Approx(1.5));
+    CHECK(r->coord.y == doctest::Approx(2.5));
+    CHECK(r->label == "pt");
+}
+
+TEST_CASE("assign_from_json<NestedStruct> nested missing field")
+{
+    auto r = agent::assign_from_json<NestedStruct>({
+        {"coord", {{"x", 1.0}}},
+        {"label", "pt"}
+    });
+    CHECK(!r.has_value());
+}
+
+
+// ── schema_of：OrganizationTree（5 层嵌套）── //
+
+TEST_CASE("schema_of OrganizationTree")
+{
+    auto j = agent::schema_of<OrganizationTree>();
+    CHECK(j["properties"]["departments"]["type"] == "array");
+    CHECK(j["properties"]["departments"]["items"]["type"] == "object");
+    CHECK(j["properties"]["departments"]["items"]["properties"]["teams"]["minItems"] == 3);
+    CHECK(j["properties"]["departments"]["items"]["properties"]["teams"]["items"]["type"] == "object");
+    CHECK(j["properties"]["departments"]["items"]["properties"]["teams"]["items"]["properties"]["projects"]["items"]["type"] == "object");
+    CHECK(j["properties"]["departments"]["items"]["properties"]["teams"]["items"]["properties"]["projects"]["items"]["properties"]["milestones"]["minItems"] == 4);
+}
+
+TEST_CASE("assign_from_json<OrganizationTree> 5-level nesting")
+{
+    auto r = agent::assign_from_json<OrganizationTree>(
+        nlohmann::json::parse(R"({
+            "name": "ACME Corp",
+            "departments": [{
+                "name": "Engineering",
+                "budget_code": "E-001",
+                "teams": [
+                    {
+                        "name": "Platform",
+                        "lead": "Alice",
+                        "projects": [{
+                            "name": "Core v2",
+                            "description": "Rewrite",
+                            "milestones": [
+                                {"name": "Design", "due_date": "2026-01"},
+                                {"name": "Impl"},
+                                {"name": "Test", "due_date": "2026-06"},
+                                {"name": "Ship"}
+                            ]
+                        }]
+                    },
+                    {"name": "Backend", "projects": []},
+                    {"name": "Frontend", "projects": []}
+                ]
+            }]
+        })")
+    );
+    REQUIRE(r.has_value());
+    CHECK(r->name == "ACME Corp");
+    CHECK(r->departments.size() == 1);
+    CHECK(r->departments[0].name == "Engineering");
+    CHECK(r->departments[0].budget_code == "E-001");
+    CHECK(r->departments[0].teams.size() == 3);
+    CHECK(r->departments[0].teams[0].name == "Platform");
+    CHECK(r->departments[0].teams[0].lead == "Alice");
+    CHECK(r->departments[0].teams[0].projects.size() == 1);
+    CHECK(r->departments[0].teams[0].projects[0].name == "Core v2");
+    CHECK(r->departments[0].teams[0].projects[0].milestones.size() == 4);
+    CHECK(r->departments[0].teams[0].projects[0].milestones[0].name == "Design");
+    CHECK(r->departments[0].teams[0].projects[0].milestones[0].due_date == "2026-01");
+    CHECK(!r->departments[0].teams[0].projects[0].milestones[1].due_date.has_value());
+}
+
+TEST_CASE("assign_from_json<OrganizationTree> missing nested required")
+{
+    auto r = agent::assign_from_json<OrganizationTree>(
+        nlohmann::json::parse(R"({
+            "name": "X",
+            "departments": [{
+                "name": "D1",
+                "teams": [{
+                    "name": "T1",
+                    "projects": [{
+                        "milestones": [
+                            {"name": "M1", "due_date": "2026-01"},
+                            {"name": "M2"},
+                            {"name": "M3"},
+                            {"name": "M4"}
+                        ]
+                    }]
+                }]
+            }]
+        })")
+    );
+    CHECK(!r.has_value());
+}
+
+
+// ── schema_of：MegaWeather ── //
+
+TEST_CASE("schema_of MegaWeather")
+{
+    auto j = agent::schema_of<MegaWeather>();
+    CHECK(j["properties"]["hourly"]["type"] == "array");
+    CHECK(j["properties"]["coord"]["minItems"] == 2);
+    CHECK(j["properties"]["unit"]["default"].is_null());  // 枚举默认值不能编译期提
+}
+
+TEST_CASE("assign_from_json<MegaWeather> full")
+{
+    auto r = agent::assign_from_json<MegaWeather>({
+        {"location", "杭州"},
+        {"temperature", 28.5},
+        {"unit", "Fahrenheit"},
+        {"enabled", true},
+        {"hourly", {26, 27, 28, 29}},
+        {"coord", {120.2, 30.3}},
+        {"description", "热"},
+        {"sub_tasks", nlohmann::json::array({{{"title", "t1"}, {"priority", 1}}})}
+    });
+    REQUIRE(r.has_value());
+    CHECK(r->location == "杭州");
+    CHECK(r->temperature == doctest::Approx(28.5));
+    CHECK(r->unit == Unit::Fahrenheit);
+    CHECK(r->enabled == true);
+    CHECK(r->hourly.size() == 4);
+    CHECK(r->coord[0] == doctest::Approx(120.2));
+    CHECK(r->description == "热");
+    CHECK(r->sub_tasks.size() == 1);
+}
+
+TEST_CASE("assign_from_json<MegaWeather> minimal")
+{
+    auto r = agent::assign_from_json<MegaWeather>({
+        {"location", "x"}, {"temperature", 0.0},
+        {"hourly", nlohmann::json::array()},
+        {"coord", {0, 0}},
+        {"sub_tasks", nlohmann::json::array()}
+    });
+    REQUIRE(r.has_value());
+    CHECK(r->unit == Unit::Celsius);
+    CHECK(!r->enabled.has_value());
+    CHECK(!r->description.has_value());
+}
+
+TEST_CASE("assign_from_json<MegaWeather> missing required")
+{
+    auto r = agent::assign_from_json<MegaWeather>({
+        {"temperature", 0.0}, {"hourly", {}},
+        {"coord", {0, 0}}, {"sub_tasks", nlohmann::json::array()}
+    });
+    CHECK(!r.has_value());
+}
+
+
+// ═══════════════════════════════════════════════════════ //
+//  模版套模版极端嵌套测试                                 //
+// ═══════════════════════════════════════════════════════ //
+
+// ── schema_of：WithOptVector ── //
+
+TEST_CASE("schema_of WithOptVector")
+{
+    auto j = agent::schema_of<WithOptVector>();
+    CHECK(j["properties"]["scores"]["type"].is_array());
+    CHECK(j["properties"]["scores"]["type"][0] == "array");
+    CHECK(j["properties"]["scores"]["type"][1] == "null");
+    CHECK(j["properties"]["scores"]["items"]["type"] == "integer");
+}
+
+TEST_CASE("assign_from_json<WithOptVector> valid")
+{
+    auto r = agent::assign_from_json<WithOptVector>({
+        {"name", "test"}, {"scores", {90, 80, 70}}
+    });
+    REQUIRE(r.has_value());
+    CHECK(r->name == "test");
+    REQUIRE(r->scores.has_value());
+    CHECK(r->scores->size() == 3);
+}
+
+TEST_CASE("assign_from_json<WithOptVector> null")
+{
+    auto r = agent::assign_from_json<WithOptVector>({
+        {"name", "test"}, {"scores", nullptr}
+    });
+    REQUIRE(r.has_value());
+    CHECK(!r->scores.has_value());
+}
+
+TEST_CASE("assign_from_json<WithOptVector> missing")
+{
+    auto r = agent::assign_from_json<WithOptVector>({{"name", "test"}});
+    REQUIRE(r.has_value());
+    CHECK(!r->scores.has_value());
+}
+
+
+// ── schema_of：WithOptArray ── //
+
+TEST_CASE("schema_of WithOptArray")
+{
+    auto j = agent::schema_of<WithOptArray>();
+    CHECK(j["properties"]["coords"]["type"][0] == "array");
+    CHECK(j["properties"]["coords"]["type"][1] == "null");
+    CHECK(j["properties"]["coords"]["minItems"] == 4);
+}
+
+TEST_CASE("assign_from_json<WithOptArray> valid")
+{
+    auto r = agent::assign_from_json<WithOptArray>({
+        {"name", "x"}, {"coords", {1, 2, 3, 4}}
+    });
+    REQUIRE(r.has_value());
+    REQUIRE(r->coords.has_value());
+    CHECK((*r->coords)[0] == 1);
+}
+
+TEST_CASE("assign_from_json<WithOptArray> null")
+{
+    auto r = agent::assign_from_json<WithOptArray>({{"name", "x"}, {"coords", nullptr}});
+    REQUIRE(r.has_value());
+    CHECK(!r->coords.has_value());
+}
+
+
+// ── schema_of：WithOptStruct ── //
+
+TEST_CASE("schema_of WithOptStruct")
+{
+    auto j = agent::schema_of<WithOptStruct>();
+    CHECK(j["properties"]["center"]["type"][0] == "object");
+    CHECK(j["properties"]["center"]["type"][1] == "null");
+}
+
+TEST_CASE("assign_from_json<WithOptStruct> valid")
+{
+    auto r = agent::assign_from_json<WithOptStruct>({
+        {"name", "x"}, {"center", {{"x", 1.5}, {"y", 2.5}}}
+    });
+    REQUIRE(r.has_value());
+    REQUIRE(r->center.has_value());
+    CHECK(r->center->x == doctest::Approx(1.5));
+}
+
+TEST_CASE("assign_from_json<WithOptStruct> null")
+{
+    auto r = agent::assign_from_json<WithOptStruct>({{"name", "x"}, {"center", nullptr}});
+    REQUIRE(r.has_value());
+    CHECK(!r->center.has_value());
+}
+
+
+// ── schema_of：WithNestedVec ── //
+
+TEST_CASE("schema_of WithNestedVec")
+{
+    auto j = agent::schema_of<WithNestedVec>();
+    CHECK(j["properties"]["matrix"]["type"] == "array");
+    CHECK(j["properties"]["matrix"]["items"]["type"] == "array");
+    CHECK(j["properties"]["matrix"]["items"]["items"]["type"] == "integer");
+}
+
+TEST_CASE("assign_from_json<WithNestedVec> valid")
+{
+    auto r = agent::assign_from_json<WithNestedVec>({
+        {"name", "mat"}, {"matrix", {{1, 2}, {3, 4}, {5, 6}}}
+    });
+    REQUIRE(r.has_value());
+    CHECK(r->matrix.size() == 3);
+    CHECK(r->matrix[0].size() == 2);
+    CHECK(r->matrix[1][1] == 4);
+}
+
+TEST_CASE("assign_from_json<WithNestedVec> empty outer")
+{
+    auto r = agent::assign_from_json<WithNestedVec>({
+        {"name", "e"}, {"matrix", nlohmann::json::array()}
+    });
+    REQUIRE(r.has_value());
+    CHECK(r->matrix.empty());
+}
+
+
+// ── schema_of：WithVecArray ── //
+
+TEST_CASE("schema_of WithVecArray")
+{
+    auto j = agent::schema_of<WithVecArray>();
+    CHECK(j["properties"]["points"]["items"]["type"] == "array");
+    CHECK(j["properties"]["points"]["items"]["minItems"] == 3);
+}
+
+TEST_CASE("assign_from_json<WithVecArray> valid")
+{
+    auto r = agent::assign_from_json<WithVecArray>({
+        {"name", "x"}, {"points", {{1, 2, 3}, {4, 5, 6}}}
+    });
+    REQUIRE(r.has_value());
+    CHECK(r->points.size() == 2);
+    CHECK(r->points[0][1] == 2);
+}
+
+TEST_CASE("assign_from_json<WithVecArray> wrong element length")
+{
+    auto r = agent::assign_from_json<WithVecArray>({
+        {"name", "x"}, {"points", {{1, 2}}}
+    });
+    CHECK(!r.has_value());
+}
+
+
+// ── schema_of：WithArrayVec ── //
+
+TEST_CASE("schema_of WithArrayVec")
+{
+    auto j = agent::schema_of<WithArrayVec>();
+    CHECK(j["properties"]["groups"]["type"] == "array");
+    CHECK(j["properties"]["groups"]["minItems"] == 2);
+    CHECK(j["properties"]["groups"]["items"]["type"] == "array");
+}
+
+TEST_CASE("assign_from_json<WithArrayVec> valid")
+{
+    auto r = agent::assign_from_json<WithArrayVec>({
+        {"name", "x"}, {"groups", {{1, 2}, {3, 4, 5}}}
+    });
+    REQUIRE(r.has_value());
+    CHECK(r->groups.size() == 2);
+    CHECK(r->groups[0].size() == 2);
+    CHECK(r->groups[1].size() == 3);
+}
+
+
+// ── schema_of：With2DArray ── //
+
+TEST_CASE("schema_of With2DArray")
+{
+    auto j = agent::schema_of<With2DArray>();
+    CHECK(j["properties"]["grid"]["type"] == "array");
+    CHECK(j["properties"]["grid"]["minItems"] == 2);
+    CHECK(j["properties"]["grid"]["items"]["type"] == "array");
+    CHECK(j["properties"]["grid"]["items"]["minItems"] == 3);
+}
+
+TEST_CASE("assign_from_json<With2DArray> valid")
+{
+    auto r = agent::assign_from_json<With2DArray>({
+        {"name", "g"}, {"grid", {{1, 2, 3}, {4, 5, 6}}}
+    });
+    REQUIRE(r.has_value());
+    CHECK(r->grid[0][0] == 1);
+    CHECK(r->grid[1][2] == 6);
+}
+
+
+// ── schema_of：WithDoubleOpt ── //
+
+TEST_CASE("schema_of WithDoubleOpt")
+{
+    auto j = agent::schema_of<WithDoubleOpt>();
+    CHECK(j["properties"]["nick"]["type"].is_array());
+    CHECK(j["properties"]["nick"]["type"][0] == "string");
+    CHECK(j["properties"]["nick"]["type"][1] == "null");
+}
+
+TEST_CASE("assign_from_json<WithDoubleOpt> string")
+{
+    auto r = agent::assign_from_json<WithDoubleOpt>({{"name", "x"}, {"nick", "hello"}});
+    REQUIRE(r.has_value());
+    REQUIRE(r->nick.has_value());
+    CHECK(r->nick->has_value());
+    CHECK(**r->nick == "hello");
+}
+
+TEST_CASE("assign_from_json<WithDoubleOpt> null")
+{
+    auto r = agent::assign_from_json<WithDoubleOpt>({{"name", "x"}, {"nick", nullptr}});
+    REQUIRE(r.has_value());
+    CHECK(!r->nick.has_value());
+}
+
+
+// ── schema_of：WithEnumContainer ── //
+
+TEST_CASE("schema_of WithEnumContainer")
+{
+    auto j = agent::schema_of<WithEnumContainer>();
+    CHECK(j["properties"]["colors"]["items"]["type"] == "string");
+    CHECK(j["properties"]["colors"]["items"]["enum"].is_array());
+    CHECK(j["properties"]["top3"]["minItems"] == 3);
+    CHECK(j["properties"]["favorite"]["type"][0] == "string");
+    CHECK(j["properties"]["favorite"]["type"][1] == "null");
+}
+
+TEST_CASE("assign_from_json<WithEnumContainer> valid")
+{
+    auto r = agent::assign_from_json<WithEnumContainer>({
+        {"name", "x"}, {"colors", {"Red", "Green"}},
+        {"top3", {"Red", "Green", "Blue"}}, {"favorite", "Red"}
+    });
+    REQUIRE(r.has_value());
+    CHECK(r->colors.size() == 2);
+    CHECK(r->colors[0] == Color::Red);
+    CHECK(r->top3[2] == Color::Blue);
+    CHECK(r->favorite == Color::Red);
+}
+
+TEST_CASE("assign_from_json<WithEnumContainer> invalid enum in vector")
+{
+    auto r = agent::assign_from_json<WithEnumContainer>({
+        {"name", "x"}, {"colors", {"Red", "Purple"}},
+        {"top3", {"Red", "Green", "Blue"}}
+    });
+    CHECK(!r.has_value());
+}
+
+TEST_CASE("assign_from_json<WithEnumContainer> wrong array length")
+{
+    auto r = agent::assign_from_json<WithEnumContainer>({
+        {"name", "x"}, {"colors", {"Red"}},
+        {"top3", {"Red", "Green"}}, {"favorite", nullptr}
+    });
+    CHECK(!r.has_value());
+}
+
+
+// ── schema_of：WithOptEnumArray ── //
+
+TEST_CASE("schema_of WithOptEnumArray")
+{
+    auto j = agent::schema_of<WithOptEnumArray>();
+    CHECK(j["properties"]["slots"]["type"] == "array");
+    CHECK(j["properties"]["slots"]["minItems"] == 3);
+    CHECK(j["properties"]["slots"]["items"]["type"].is_array());
+    CHECK(j["properties"]["slots"]["items"]["type"][0] == "string");
+    CHECK(j["properties"]["slots"]["items"]["type"][1] == "null");
+}
+
+TEST_CASE("assign_from_json<WithOptEnumArray> valid")
+{
+    auto r = agent::assign_from_json<WithOptEnumArray>({
+        {"name", "x"}, {"slots", {"Red", nullptr, "Blue"}}
+    });
+    REQUIRE(r.has_value());
+    CHECK(r->slots[0] == Color::Red);
+    CHECK(!r->slots[1].has_value());
+    CHECK(r->slots[2] == Color::Blue);
+}
+
+
+// ── schema_of：WithVecOptEnum ── //
+
+TEST_CASE("schema_of WithVecOptEnum")
+{
+    auto j = agent::schema_of<WithVecOptEnum>();
+    CHECK(j["properties"]["colors"]["type"] == "array");
+    CHECK(j["properties"]["colors"]["items"]["type"].is_array());
+    CHECK(j["properties"]["colors"]["items"]["type"][0] == "string");
+    CHECK(j["properties"]["colors"]["items"]["type"][1] == "null");
+}
+
+TEST_CASE("assign_from_json<WithVecOptEnum> valid")
+{
+    auto r = agent::assign_from_json<WithVecOptEnum>({
+        {"name", "x"}, {"colors", {"Red", nullptr, "Blue"}}
+    });
+    REQUIRE(r.has_value());
+    CHECK(r->colors.size() == 3);
+    CHECK(r->colors[0] == Color::Red);
+    CHECK(!r->colors[1].has_value());
+    CHECK(r->colors[2] == Color::Blue);
+}
+
+
+// ── schema_of：UltimateNested ── //
+
+TEST_CASE("schema_of UltimateNested")
+{
+    auto j = agent::schema_of<UltimateNested>();
+    CHECK(j["properties"]["color_grids"]["type"][0] == "array");
+    CHECK(j["properties"]["color_grids"]["type"][1] == "null");
+    CHECK(j["properties"]["matrix"]["items"]["type"] == "array");
+    CHECK(j["properties"]["labels"]["type"] == "array");
+    CHECK(j["properties"]["labels"]["minItems"] == 3);
+    CHECK(j["properties"]["extra_milestone"]["type"][0] == "object");
+    CHECK(j["properties"]["extra_milestone"]["type"][1] == "null");
+}
+
+TEST_CASE("assign_from_json<UltimateNested> full")
+{
+    auto r = agent::assign_from_json<UltimateNested>({
+        {"id", "u1"},
+        {"color_grids", nlohmann::json::array({
+            nlohmann::json::array({"Red", nullptr}),
+            nlohmann::json::array({"Green", "Blue"})
+        })},
+        {"matrix", {{1, 2}, {3, 4}}},
+        {"labels", {"a", nullptr, "c"}},
+        {"extra_milestone", {{"name", "extra"}, {"due_date", "2026-07"}}}
+    });
+    REQUIRE(r.has_value());
+    CHECK(r->id == "u1");
+    REQUIRE(r->color_grids.has_value());
+    CHECK(r->color_grids->size() == 2);
+    CHECK((*r->color_grids)[0].size() == 2);
+    CHECK((*r->color_grids)[0][0] == Color::Red);
+    CHECK(!(*r->color_grids)[0][1].has_value());
+    CHECK(r->matrix.size() == 2);
+    CHECK(r->labels.size() == 3);
+    CHECK(r->labels[0] == "a");
+    CHECK(!r->labels[1].has_value());
+    REQUIRE(r->extra_milestone.has_value());
+    CHECK(r->extra_milestone->name == "extra");
+}
+
+TEST_CASE("assign_from_json<UltimateNested> minimal")
+{
+    auto r = agent::assign_from_json<UltimateNested>({
+        {"id", "u1"},
+        {"matrix", nlohmann::json::array()},
+        {"labels", {nullptr, nullptr, nullptr}}
+    });
+    REQUIRE(r.has_value());
+    CHECK(!r->color_grids.has_value());
+    CHECK(r->matrix.empty());
+    CHECK(!r->extra_milestone.has_value());
+}
+
+
+// ── null 用于非 optional 字段 ── //
+
+TEST_CASE("assign_from_json<WithRequired> null on required")
+{
+    auto r = agent::assign_from_json<WithRequired>({
+        {"name", nullptr}, {"count", 1}
+    });
+    CHECK(!r.has_value());
+    if (!r.has_value()) CHECK(r.error().code == Errc::InvalidArgs);
+}
+
+TEST_CASE("assign_from_json<WithRequired> missing required")
+{
+    auto r = agent::assign_from_json<WithRequired>({{"name", "x"}});
+    CHECK(!r.has_value());
+    if (!r.has_value()) CHECK(r.error().code == Errc::InvalidArgs);
+}
+
+TEST_CASE("assign_from_json unsupported extra keys")
+{
+    auto r = agent::assign_from_json<WithRequired>({
+        {"name", "x"}, {"count", 1}, {"extra_field", "ignored"}
+    });
+    REQUIRE(r.has_value());
+    CHECK(r->name == "x");
+    CHECK(r->count == 1);
+}
+
+
+// ── 空字符串与 UTF-8 ── //
+
+TEST_CASE("assign_from_json empty string")
+{
+    auto r = agent::assign_from_json<PrimitiveTypes>({
+        {"name", ""}, {"count", 0}, {"ratio", 0.0}, {"enabled", false}
+    });
+    REQUIRE(r.has_value());
+    CHECK(r->name.empty());
+}
+
+TEST_CASE("assign_from_json UTF-8 special chars")
+{
+    auto r = agent::assign_from_json<PrimitiveTypes>({
+        {"name", "日本語🔥🚀"}, {"count", 1}, {"ratio", 1.0}, {"enabled", true}
+    });
+    REQUIRE(r.has_value());
+    CHECK(r->name == "日本語🔥🚀");
+}
+
+
+// ── 浮点数极端值 ── //
+
+TEST_CASE("assign_from_json double extreme values")
+{
+    auto r = agent::assign_from_json<PrimitiveTypes>({
+        {"name", "x"}, {"count", 0}, {"ratio", -1e100}, {"enabled", false}
+    });
+    REQUIRE(r.has_value());
+    CHECK(r->ratio == doctest::Approx(-1e100));
+}
+
+TEST_CASE("assign_from_json double fractional")
+{
+    auto r = agent::assign_from_json<PrimitiveTypes>({
+        {"name", "x"}, {"count", 0}, {"ratio", 1e-10}, {"enabled", false}
+    });
+    REQUIRE(r.has_value());
+    CHECK(r->ratio == doctest::Approx(1e-10));
+}
+
+
+// ── 字段可见性与命名 ── //
+
+TEST_CASE("assign_from_json mixed field order")
+{
+    auto r = agent::assign_from_json<PrimitiveTypes>({
+        {"enabled", true}, {"count", 42}, {"ratio", 1.0}, {"name", "ordered"}
+    });
+    REQUIRE(r.has_value());
+    CHECK(r->name == "ordered");
+    CHECK(r->count == 42);
+}
+
+
+// 递归类型编译期拒绝测试在 test_recursive_reject.cpp 中（预期编译失败）
+
+// ── validate_schema 非法输入鲁棒性测试 ── //
+
+TEST_CASE("validate_schema bizarre inputs do not crash")
+{
+    auto const& s = agent::schema_of<OrganizationTree>();
+    std::vector<std::string> errors;
+
+    // 非法类型：传标量代替 object
+    agent::detail::validate_schema(42, s, "", errors);
+    agent::detail::validate_schema("str", s, "", errors);
+    agent::detail::validate_schema(true, s, "", errors);
+    agent::detail::validate_schema(nullptr, s, "", errors);
+
+    // 深层嵌套
+    nlohmann::json deep = nlohmann::json::object();
+    deep["a"]["b"]["c"]["d"]["e"] = 1;
+    agent::detail::validate_schema(deep, s, "", errors);
+
+    // 超大数组
+    nlohmann::json big_arr = nlohmann::json::array();
+    for (int i = 0; i < 10000; i++) big_arr.push_back(i);
+    agent::detail::validate_schema(big_arr, s, "", errors);
+
+    // 空 object vs 期望 object
+    agent::detail::validate_schema(nlohmann::json::object(), s, "", errors);
+
+    // 类型完全错配
+    nlohmann::json wrong = {
+        {"name", 123},
+        {"groups", "not_an_array"}
+    };
+    agent::detail::validate_schema(wrong, s, "", errors);
+
+    // 枚举 schema 对非字符串值
+    auto const& es = agent::schema_of<WithEnum>();
+    agent::detail::validate_schema({{"color", 999}}, es, "", errors);
+    agent::detail::validate_schema({{"color", nullptr}}, es, "", errors);
+
+    // 所有错误信息应为字符串
+    for (auto const& e : errors)
+        CHECK(!e.empty());
+
+    CHECK(true);  // 如果能走到这里说明没炸
+}
+
+// ── 端到端：ToolBase CRTP 注册 + Tools::exec + 运行时注册 ── //
+
+struct [[= Desc("获取指定城市的天气信息")]] GetWeatherTool
+{
+    struct params_type {
+        [[= Desc("城市名，如「杭州」")]] std::string location;
+        [[= Desc("温度单位")]]           std::string unit = "celsius";
+    };
+
+    static Result<std::string> invoke(params_type const& p)
+    {
+        return nlohmann::json{
+            {"location", p.location}, {"unit", p.unit}, {"temp", 28}
+        }.dump();
+    }
+};
+
+template struct agent::detail::ToolBase<GetWeatherTool>;
+
+TEST_CASE("ToolBase auto-registers tool")
+{
+    auto tools = Tools::list();
+    bool found = false;
+    for (auto const& t : tools)
+        if (t.name == "GetWeatherTool") found = true;
+    CHECK(found);
+}
+
+TEST_CASE("Tools::get returns ToolBase-registered tool")
+{
+    auto r = Tools::get("GetWeatherTool");
+    REQUIRE(r.has_value());
+    CHECK(r->name == "GetWeatherTool");
+    CHECK(r->description == "获取指定城市的天气信息");
+    CHECK(r->parameters["type"] == "object");
+}
+
+TEST_CASE("Tools::exec ToolBase tool valid")
+{
+    auto r = Tools::exec("GetWeatherTool", {
+        {"location", "杭州"}, {"unit", "celsius"}
+    });
+    REQUIRE(r.has_value());
+    auto j = nlohmann::json::parse(*r);
+    CHECK(j["location"] == "杭州");
+    CHECK(j["temp"] == 28);
+}
+
+TEST_CASE("Tools::exec ToolBase tool missing required")
+{
+    auto r = Tools::exec("GetWeatherTool", {{"unit", "celsius"}});
+    CHECK(!r.has_value());
+    if (!r.has_value()) CHECK(r.error().code == Errc::InvalidArgs);
+}
+
+TEST_CASE("Tools::exec ToolBase tool wrong type")
+{
+    auto r = Tools::exec("GetWeatherTool", {
+        {"location", 123}, {"unit", "celsius"}
+    });
+    CHECK(!r.has_value());
+    if (!r.has_value()) CHECK(r.error().code == Errc::InvalidArgs);
+}
+
+TEST_CASE("Tools::exec ToolBase tool unknown extra fields")
+{
+    auto r = Tools::exec("GetWeatherTool", {
+        {"location", "x"}, {"unit", "celsius"}, {"extra", 1}
+    });
+    REQUIRE(r.has_value());
+}
+
+TEST_CASE("Tools::exec tool not found")
+{
+    auto r = Tools::exec("NoSuchTool", {});
+    CHECK(!r.has_value());
+    if (!r.has_value()) CHECK(r.error().code == Errc::NotFound);
+}
+
+TEST_CASE("Tools::get tool not found")
+{
+    auto r = Tools::get("NoSuchTool");
+    CHECK(!r.has_value());
+    if (!r.has_value()) CHECK(r.error().code == Errc::NotFound);
+}
+
+// ── 运行时注册（不使用 ToolBase） ── //
+
+TEST_CASE("Tools::reg runtime registration")
+{
+    auto fn = [](nlohmann::json args) -> Result<std::string> {
+        return "hello " + args["name"].get<std::string>();
+    };
+
+    auto r = Tools::reg(
+        ToolInfo{"greet", "向用户问好", R"({
+            "type":"object",
+            "properties":{"name":{"type":"string"}},
+            "required":["name"]
+        })"_json},
+        std::move(fn)
+    );
+    CHECK(r.has_value());
+}
+
+TEST_CASE("Tools::exec runtime-registered tool")
+{
+    auto r = Tools::exec("greet", {{"name", "world"}});
+    REQUIRE(r.has_value());
+    CHECK(*r == "hello world");
+}
+
+TEST_CASE("Tools::reg duplicate returns Duplicate")
+{
+    auto fn = [](nlohmann::json) -> Result<std::string> { return ""; };
+    auto r = Tools::reg(
+        ToolInfo{"greet", "", {}},
+        std::move(fn)
+    );
+    CHECK(!r.has_value());
+    if (!r.has_value()) CHECK(r.error().code == Errc::Duplicate);
+}
+
+TEST_CASE("Tools::exec runtime-registered missing required")
+{
+    auto r = Tools::exec("greet", {});
+    CHECK(!r.has_value());
+    if (!r.has_value()) CHECK(r.error().code == Errc::InvalidArgs);
+}
+
+TEST_CASE("Tools::exec runtime-registered wrong type")
+{
+    auto r = Tools::exec("greet", {{"name", 123}});
+    CHECK(!r.has_value());
+    if (!r.has_value()) CHECK(r.error().code == Errc::InvalidArgs);
+}
+
+TEST_CASE("Tools::exec runtime-registered null on non-optional")
+{
+    auto r = Tools::exec("greet", {{"name", nullptr}});
+    CHECK(!r.has_value());
+    if (!r.has_value()) CHECK(r.error().code == Errc::InvalidArgs);
+}
+
+// ── Tools::list 完整性 ── //
+
+TEST_CASE("Tools::list contains both registered tools")
+{
+    auto tools = Tools::list();
+    bool has_greet = false, has_weather = false;
+    for (auto const& t : tools) {
+        if (t.name == "greet") has_greet = true;
+        if (t.name == "GetWeatherTool") has_weather = true;
+    }
+    CHECK(has_greet);
+    CHECK(has_weather);
+}
+

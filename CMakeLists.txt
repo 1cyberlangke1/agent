@@ -7,6 +7,7 @@ set_property(GLOBAL PROPERTY USE_FOLDERS ON)
 set(CMAKE_CXX_STANDARD 26)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
+set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
 option(AGENT_BUILD_EXAMPLES "Build example targets" ON)
 option(AGENT_BUILD_TESTS "Build tests" OFF)
@@ -21,3 +22,7 @@ include("${CMAKE_CURRENT_SOURCE_DIR}/cmake/beast.cmake")
 find_package(Threads REQUIRED)
 
 add_subdirectory(src)
+
+if(AGENT_BUILD_TESTS)
+    add_subdirectory(tests)
+endif()

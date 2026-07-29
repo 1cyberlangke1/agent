@@ -21,3 +21,6 @@
 [submodule "3rdparty/nlohmann_json"]
 	path = 3rdparty/nlohmann_json
 	url = https://github.com/nlohmann/json.git
+[submodule "3rdparty/doctest"]
+	path = 3rdparty/doctest
+	url = https://github.com/doctest/doctest.git
