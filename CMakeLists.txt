@@ -24,5 +24,6 @@ find_package(Threads REQUIRED)
 add_subdirectory(src)
 
 if(AGENT_BUILD_TESTS)
+    enable_testing()
     add_subdirectory(tests)
 endif()

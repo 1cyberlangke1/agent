@@ -9,6 +9,9 @@ if(AGENT_BUILD_TESTS)
         test_result.cpp
         test_content.cpp
         test_tools.cpp
+        test_tools_concurrency.cpp
+        test_multi_tu_tool_a.cpp
+        test_multi_tu_tool_b.cpp
         ${CMAKE_SOURCE_DIR}/src/tools.cpp
     )
 

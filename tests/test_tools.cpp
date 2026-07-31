@@ -1,12 +1,16 @@
+#include <cstdint>
+
 #include <agent/result.hpp>
-#include <agent/tools.hpp>
+#include <agent/tools_reflection.hpp>
 #include <doctest/doctest.h>
 
+using agent::ArgsCheck;
 using agent::Desc;
-using agent::Result;
 using agent::Errc;
-using agent::Tools;
+using agent::Error;
+using agent::Result;
 using agent::ToolInfo;
+using agent::Tools;
 
 // ================================================================== //
 // 测试用的反射结构体：覆盖 PLAN.md 定义的所有类型组合
@@ -710,7 +714,7 @@ TEST_CASE("schema_of MegaWeather")
     auto j = agent::schema_of<MegaWeather>();
     CHECK(j["properties"]["hourly"]["type"] == "array");
     CHECK(j["properties"]["coord"]["minItems"] == 2);
-    CHECK(j["properties"]["unit"]["default"].is_null());  // 枚举默认值不能编译期提
+    CHECK(j["properties"]["unit"]["default"] == "Celsius");  // 枚举默认值反射为枚举名
 }
 
 TEST_CASE("assign_from_json<MegaWeather> full")
@@ -1221,43 +1225,43 @@ TEST_CASE("assign_from_json mixed field order")
 
 // 递归类型编译期拒绝测试在 test_recursive_reject.cpp 中（预期编译失败）
 
-// ── validate_schema 非法输入鲁棒性测试 ── //
+// ── validate_args 非法输入鲁棒性测试 ── //
 
-TEST_CASE("validate_schema bizarre inputs do not crash")
+TEST_CASE("validate_args bizarre inputs do not crash")
 {
     auto const& s = agent::schema_of<OrganizationTree>();
     std::vector<std::string> errors;
 
     // 非法类型：传标量代替 object
-    agent::detail::validate_schema(42, s, "", errors);
-    agent::detail::validate_schema("str", s, "", errors);
-    agent::detail::validate_schema(true, s, "", errors);
-    agent::detail::validate_schema(nullptr, s, "", errors);
+    agent::detail::validate_args(42, s, "", errors);
+    agent::detail::validate_args("str", s, "", errors);
+    agent::detail::validate_args(true, s, "", errors);
+    agent::detail::validate_args(nullptr, s, "", errors);
 
     // 深层嵌套
     nlohmann::json deep = nlohmann::json::object();
     deep["a"]["b"]["c"]["d"]["e"] = 1;
-    agent::detail::validate_schema(deep, s, "", errors);
+    agent::detail::validate_args(deep, s, "", errors);
 
     // 超大数组
     nlohmann::json big_arr = nlohmann::json::array();
     for (int i = 0; i < 10000; i++) big_arr.push_back(i);
-    agent::detail::validate_schema(big_arr, s, "", errors);
+    agent::detail::validate_args(big_arr, s, "", errors);
 
     // 空 object vs 期望 object
-    agent::detail::validate_schema(nlohmann::json::object(), s, "", errors);
+    agent::detail::validate_args(nlohmann::json::object(), s, "", errors);
 
     // 类型完全错配
     nlohmann::json wrong = {
         {"name", 123},
         {"groups", "not_an_array"}
     };
-    agent::detail::validate_schema(wrong, s, "", errors);
+    agent::detail::validate_args(wrong, s, "", errors);
 
     // 枚举 schema 对非字符串值
     auto const& es = agent::schema_of<WithEnum>();
-    agent::detail::validate_schema({{"color", 999}}, es, "", errors);
-    agent::detail::validate_schema({{"color", nullptr}}, es, "", errors);
+    agent::detail::validate_args({{"color", 999}}, es, "", errors);
+    agent::detail::validate_args({{"color", nullptr}}, es, "", errors);
 
     // 所有错误信息应为字符串
     for (auto const& e : errors)
@@ -1283,7 +1287,7 @@ struct [[= Desc("获取指定城市的天气信息")]] GetWeatherTool
     }
 };
 
-template struct agent::detail::ToolBase<GetWeatherTool>;
+template struct agent::ToolBase<GetWeatherTool>;
 
 TEST_CASE("ToolBase auto-registers tool")
 {
@@ -1382,7 +1386,7 @@ TEST_CASE("Tools::reg duplicate returns Duplicate")
 {
     auto fn = [](nlohmann::json) -> Result<std::string> { return ""; };
     auto r = Tools::reg(
-        ToolInfo{"greet", "", {}},
+        ToolInfo{"greet", "", R"({"type":"object"})"_json},
         std::move(fn)
     );
     CHECK(!r.has_value());
@@ -1422,5 +1426,412 @@ TEST_CASE("Tools::list contains both registered tools")
     }
     CHECK(has_greet);
     CHECK(has_weather);
+}
+
+// ═══════════════════════════════════════════════════════ //
+//  注册校验链：空名 / 空函数 / 畸形 schema 全部拒绝       //
+// ═══════════════════════════════════════════════════════ //
+
+TEST_CASE("Tools::reg rejects empty name")
+{
+    auto r = Tools::reg(
+        ToolInfo{"", "无名工具", R"({"type":"object"})"_json},
+        [](nlohmann::json) -> Result<std::string> { return ""; });
+    CHECK(!r.has_value());
+    if (!r.has_value()) CHECK(r.error().code == Errc::InvalidArgs);
+}
+
+TEST_CASE("Tools::reg rejects empty function")
+{
+    std::function<Result<std::string>(nlohmann::json)> empty_fn;
+    auto r = Tools::reg(
+        ToolInfo{"empty_fn_tool", "空函数工具", R"({"type":"object"})"_json},
+        std::move(empty_fn));
+    CHECK(!r.has_value());
+    if (!r.has_value()) CHECK(r.error().code == Errc::InvalidArgs);
+}
+
+TEST_CASE("Tools::reg rejects malformed schemas")
+{
+    auto fn = [](nlohmann::json) -> Result<std::string> { return ""; };
+
+    // root 缺 type
+    auto r1 = Tools::reg(ToolInfo{"bad1", "", nlohmann::json::object()}, fn);
+    CHECK(!r1.has_value());
+
+    // root type 不是 object
+    auto r2 = Tools::reg(ToolInfo{"bad2", "", R"({"type":"string"})"_json}, fn);
+    CHECK(!r2.has_value());
+
+    // 属性的 type 是数字——执行期校验器防崩溃的关键场景
+    auto r3 = Tools::reg(ToolInfo{"bad3", "",
+        R"({"type":"object","properties":{"x":{"type":123}}})"_json}, fn);
+    CHECK(!r3.has_value());
+
+    // required 引用未在 properties 声明的字段（拼写错误检测）
+    auto r4 = Tools::reg(ToolInfo{"bad4", "",
+        R"({"type":"object","properties":{"x":{"type":"string"}},"required":["y"]})"_json}, fn);
+    CHECK(!r4.has_value());
+
+    // enum 空数组
+    auto r5 = Tools::reg(ToolInfo{"bad5", "",
+        R"({"type":"object","properties":{"x":{"type":"string","enum":[]}}})"_json}, fn);
+    CHECK(!r5.has_value());
+
+    // root 是数组不是 object
+    auto r6 = Tools::reg(ToolInfo{"bad6", "", nlohmann::json::array()}, fn);
+    CHECK(!r6.has_value());
+
+    // 拒绝的工具不应出现在注册表
+    for (auto const* bad_name : {"bad1", "bad2", "bad3", "bad4", "bad5", "bad6"})
+        CHECK(!Tools::get(bad_name).has_value());
+}
+
+// ═══════════════════════════════════════════════════════ //
+//  整数边界：无符号范围 / 大 uint64 / 整值浮点            //
+// ═══════════════════════════════════════════════════════ //
+
+struct WithUnsigned
+{
+    [[= Desc("32位无符号数")]] std::uint32_t small_value;
+    [[= Desc("64位无符号数")]] std::uint64_t big_value;
+};
+
+TEST_CASE("assign_from_json<WithUnsigned> negative rejected")
+{
+    auto r = agent::assign_from_json<WithUnsigned>({
+        {"small_value", -1}, {"big_value", 1}
+    });
+    CHECK(!r.has_value());
+    if (!r.has_value()) CHECK(r.error().code == Errc::InvalidArgs);
+}
+
+TEST_CASE("assign_from_json<WithUnsigned> max uint64 accepted")
+{
+    auto r = agent::assign_from_json<WithUnsigned>({
+        {"small_value", 7}, {"big_value", 18446744073709551615ull}
+    });
+    REQUIRE(r.has_value());
+    CHECK(r->small_value == 7);
+    CHECK(r->big_value == 18446744073709551615ull);
+}
+
+TEST_CASE("assign_from_json<WithUnsigned> uint32 overflow rejected")
+{
+    auto r = agent::assign_from_json<WithUnsigned>({
+        {"small_value", 4294967296ull}, {"big_value", 1}
+    });
+    CHECK(!r.has_value());
+}
+
+TEST_CASE("assign_from_json integer accepts whole-number float")
+{
+    // LLM 偶尔把整数写成 3.0，数值为整数即接受
+    auto r = agent::assign_from_json<PrimitiveTypes>({
+        {"name", "x"}, {"count", 3.0}, {"ratio", 1.0}, {"enabled", true}
+    });
+    REQUIRE(r.has_value());
+    CHECK(r->count == 3);
+}
+
+TEST_CASE("assign_from_json integer rejects fractional float")
+{
+    auto r = agent::assign_from_json<PrimitiveTypes>({
+        {"name", "x"}, {"count", 3.5}, {"ratio", 1.0}, {"enabled", true}
+    });
+    CHECK(!r.has_value());
+}
+
+TEST_CASE("assign_from_json root not object")
+{
+    auto r = agent::assign_from_json<PrimitiveTypes>(nlohmann::json::array());
+    CHECK(!r.has_value());
+    if (!r.has_value()) CHECK(r.error().code == Errc::InvalidArgs);
+}
+
+TEST_CASE("Tools::exec schema validation accepts whole-number float as integer")
+{
+    auto fn = [](nlohmann::json args) -> Result<std::string> {
+        return std::to_string(args["n"].template get<std::int64_t>());
+    };
+    auto registered = Tools::reg(ToolInfo{"int_probe", "整数探针",
+        R"({"type":"object","properties":{"n":{"type":"integer"}},"required":["n"]})"_json},
+        std::move(fn));
+    REQUIRE(registered.has_value());
+
+    auto whole = Tools::exec("int_probe", {{"n", 3.0}});
+    REQUIRE(whole.has_value());
+    CHECK(*whole == "3");
+
+    auto fractional = Tools::exec("int_probe", {{"n", 3.5}});
+    CHECK(!fractional.has_value());
+    if (!fractional.has_value()) CHECK(fractional.error().code == Errc::InvalidArgs);
+}
+
+// ═══════════════════════════════════════════════════════ //
+//  深层容器内 optional<Struct> 的 null 类型传播           //
+// ═══════════════════════════════════════════════════════ //
+
+struct WithDeepOptStruct
+{
+    [[= Desc("深网格")]] std::vector<std::vector<std::optional<Coordinate>>> grid;
+};
+
+TEST_CASE("schema_of WithDeepOptStruct keeps null in deeply nested optional object")
+{
+    auto j = agent::schema_of<WithDeepOptStruct>();
+    CHECK(j["properties"]["grid"]["type"] == "array");
+    CHECK(j["properties"]["grid"]["items"]["type"] == "array");
+    CHECK(j["properties"]["grid"]["items"]["items"]["type"].is_array());
+    CHECK(j["properties"]["grid"]["items"]["items"]["type"][0] == "object");
+    CHECK(j["properties"]["grid"]["items"]["items"]["type"][1] == "null");
+}
+
+TEST_CASE("assign_from_json<WithDeepOptStruct> null elements in nested grid")
+{
+    auto r = agent::assign_from_json<WithDeepOptStruct>({
+        {"grid", nlohmann::json::array({
+            nlohmann::json::array({
+                nlohmann::json{{"x", 1.0}, {"y", 2.0}},
+                nullptr
+            })
+        })}
+    });
+    REQUIRE(r.has_value());
+    REQUIRE(r->grid.size() == 1);
+    REQUIRE(r->grid[0].size() == 2);
+    REQUIRE(r->grid[0][0].has_value());
+    CHECK(r->grid[0][0]->x == doctest::Approx(1.0));
+    CHECK(!r->grid[0][1].has_value());
+}
+
+// ═══════════════════════════════════════════════════════ //
+//  ArgsCheck::Tool：跳过 exec 预校验，工具自校验          //
+// ═══════════════════════════════════════════════════════ //
+
+TEST_CASE("Tools::reg ArgsCheck::Tool skips schema pre-validation")
+{
+    auto fn = [](nlohmann::json args) -> Result<std::string> {
+        // 自校验工具：错误信息带独特标记，证明调用真的到达了 fn
+        if (!args.contains("must"))
+            return std::unexpected(Error{Errc::InvalidArgs, "checked by tool itself"});
+        return "tool ok";
+    };
+    auto registered = Tools::reg(
+        ToolInfo{"self_check", "自校验工具", R"({
+            "type":"object",
+            "properties":{"must":{"type":"string"}},
+            "required":["must"]
+        })"_json},
+        std::move(fn),
+        ArgsCheck::Tool);
+    REQUIRE(registered.has_value());
+
+    // 缺 required 字段：Schema 模式会在 exec 拦下，Tool 模式应到达 fn
+    auto missing = Tools::exec("self_check", nlohmann::json::object());
+    CHECK(!missing.has_value());
+    if (!missing.has_value())
+        CHECK(missing.error().message == "checked by tool itself");
+
+    auto ok = Tools::exec("self_check", {{"must", "x"}});
+    REQUIRE(ok.has_value());
+    CHECK(*ok == "tool ok");
+}
+
+// ═══════════════════════════════════════════════════════ //
+//  list 排序确定性 + 跨 TU 静态注册                       //
+// ═══════════════════════════════════════════════════════ //
+
+TEST_CASE("Tools::list sorted by name")
+{
+    auto tools = Tools::list();
+    REQUIRE(tools.size() >= 2);
+    for (std::size_t i = 1; i < tools.size(); ++i)
+        CHECK(tools[i - 1].name < tools[i].name);
+}
+
+TEST_CASE("cross-TU explicit instantiation registers tools")
+{
+    // MultiTuAlpha / MultiTuBeta 定义在 test_multi_tu_tool_a/b.cpp，
+    // 本 TU 没有任何符号引用它们——注册仍应生效
+    auto alpha = Tools::exec("MultiTuAlpha", {{"text", "hi"}});
+    REQUIRE(alpha.has_value());
+    CHECK(*alpha == "alpha:hi");
+
+    auto beta = Tools::exec("MultiTuBeta", {{"text", "yo"}});
+    REQUIRE(beta.has_value());
+    CHECK(*beta == "beta:yo");
+}
+
+// ═══════════════════════════════════════════════════════ //
+//  运行时注册：复杂嵌套 schema 良构校验 + 深层参数校验    //
+// ═══════════════════════════════════════════════════════ //
+
+TEST_CASE("Tools::reg runtime complex nested schema end-to-end")
+{
+    // 手写深嵌套 schema：object → array<object>（长度约束）→ 嵌套 object
+    // 覆盖 enum、["string","null"]、多层 required
+    auto fn = [](nlohmann::json args) -> Result<std::string> {
+        return std::to_string(args["orders"].size());
+    };
+    auto registered = Tools::reg(ToolInfo{"submit_orders", "提交订单批次", R"({
+        "type": "object",
+        "properties": {
+            "batch_name": {"type": "string"},
+            "orders": {
+                "type": "array",
+                "minItems": 1,
+                "maxItems": 3,
+                "items": {
+                    "type": "object",
+                    "properties": {
+                        "id": {"type": "integer"},
+                        "status": {"type": "string", "enum": ["pending", "shipped"]},
+                        "note": {"type": ["string", "null"]},
+                        "dimensions": {
+                            "type": "object",
+                            "properties": {
+                                "width": {"type": "number"},
+                                "height": {"type": "number"}
+                            },
+                            "required": ["width", "height"]
+                        }
+                    },
+                    "required": ["id", "status", "dimensions"]
+                }
+            }
+        },
+        "required": ["batch_name", "orders"]
+    })"_json}, std::move(fn));
+    REQUIRE(registered.has_value());
+
+    // ── 合法：深层全部正确（含 null note、integer 充当 number）── //
+    auto ok = Tools::exec("submit_orders", R"({
+        "batch_name": "b1",
+        "orders": [
+            {"id": 1, "status": "pending", "note": null,
+             "dimensions": {"width": 1.5, "height": 2.0}},
+            {"id": 2, "status": "shipped", "note": "快",
+             "dimensions": {"width": 3, "height": 4}}
+        ]
+    })"_json);
+    REQUIRE(ok.has_value());
+    CHECK(*ok == "2");
+
+    // ── 深层类型错：orders[0].dimensions.width 是字符串 ── //
+    auto bad_deep_type = Tools::exec("submit_orders", R"({
+        "batch_name": "b", "orders": [
+            {"id": 1, "status": "pending",
+             "dimensions": {"width": "wide", "height": 2.0}}
+        ]})"_json);
+    CHECK(!bad_deep_type.has_value());
+    if (!bad_deep_type.has_value()) {
+        CHECK(bad_deep_type.error().code == Errc::InvalidArgs);
+        // 错误信息应定位到深层路径
+        CHECK(bad_deep_type.error().message.find("width") != std::string::npos);
+    }
+
+    // ── 深层缺 required：dimensions 缺 height ── //
+    auto missing_deep = Tools::exec("submit_orders", R"({
+        "batch_name": "b", "orders": [
+            {"id": 1, "status": "pending", "dimensions": {"width": 1.0}}
+        ]})"_json);
+    CHECK(!missing_deep.has_value());
+    if (!missing_deep.has_value()) CHECK(missing_deep.error().code == Errc::InvalidArgs);
+
+    // ── 枚举值非法：status 不在 enum 列表 ── //
+    auto bad_enum = Tools::exec("submit_orders", R"({
+        "batch_name": "b", "orders": [
+            {"id": 1, "status": "lost",
+             "dimensions": {"width": 1.0, "height": 2.0}}
+        ]})"_json);
+    CHECK(!bad_enum.has_value());
+    if (!bad_enum.has_value()) CHECK(bad_enum.error().code == Errc::InvalidArgs);
+
+    // ── 数组长度违规：空数组（minItems 1）与 4 个元素（maxItems 3）── //
+    auto empty_orders = Tools::exec("submit_orders",
+        R"({"batch_name": "b", "orders": []})"_json);
+    CHECK(!empty_orders.has_value());
+
+    nlohmann::json too_many = R"({"batch_name": "b", "orders": []})"_json;
+    for (int i = 0; i < 4; ++i)
+        too_many["orders"].push_back(R"({"id": 1, "status": "pending",
+            "dimensions": {"width": 1.0, "height": 2.0}})"_json);
+    auto overflow = Tools::exec("submit_orders", std::move(too_many));
+    CHECK(!overflow.has_value());
+
+    // ── 数组元素类型错：字符串代替 object ── //
+    auto bad_element = Tools::exec("submit_orders",
+        R"({"batch_name": "b", "orders": ["not an order"]})"_json);
+    CHECK(!bad_element.has_value());
+
+    // ── 深层 null 于不允许 null 的字段：dimensions 为 null ── //
+    auto null_deep = Tools::exec("submit_orders", R"({
+        "batch_name": "b", "orders": [
+            {"id": 1, "status": "pending", "dimensions": null}
+        ]})"_json);
+    CHECK(!null_deep.has_value());
+
+    // ── nullable 字段真的接受两种形态：null 与字符串（合法例已含）── //
+    auto note_string = Tools::exec("submit_orders", R"({
+        "batch_name": "b", "orders": [
+            {"id": 1, "status": "pending", "note": "备注",
+             "dimensions": {"width": 1.0, "height": 2.0}}
+        ]})"_json);
+    REQUIRE(note_string.has_value());
+    // note 类型错（数字）仍要拦
+    auto note_number = Tools::exec("submit_orders", R"({
+        "batch_name": "b", "orders": [
+            {"id": 1, "status": "pending", "note": 42,
+             "dimensions": {"width": 1.0, "height": 2.0}}
+        ]})"_json);
+    CHECK(!note_number.has_value());
+}
+
+TEST_CASE("Tools::reg rejects deeply nested malformed schemas")
+{
+    auto fn = [](nlohmann::json) -> Result<std::string> { return ""; };
+
+    // 深层（items.properties 内）type 是非法类型名
+    auto r1 = Tools::reg(ToolInfo{"deep_bad1", "", R"({
+        "type": "object",
+        "properties": {
+            "a": {"type": "array", "items": {
+                "type": "object",
+                "properties": {"b": {"type": "not_a_type"}}
+            }}
+        }})"_json}, fn);
+    CHECK(!r1.has_value());
+    if (!r1.has_value()) CHECK(r1.error().code == Errc::InvalidArgs);
+
+    // 深层 required 引用未声明字段
+    auto r2 = Tools::reg(ToolInfo{"deep_bad2", "", R"({
+        "type": "object",
+        "properties": {
+            "a": {"type": "object",
+                  "properties": {"x": {"type": "string"}},
+                  "required": ["misspelled"]}
+        }})"_json}, fn);
+    CHECK(!r2.has_value());
+
+    // 深层 type 数组里混入非字符串
+    auto r3 = Tools::reg(ToolInfo{"deep_bad3", "", R"({
+        "type": "object",
+        "properties": {
+            "a": {"type": "array", "items": {"type": ["string", 7]}}
+        }})"_json}, fn);
+    CHECK(!r3.has_value());
+
+    // 深层 minItems 为负数
+    auto r4 = Tools::reg(ToolInfo{"deep_bad4", "", R"({
+        "type": "object",
+        "properties": {
+            "a": {"type": "array", "minItems": -2, "items": {"type": "integer"}}
+        }})"_json}, fn);
+    CHECK(!r4.has_value());
+
+    // 拒绝的工具不应出现在注册表
+    for (auto const* bad_name : {"deep_bad1", "deep_bad2", "deep_bad3", "deep_bad4"})
+        CHECK(!Tools::get(bad_name).has_value());
 }
 

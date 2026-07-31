@@ -2,7 +2,7 @@
 // 预期：static_assert 在 build_schema<RecursiveBad>() 中触发，编译失败
 // 编译此文件应失败
 
-#include <agent/tools.hpp>
+#include <agent/tools_reflection.hpp>
 
 struct RecursiveBad
 {
