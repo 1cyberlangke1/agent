@@ -20,3 +20,4 @@ CLAUDE.md
 CMakeUserPresets.json
 HANDOFF.md
 PLAN*.md
+.claude/

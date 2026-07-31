@@ -27,7 +27,7 @@ consteval DescArg Desc(std::string_view s)
 namespace detail {
 
 /// @brief JSON Schema 字段类型枚举。
-///        三家 provider（OpenAI/Anthropic/Gemini）通用支持的类型集合，证据见 PLAN.md。
+///        三家 provider（OpenAI/Anthropic/Gemini）通用支持的类型集合。
 enum class FieldType
 {
     String,
@@ -93,6 +93,8 @@ consteval FieldType type_to_field_type()
         "floating point, enum, vector<T>, array<T,N>, optional<T>, or a struct");
 }
 
+/// @brief field_type 转字符串
+///        返回 std::string_view。
 consteval std::string_view field_type_to_json(FieldType field_type)
 {
     switch (field_type) {
