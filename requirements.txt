@@ -1,0 +1,6 @@
+# 本项目 python 辅助开发依赖（虚拟环境：仓库根 .venv/）
+# 用途：契约校验（tests/contract/）、fixture 采集、工具脚本
+# 锁版本：升级前先重跑契约校验看哪些 case 崩，崩的就是协议变化点
+openai==2.43.0
+anthropic==0.82.0
+google-generativeai==0.8.5

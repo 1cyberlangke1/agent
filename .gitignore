@@ -13,6 +13,7 @@ compile_commands.json
 .vscode/
 .idea/
 tmp/
+.venv/
 
 # 本地 AI 配置 + 本地 CMake preset（不污染仓库）
 AGENTS.md
