@@ -1,4 +1,4 @@
-add_executable(agent main.cpp tools.cpp)
+add_executable(agent main.cpp tools.cpp model_registry.cpp)
 
 target_include_directories(agent
     PUBLIC

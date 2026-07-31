@@ -12,7 +12,9 @@ if(AGENT_BUILD_TESTS)
         test_tools_concurrency.cpp
         test_multi_tu_tool_a.cpp
         test_multi_tu_tool_b.cpp
+        test_llm.cpp
         ${CMAKE_SOURCE_DIR}/src/tools.cpp
+        ${CMAKE_SOURCE_DIR}/src/model_registry.cpp
     )
 
     target_include_directories(test_agent
@@ -23,9 +25,13 @@ if(AGENT_BUILD_TESTS)
 
     target_link_libraries(test_agent
         PRIVATE
+            asio
             nlohmann_json
             Threads::Threads
     )
+    if(WIN32)
+        target_link_libraries(test_agent PRIVATE ws2_32)
+    endif()
 
     target_compile_options(test_agent PRIVATE -freflection)
     add_test(NAME agent COMMAND test_agent)

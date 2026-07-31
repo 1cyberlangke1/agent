@@ -56,17 +56,31 @@ struct ToolCall {
     nlohmann::json arguments;
 };
 
+/// @brief 工具执行结果内容块
+///
+/// 工具调用执行完成后回传给模型的工具输出。
+/// 作为 Role::ToolResult 消息的内容承载，与 ToolCall.id 关联。
+struct ToolResult {
+    /// 关联的 ToolCall.id
+    std::string tool_call_id;
+    /// 工具输出文本（或 JSON 字符串）
+    std::string output;
+    /// 工具执行是否出错
+    bool is_error = false;
+};
+
 /// @brief 消息中的一块内容
 ///
-/// 通过 std::variant 实现多态，支持四种类型：
+/// 通过 std::variant 实现多态，支持五种类型：
 /// - Text：文本
 /// - Image：图片
 /// - Thinking：思考链
 /// - ToolCall：工具调用
+/// - ToolResult：工具执行结果
 ///
 /// @usage 使用 std::visit 访问具体类型：
 ///        std::visit([](auto const& b) { ... }, block);
-using ContentBlock = std::variant<Text, Image, Thinking, ToolCall>;
+using ContentBlock = std::variant<Text, Image, Thinking, ToolCall, ToolResult>;
 
 /// @brief 消息角色
 ///
