@@ -1835,3 +1835,72 @@ TEST_CASE("Tools::reg rejects deeply nested malformed schemas")
         CHECK(!Tools::get(bad_name).has_value());
 }
 
+// ═══════════════════════════════════════════════════════ //
+//  无注解参数 / 多注解按类型过滤                          //
+// ═══════════════════════════════════════════════════════ //
+
+struct NoDescInput
+{
+    std::string          plain_field;             // 无注解
+    [[= Desc("有描述")]] int described_field = 5; // 有注解
+    std::optional<bool>  flag;                    // 无注解 optional
+};
+
+TEST_CASE("schema_of allows fields without Desc annotation")
+{
+    auto j = agent::schema_of<NoDescInput>();
+    CHECK(j["properties"]["plain_field"]["type"] == "string");
+    CHECK(!j["properties"]["plain_field"].contains("description"));
+    CHECK(j["properties"]["described_field"]["description"] == "有描述");
+    CHECK(j["properties"]["described_field"]["default"] == 5);
+    CHECK(!j["properties"]["flag"].contains("description"));
+    CHECK(j["required"].size() == 1);
+    CHECK(j["required"][0] == "plain_field");
+}
+
+TEST_CASE("assign_from_json works without annotations")
+{
+    auto r = agent::assign_from_json<NoDescInput>({{"plain_field", "x"}});
+    REQUIRE(r.has_value());
+    CHECK(r->plain_field == "x");
+    CHECK(r->described_field == 5);
+    CHECK(!r->flag.has_value());
+}
+
+// 无 Desc 注解的工具 struct：描述为空串，注册照常
+struct NoDescTool
+{
+    using params_type = NoDescInput;
+    static Result<std::string> invoke(params_type const& p)
+    {
+        return p.plain_field;
+    }
+};
+template struct agent::ToolBase<NoDescTool>;
+
+TEST_CASE("ToolBase registers tool without Desc annotation")
+{
+    auto info = Tools::get("NoDescTool");
+    REQUIRE(info.has_value());
+    CHECK(info->description.empty());
+
+    auto r = Tools::exec("NoDescTool", {{"plain_field", "raw"}});
+    REQUIRE(r.has_value());
+    CHECK(*r == "raw");
+}
+
+// 多注解且 Desc 不在第一位：find_desc 按类型过滤必须找到它
+// （盲取 annots[0] 的实现会在这里 extract<DescArg> 到错误类型）
+struct OtherTag { int value; };
+
+struct MixedAnnotInput
+{
+    [[= OtherTag{1}]] [[= Desc("次序在后")]] std::string field;
+};
+
+TEST_CASE("find_desc picks Desc among multiple annotations")
+{
+    auto j = agent::schema_of<MixedAnnotInput>();
+    CHECK(j["properties"]["field"]["description"] == "次序在后");
+}
+
