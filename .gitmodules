@@ -15,12 +15,12 @@
 [submodule "3rdparty/brotli"]
 	path = 3rdparty/brotli
 	url = https://github.com/google/brotli.git
-[submodule "3rdparty/beast"]
-	path = 3rdparty/beast
-	url = https://github.com/boostorg/beast.git
 [submodule "3rdparty/nlohmann_json"]
 	path = 3rdparty/nlohmann_json
 	url = https://github.com/nlohmann/json.git
 [submodule "3rdparty/doctest"]
 	path = 3rdparty/doctest
 	url = https://github.com/doctest/doctest.git
+[submodule "3rdparty/curl"]
+	path = 3rdparty/curl
+	url = https://github.com/curl/curl.git

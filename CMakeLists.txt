@@ -17,7 +17,7 @@ include("${CMAKE_CURRENT_SOURCE_DIR}/cmake/openssl.cmake")
 include("${CMAKE_CURRENT_SOURCE_DIR}/cmake/zlib.cmake")
 include("${CMAKE_CURRENT_SOURCE_DIR}/cmake/brotli.cmake")
 include("${CMAKE_CURRENT_SOURCE_DIR}/cmake/nlohmann_json.cmake")
-include("${CMAKE_CURRENT_SOURCE_DIR}/cmake/beast.cmake")
+include("${CMAKE_CURRENT_SOURCE_DIR}/cmake/curl.cmake")
 
 find_package(Threads REQUIRED)
 

@@ -13,8 +13,10 @@ if(AGENT_BUILD_TESTS)
         test_multi_tu_tool_a.cpp
         test_multi_tu_tool_b.cpp
         test_llm.cpp
+        test_http_client.cpp
         ${CMAKE_SOURCE_DIR}/src/tools.cpp
         ${CMAKE_SOURCE_DIR}/src/model_registry.cpp
+        ${CMAKE_SOURCE_DIR}/src/http_client.cpp
     )
 
     target_include_directories(test_agent
@@ -26,6 +28,7 @@ if(AGENT_BUILD_TESTS)
     target_link_libraries(test_agent
         PRIVATE
             asio
+            CURL::libcurl
             nlohmann_json
             Threads::Threads
     )
