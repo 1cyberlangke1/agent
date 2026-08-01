@@ -59,8 +59,8 @@ TEST_CASE("https 冒烟：真实端点 TLS 握手（401 即证明 https 通）")
         MESSAGE("跳过 https 冒烟：连接失败 (" << response.error().message << ")");
         return;
     }
-    // 401 = 无效 key 的认证失败，但 TLS 握手已成功（认证在握手之后）
-    // 其他 HTTP 状态（429/5xx 等）同样说明请求已送达，https 路径畅通
+    // 任何 HTTP 状态码（401/429/5xx）都证明 TLS 握手成功 + 请求送达——
+    // TLS 发生在认证/限流之前。无外网/连不上时打印跳过说明。
     MESSAGE("https 冒烟：HTTP " << response->status);
-    CHECK(response->status == 401);
+    CHECK(response->status > 0);
 }

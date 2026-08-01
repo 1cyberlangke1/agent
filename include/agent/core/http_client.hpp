@@ -69,6 +69,15 @@ asio::awaitable<Result<HttpResponse>> async_http_post(
     asio::any_io_executor ex, std::string_view url,
     nlohmann::json body, HttpRequestOptions options);
 
+/// @brief 非流式 GET（无请求体，查询参数拼在 URL 上）。
+///        错误语义与 async_http_post 一致：任何 HTTP 状态都算成功返回，
+///        Result 错误仅代表传输层失败（连不上 / 超时 / 取消）。
+/// @param ex      io_context executor（调用协程须运行在其上）
+/// @param url     完整 URL（http/https，含查询参数）
+/// @param options 请求配置（头/超时/重试/取消）
+asio::awaitable<Result<HttpResponse>> async_http_get(
+    asio::any_io_executor ex, std::string_view url, HttpRequestOptions options);
+
 /// @brief 流式响应逐块读取器（pull 形态）。**L0 域无关**：http 层不认识 chat 类型，
 ///        引擎协程 co_await 逐块拿「原始 body 字节」，自行解析。
 ///        对象持有传输会话（curl multi/easy + asio socket），仅可移动（pimpl）。
@@ -81,7 +90,8 @@ public:
     ///        错误详情归引擎；Result 错误仅传输层失败。
     static asio::awaitable<Result<HttpStreamReader>> open(
         asio::any_io_executor ex, std::string_view url,
-        nlohmann::json body, HttpRequestOptions options);
+        nlohmann::json body, HttpRequestOptions options,
+        std::string_view method = "POST");
 
     /// @brief 下一块 body 字节（chunked 已由 curl 解码）；nullopt = 流正常结束。
     ///        首字节后的错误（断流 / idle 超时 / 取消）→ Result 错误，绝不重试。

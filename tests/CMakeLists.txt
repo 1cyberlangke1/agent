@@ -37,6 +37,15 @@ if(AGENT_BUILD_TESTS)
         ${CMAKE_SOURCE_DIR}/src/llm/providers/anthropic.cpp
     )
 
+    target_link_libraries(test_agent
+        PRIVATE
+            asio
+            CURL::libcurl
+            nlohmann_json
+            Threads::Threads
+            brotlienc
+    )
+
     target_include_directories(test_agent
         PRIVATE
             ${CMAKE_SOURCE_DIR}/include

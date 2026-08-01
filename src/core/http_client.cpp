@@ -358,9 +358,11 @@ size_t header_callback(char* buffer, size_t size, size_t nitems, void* clientp)
 // ───────────────────── 传输装配与等待原语 ─────────────────────
 
 /// @brief 装配 curl 句柄并启动传输（add_handle 后 curl 经 timer 回调自行开跑）。
+/// @param method "POST" / "GET"。GET 不设 CURLOPT_POST（curl 默认 GET）也无 body。
 /// @return false = curl 句柄创建失败（极罕见，内存耗尽级别）
 bool setup_transfer(std::shared_ptr<CurlSession> const& session, std::string const& url,
-                    nlohmann::json const& body, HttpRequestOptions const& options)
+                    nlohmann::json const& body, HttpRequestOptions const& options,
+                    std::string_view method)
 {
     session->request_body = body.dump();
     session->idle_timeout_ms = options.idle_timeout_ms;
@@ -377,21 +379,27 @@ bool setup_transfer(std::shared_ptr<CurlSession> const& session, std::string con
     curl_multi_setopt(multi, CURLMOPT_TIMERDATA, session.get());
 
     curl_easy_setopt(easy, CURLOPT_URL, url.c_str());
-    curl_easy_setopt(easy, CURLOPT_POST, 1L);
-    curl_easy_setopt(easy, CURLOPT_POSTFIELDS, session->request_body.c_str());
-    curl_easy_setopt(easy, CURLOPT_POSTFIELDSIZE,
-                     static_cast<long>(session->request_body.size()));
+    bool is_post = (method == "POST");
+    if (is_post) {
+        curl_easy_setopt(easy, CURLOPT_POST, 1L);
+        curl_easy_setopt(easy, CURLOPT_POSTFIELDS, session->request_body.c_str());
+        curl_easy_setopt(easy, CURLOPT_POSTFIELDSIZE,
+                         static_cast<long>(session->request_body.size()));
+    }
 
-    // Expect: 空头禁用 100-continue 等待；Content-Type 固定 JSON；
+    // Expect: 空头禁用 100-continue 等待；Content-Type 固定 JSON（POST 才有 body）；
     // 引擎合并后的头原样追加（认证头也在其中，http 层不理解语义）。
-    session->header_list =
-        curl_slist_append(session->header_list, "Content-Type: application/json");
-    session->header_list = curl_slist_append(session->header_list, "Expect:");
+    session->header_list = nullptr;
+    if (is_post) {
+        session->header_list = curl_slist_append(session->header_list, "Content-Type: application/json");
+        session->header_list = curl_slist_append(session->header_list, "Expect:");
+    }
     for (auto const& [name, value] : options.headers) {
         std::string header_line = name + ": " + value;
         session->header_list = curl_slist_append(session->header_list, header_line.c_str());
     }
-    curl_easy_setopt(easy, CURLOPT_HTTPHEADER, session->header_list);
+    if (session->header_list != nullptr)
+        curl_easy_setopt(easy, CURLOPT_HTTPHEADER, session->header_list);
 
     curl_easy_setopt(easy, CURLOPT_WRITEFUNCTION, write_callback);
     curl_easy_setopt(easy, CURLOPT_WRITEDATA, session.get());
@@ -506,7 +514,7 @@ struct AttemptOutcome {
 /// @brief 单次尝试：装配传输，等到最终响应头或传输失败。
 asio::awaitable<AttemptOutcome> run_single_attempt(
     asio::any_io_executor ex, std::string const& url,
-    nlohmann::json const& body, HttpRequestOptions& options)
+    nlohmann::json const& body, HttpRequestOptions& options, std::string_view method)
 {
     std::shared_ptr<CurlSession> session = std::make_shared<CurlSession>(ex);
     session->weak_self = session;
@@ -524,7 +532,7 @@ asio::awaitable<AttemptOutcome> run_single_attempt(
             });
     }
 
-    if (!setup_transfer(session, url, body, options)) {
+    if (!setup_transfer(session, url, body, options, method)) {
         co_return AttemptOutcome{nullptr,
             Error{Errc::NetworkError, "curl handle init failed"}, false};
     }
@@ -555,11 +563,11 @@ asio::awaitable<AttemptOutcome> run_single_attempt(
 ///        重试耗尽后仍有响应头 → 把响应交给上层（status/body 可读，详情归引擎）。
 asio::awaitable<Result<std::shared_ptr<CurlSession>>> open_with_retries(
     asio::any_io_executor ex, std::string url,
-    nlohmann::json body, HttpRequestOptions options)
+    nlohmann::json body, HttpRequestOptions options, std::string_view method)
 {
     Error last_error{Errc::NetworkError, "no attempt executed"};
     for (int attempt = 0; attempt <= options.max_retries; ++attempt) {
-        AttemptOutcome outcome = co_await run_single_attempt(ex, url, body, options);
+        AttemptOutcome outcome = co_await run_single_attempt(ex, url, body, options, method);
 
         if (outcome.cancelled)
             co_return std::unexpected(std::move(outcome.error));
@@ -611,11 +619,11 @@ HttpStreamReader::~HttpStreamReader()
 
 asio::awaitable<Result<HttpStreamReader>> HttpStreamReader::open(
     asio::any_io_executor ex, std::string_view url,
-    nlohmann::json body, HttpRequestOptions options)
+    nlohmann::json body, HttpRequestOptions options, std::string_view method)
 {
     ensure_curl_global();
     Result<std::shared_ptr<CurlSession>> session = co_await open_with_retries(
-        ex, std::string{url}, std::move(body), std::move(options));
+        ex, std::string{url}, std::move(body), std::move(options), method);
     if (!session)
         co_return std::unexpected(std::move(session).error());
     std::unique_ptr<Impl> impl{new Impl{std::move(*session)}};
@@ -698,14 +706,38 @@ std::string_view HttpStreamReader::header(std::string_view name) const
     return {};
 }
 
-// ───────────────────── async_http_post ─────────────────────
+// ───────────────────── async_http_post / async_http_get ─────────────────────
 
 asio::awaitable<Result<HttpResponse>> async_http_post(
     asio::any_io_executor ex, std::string_view url,
     nlohmann::json body, HttpRequestOptions options)
 {
     Result<HttpStreamReader> reader =
-        co_await HttpStreamReader::open(ex, url, std::move(body), std::move(options));
+        co_await HttpStreamReader::open(ex, url, std::move(body), std::move(options), "POST");
+    if (!reader)
+        co_return std::unexpected(std::move(reader).error());
+
+    HttpResponse response;
+    response.status = reader->status();
+    while (true) {
+        Result<std::optional<std::string>> chunk = co_await reader->next_chunk();
+        if (!chunk)
+            co_return std::unexpected(std::move(chunk).error());
+        if (!chunk->has_value())
+            break;
+        response.body += **chunk;
+    }
+    response.headers = reader->headers();
+    co_return response;
+}
+
+asio::awaitable<Result<HttpResponse>> async_http_get(
+    asio::any_io_executor ex, std::string_view url, HttpRequestOptions options)
+{
+    // GET 无请求体：查询参数全部在 URL 上（调用方自行拼好）
+    Result<HttpStreamReader> reader =
+        co_await HttpStreamReader::open(ex, url, nlohmann::json::object(),
+                                        std::move(options), "GET");
     if (!reader)
         co_return std::unexpected(std::move(reader).error());
 
