@@ -37,19 +37,19 @@ namespace {
 
 // ───────────────────────── 常量与小工具 ─────────────────────────
 
-/// 背压水位：body 缓冲超过 high 时暂停 curl 交付（CURL_WRITEFUNC_PAUSE），
-/// next_chunk 消费到 low 以下时恢复（curl_easy_pause CONT）。
+/// @brief 背压水位：body 缓冲超过 high 时暂停 curl 交付（CURL_WRITEFUNC_PAUSE），
+///        next_chunk 消费到 low 以下时恢复（curl_easy_pause CONT）。
 constexpr std::size_t kHighWaterBytes = std::size_t{1} << 20;   // 1 MiB
 constexpr std::size_t kLowWaterBytes = std::size_t{256} << 10;  // 256 KiB
 
-/// curl_global_init 进程级一次（线程安全）。
+/// @brief curl_global_init 进程级一次（线程安全）。
 void ensure_curl_global()
 {
     static std::once_flag flag;
     std::call_once(flag, [] { curl_global_init(CURL_GLOBAL_DEFAULT); });
 }
 
-/// ASCII 大小写不敏感比较（HTTP 头名匹配用）。
+/// @brief ASCII 大小写不敏感比较（HTTP 头名匹配用）。
 bool equals_ignore_case(std::string_view left, std::string_view right)
 {
     if (left.size() != right.size())
@@ -67,14 +67,14 @@ bool equals_ignore_case(std::string_view left, std::string_view right)
 
 // ───────────────────────── 会话状态 ─────────────────────────
 
-/// 单个 socket 的 asio 包装与监听状态。
+/// @brief 单个 socket 的 asio 包装与监听状态。
 struct SocketState {
     asio::ip::tcp::socket socket;
     int watch = 0;     // curl 当前要求的监听位（CURL_POLL_IN/OUT 组合）
     int pending = 0;   // 已挂起的 async_wait 位（防同方向重复挂起）
 };
 
-/// 一次 HTTP 传输的完整状态（单 executor，见文件头注释）。
+/// @brief 一次 HTTP 传输的完整状态（单 executor，见文件头注释）。
 struct CurlSession {
     asio::any_io_executor executor;
     asio::steady_timer curl_timer;   // curl 的超时驱动（CURLMOPT_TIMERFUNCTION）
@@ -119,11 +119,11 @@ struct CurlSession {
     CurlSession(CurlSession const&) = delete;
     CurlSession& operator=(CurlSession const&) = delete;
 
-    /// 唤醒 open/next_chunk 的等待循环。
+    /// @brief 唤醒 open/next_chunk 的等待循环。
     void wake() { event.cancel(); }
 
-    /// 拆除传输（幂等）：取消监听、清理 curl 句柄、唤醒等待者。
-    /// 之后所有挂起回调看到 stopped 直接返回。
+    /// @brief 拆除传输（幂等）：取消监听、清理 curl 句柄、唤醒等待者。
+    ///        之后所有挂起回调看到 stopped 直接返回。
     void shutdown()
     {
         if (stopped)
@@ -158,7 +158,7 @@ struct CurlSession {
 void process_curl_messages(std::shared_ptr<CurlSession> const& session);
 void arm_all_sockets(std::shared_ptr<CurlSession> const& session);
 
-/// 某 socket 就绪（或监听被取消）→ 驱动 curl 状态机并重新挂监听。
+/// @brief 某 socket 就绪（或监听被取消）→ 驱动 curl 状态机并重新挂监听。
 void on_socket_ready(std::shared_ptr<CurlSession> const& session, curl_socket_t fd,
                      int which, asio::error_code const& ec)
 {
@@ -186,8 +186,8 @@ void on_socket_ready(std::shared_ptr<CurlSession> const& session, curl_socket_t 
         arm_all_sockets(session);
 }
 
-/// 按各 socket 的 watch 需求补挂缺失方向的 async_wait。
-/// 在每次 socket_action 之后调用（action 期间 curl 可能新建连接或改监听需求）。
+/// @brief 按各 socket 的 watch 需求补挂缺失方向的 async_wait。
+///        在每次 socket_action 之后调用（action 期间 curl 可能新建连接或改监听需求）。
 void arm_all_sockets(std::shared_ptr<CurlSession> const& session)
 {
     for (auto& [fd, state] : session->sockets) {
@@ -208,7 +208,7 @@ void arm_all_sockets(std::shared_ptr<CurlSession> const& session)
     }
 }
 
-/// 收割 curl 完成消息：CURLMSG_DONE → 置终态并唤醒等待者。
+/// @brief 收割 curl 完成消息：CURLMSG_DONE → 置终态并唤醒等待者。
 void process_curl_messages(std::shared_ptr<CurlSession> const& session)
 {
     if (session->stopped || session->multi == nullptr)
@@ -225,7 +225,7 @@ void process_curl_messages(std::shared_ptr<CurlSession> const& session)
 
 // ───────────────────── curl C 回调 ─────────────────────
 
-/// CURLOPT_OPENSOCKETFUNCTION：由 asio 创建 socket，curl 借用 native handle。
+/// @brief CURLOPT_OPENSOCKETFUNCTION：由 asio 创建 socket，curl 借用 native handle。
 curl_socket_t open_socket_callback(void* clientp, curlsocktype purpose,
                                    curl_sockaddr* address)
 {
@@ -246,8 +246,8 @@ curl_socket_t open_socket_callback(void* clientp, curlsocktype purpose,
     return fd;
 }
 
-/// CURLOPT_CLOSESOCKETFUNCTION：curl 要求关闭连接。
-/// erase 后 asio socket 析构负责真正 close（挂起的 wait 收 operation_aborted）。
+/// @brief CURLOPT_CLOSESOCKETFUNCTION：curl 要求关闭连接。
+///        erase 后 asio socket 析构负责真正 close（挂起的 wait 收 operation_aborted）。
 int close_socket_callback(void* clientp, curl_socket_t item)
 {
     CurlSession* session = static_cast<CurlSession*>(clientp);
@@ -255,9 +255,9 @@ int close_socket_callback(void* clientp, curl_socket_t item)
     return 0;
 }
 
-/// CURLMOPT_SOCKETFUNCTION：curl 声明对 fd 监听需求的变化。
-/// 只更新 watch / 取消监听——补挂 async_wait 统一由 socket_action 调用点
-/// 尾部的 arm_all_sockets 完成（C 回调内拿不到 shared_ptr 捕获）。
+/// @brief CURLMOPT_SOCKETFUNCTION：curl 声明对 fd 监听需求的变化。
+///        只更新 watch / 取消监听——补挂 async_wait 统一由 socket_action 调用点
+///        尾部的 arm_all_sockets 完成（C 回调内拿不到 shared_ptr 捕获）。
 int multi_socket_callback(CURL*, curl_socket_t fd, int what, void* userp, void*)
 {
     CurlSession* session = static_cast<CurlSession*>(userp);
@@ -274,8 +274,8 @@ int multi_socket_callback(CURL*, curl_socket_t fd, int what, void* userp, void*)
     return 0;
 }
 
-/// CURLMOPT_TIMERFUNCTION：curl 的内部超时调度 → asio steady_timer。
-/// timeout_ms == -1 取消；到期后以 CURL_SOCKET_TIMEOUT 驱动状态机。
+/// @brief CURLMOPT_TIMERFUNCTION：curl 的内部超时调度 → asio steady_timer。
+///        timeout_ms == -1 取消；到期后以 CURL_SOCKET_TIMEOUT 驱动状态机。
 int multi_timer_callback(CURLM*, long timeout_ms, void* userp)
 {
     CurlSession* session = static_cast<CurlSession*>(userp);
@@ -299,8 +299,8 @@ int multi_timer_callback(CURLM*, long timeout_ms, void* userp)
     return 0;
 }
 
-/// CURLOPT_WRITEFUNCTION：body 字节到达 → 入队并唤醒消费者；超水位则暂停。
-/// 返回 PAUSE 时 curl 缓存本块，恢复后重新交付，数据不丢失。
+/// @brief CURLOPT_WRITEFUNCTION：body 字节到达 → 入队并唤醒消费者；超水位则暂停。
+///        返回 PAUSE 时 curl 缓存本块，恢复后重新交付，数据不丢失。
 size_t write_callback(char* data, size_t size, size_t nmemb, void* clientp)
 {
     CurlSession* session = static_cast<CurlSession*>(clientp);
@@ -318,8 +318,8 @@ size_t write_callback(char* data, size_t size, size_t nmemb, void* clientp)
     return total;
 }
 
-/// CURLOPT_HEADERFUNCTION：逐行收头。状态行重置收集（1xx 会有多组），
-/// 终止空行且状态 ≥ 200 时置 headers_done（1xx 中间响应被跳过）。
+/// @brief CURLOPT_HEADERFUNCTION：逐行收头。状态行重置收集（1xx 会有多组），
+///        终止空行且状态 ≥ 200 时置 headers_done（1xx 中间响应被跳过）。
 size_t header_callback(char* buffer, size_t size, size_t nitems, void* clientp)
 {
     CurlSession* session = static_cast<CurlSession*>(clientp);
@@ -357,7 +357,7 @@ size_t header_callback(char* buffer, size_t size, size_t nitems, void* clientp)
 
 // ───────────────────── 传输装配与等待原语 ─────────────────────
 
-/// 装配 curl 句柄并启动传输（add_handle 后 curl 经 timer 回调自行开跑）。
+/// @brief 装配 curl 句柄并启动传输（add_handle 后 curl 经 timer 回调自行开跑）。
 /// @return false = curl 句柄创建失败（极罕见，内存耗尽级别）
 bool setup_transfer(std::shared_ptr<CurlSession> const& session, std::string const& url,
                     nlohmann::json const& body, HttpRequestOptions const& options)
@@ -422,23 +422,23 @@ bool setup_transfer(std::shared_ptr<CurlSession> const& session, std::string con
     return true;
 }
 
-/// 等待状态变化（headers_done / body 到达 / finished / aborted）。
-/// event 常驻 max，wake() 以 cancel 唤醒。单线程模型下条件检查与挂起之间
-/// 无回调可插入，不存在丢失唤醒。
+/// @brief 等待状态变化（headers_done / body 到达 / finished / aborted）。
+///        event 常驻 max，wake() 以 cancel 唤醒。单线程模型下条件检查与挂起之间
+///        无回调可插入，不存在丢失唤醒。
 asio::awaitable<void> wait_for_wake(std::shared_ptr<CurlSession> const& session)
 {
     auto [ec] = co_await session->event.async_wait(asio::as_tuple(asio::use_awaitable));
     (void)ec;   // operation_aborted 即正常唤醒
 }
 
-/// 本协程是否已被 asio 取消（co_spawn 层的 cancellation 传播）。
+/// @brief 本协程是否已被 asio 取消（co_spawn 层的 cancellation 传播）。
 asio::awaitable<bool> coroutine_cancelled()
 {
     asio::cancellation_state state = co_await asio::this_coro::cancellation_state;
     co_return state.cancelled() != asio::cancellation_type::none;
 }
 
-/// 传输级 CURLcode → agent::Error。4xx/5xx 不经此路（响应正常返回给上层）。
+/// @brief 传输级 CURLcode → agent::Error。4xx/5xx 不经此路（响应正常返回给上层）。
 Error map_curl_error(CURLcode code, char const* detail)
 {
     std::string message = curl_easy_strerror(code);
@@ -449,13 +449,13 @@ Error map_curl_error(CURLcode code, char const* detail)
     return Error{Errc::NetworkError, std::move(message)};
 }
 
-/// 值得整次重试的 HTTP 状态（首字节前语义：headers 刚到、body 未消费）。
+/// @brief 值得整次重试的 HTTP 状态（首字节前语义：headers 刚到、body 未消费）。
 bool retryable_status(long status)
 {
     return status == 429 || (status >= 500 && status < 600);
 }
 
-/// Retry-After 解析：仅秒数形态；HTTP 日期/缺失返回 nullopt（走指数退避）。
+/// @brief Retry-After 解析：仅秒数形态；HTTP 日期/缺失返回 nullopt（走指数退避）。
 std::optional<int> parse_retry_after_ms(
     std::vector<std::pair<std::string, std::string>> const& headers)
 {
@@ -480,7 +480,7 @@ std::optional<int> parse_retry_after_ms(
     return std::nullopt;
 }
 
-/// 指数退避：0.5s · 2^attempt · (1 − rand·0.25)。
+/// @brief 指数退避：0.5s · 2^attempt · (1 − rand·0.25)。
 int backoff_delay_ms(int attempt)
 {
     static std::minstd_rand engine{std::random_device{}()};
@@ -496,14 +496,14 @@ asio::awaitable<void> async_sleep(int delay_ms)
     co_await timer.async_wait(asio::as_tuple(asio::use_awaitable));
 }
 
-/// 单次传输尝试的结果。
+/// @brief 单次传输尝试的结果。
 struct AttemptOutcome {
     std::shared_ptr<CurlSession> session;   // 成功（headers_done）时非空
     Error error{Errc::NetworkError, {}};    // session 为空时有效
     bool cancelled = false;                 // 取消（不重试）
 };
 
-/// 单次尝试：装配传输，等到最终响应头或传输失败。
+/// @brief 单次尝试：装配传输，等到最终响应头或传输失败。
 asio::awaitable<AttemptOutcome> run_single_attempt(
     asio::any_io_executor ex, std::string const& url,
     nlohmann::json const& body, HttpRequestOptions& options)
@@ -551,8 +551,8 @@ asio::awaitable<AttemptOutcome> run_single_attempt(
     co_return AttemptOutcome{nullptr, std::move(error), false};
 }
 
-/// 带首字节前重试的打开流程。重试仅针对：连接级失败、429/5xx 响应头。
-/// 重试耗尽后仍有响应头 → 把响应交给上层（status/body 可读，详情归引擎）。
+/// @brief 带首字节前重试的打开流程。重试仅针对：连接级失败、429/5xx 响应头。
+///        重试耗尽后仍有响应头 → 把响应交给上层（status/body 可读，详情归引擎）。
 asio::awaitable<Result<std::shared_ptr<CurlSession>>> open_with_retries(
     asio::any_io_executor ex, std::string url,
     nlohmann::json body, HttpRequestOptions options)

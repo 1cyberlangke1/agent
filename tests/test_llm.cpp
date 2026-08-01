@@ -129,14 +129,16 @@ TEST_CASE("ModelView 生命周期：已发出的 ModelView 在重复注册后仍
 
 TEST_CASE("clamp_thinking_level 收敛到模型支持范围")
 {
-    // deepseek-v4-pro: High→"high", Max→"max"，其余不支持
+    // deepseek-v4-pro map 已预填：{off, high, high, high, high, high, max}
+    // 非 Off 档恒有值 → clamp 恒等；map 值即档位强度
     auto m = ModelRegistry::find_model("deepseek-v4-pro");
     REQUIRE(m.has_value());
-    // XHigh 不支持 → 下落到 High
-    CHECK(clamp_thinking_level(*m, ThinkingLevel::XHigh) == ThinkingLevel::High);
+    // XHigh 预填为 "high" → clamp 恒等返回 XHigh（map[5] 有值）
+    CHECK(clamp_thinking_level(*m, ThinkingLevel::XHigh) == ThinkingLevel::XHigh);
+    CHECK(m->thinking_level_map[static_cast<std::size_t>(ThinkingLevel::XHigh)] == "high");
     CHECK(clamp_thinking_level(*m, ThinkingLevel::Max) == ThinkingLevel::Max);
     CHECK(clamp_thinking_level(*m, ThinkingLevel::Off) == ThinkingLevel::Off);
-    // 非推理模型：任何等级都落到 Off
+    // 非推理模型（reasoning=false，全 nullopt）：任何等级都落到 Off
     auto chat = ModelRegistry::find_model("deepseek-chat");
     REQUIRE(chat.has_value());
     CHECK(clamp_thinking_level(*chat, ThinkingLevel::High) == ThinkingLevel::Off);

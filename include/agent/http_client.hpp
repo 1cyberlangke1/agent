@@ -29,16 +29,16 @@
 
 namespace agent {
 
-/// 非流式响应。
+/// @brief 非流式响应。
 struct HttpResponse {
     int status = 0;
     std::string body;
     std::vector<std::pair<std::string, std::string>> headers;
 };
 
-/// 请求配置。engine 负责合并（EndpointConfig.default_headers + StreamOptions.headers
-/// − suppress_headers），认证头（Bearer / x-api-key）也由 engine 放进 headers——
-/// http 层不理解认证语义（Gemini 的 ?key= 由 engine 拼进 URL）。
+/// @brief 请求配置。engine 负责合并（EndpointConfig.default_headers + StreamOptions.headers
+///        − suppress_headers），认证头（Bearer / x-api-key）也由 engine 放进 headers——
+///        http 层不理解认证语义（Gemini 的 ?key= 由 engine 拼进 URL）。
 struct HttpRequestOptions {
     std::vector<std::pair<std::string, std::string>> headers;
     /// 连接建立超时（curl CONNECTTIMEOUT_MS）。
@@ -55,12 +55,12 @@ struct HttpRequestOptions {
     asio::cancellation_slot cancel;
 };
 
-/// 非流式 POST。返回完整响应体。仅供测试与未来接口（embeddings 等）；
-/// 生产 complete 走流式收集，不发非流式请求。
+/// @brief 非流式 POST。返回完整响应体。仅供测试与未来接口（embeddings 等）；
+///        生产 complete 走流式收集，不发非流式请求。
 ///
-/// 错误语义：任何 HTTP 状态（含 4xx/5xx）都算成功返回（status/body 可查，
-/// 错误详情 JSON 归引擎解析）；Result 错误仅代表传输层失败
-/// （连不上 / 超时 / 取消 / 重试耗尽仍连不上）。
+///        错误语义：任何 HTTP 状态（含 4xx/5xx）都算成功返回（status/body 可查，
+///        错误详情 JSON 归引擎解析）；Result 错误仅代表传输层失败
+///        （连不上 / 超时 / 取消 / 重试耗尽仍连不上）。
 /// @param ex      io_context executor（调用协程须运行在其上）
 /// @param url     完整 URL（http/https）
 /// @param body    请求体（JSON，序列化后以 application/json 发送）
@@ -69,31 +69,31 @@ asio::awaitable<Result<HttpResponse>> async_http_post(
     asio::any_io_executor ex, std::string_view url,
     nlohmann::json body, HttpRequestOptions options);
 
-/// 流式响应逐块读取器（pull 形态）。**L0 域无关**：http 层不认识 chat 类型，
-/// 引擎协程 co_await 逐块拿「原始 body 字节」，自行解析。
-/// 对象持有传输会话（curl multi/easy + asio socket），仅可移动（pimpl）。
+/// @brief 流式响应逐块读取器（pull 形态）。**L0 域无关**：http 层不认识 chat 类型，
+///        引擎协程 co_await 逐块拿「原始 body 字节」，自行解析。
+///        对象持有传输会话（curl multi/easy + asio socket），仅可移动（pimpl）。
 class HttpStreamReader {
 public:
-    /// 连接 + 发请求 + 收响应头。首字节前重试（连接失败/429/5xx，含
-    /// Retry-After 与指数退避）全部发生在 open 内部；open 成功 = 已拿到
-    /// 最终响应头（1xx 中间响应已被跳过）。
-    /// 4xx/5xx（重试耗尽后）也算 open 成功——status()/body 可读，
-    /// 错误详情归引擎；Result 错误仅传输层失败。
+    /// @brief 连接 + 发请求 + 收响应头。首字节前重试（连接失败/429/5xx，含
+    ///        Retry-After 与指数退避）全部发生在 open 内部；open 成功 = 已拿到
+    ///        最终响应头（1xx 中间响应已被跳过）。
+    ///        4xx/5xx（重试耗尽后）也算 open 成功——status()/body 可读，
+    ///        错误详情归引擎；Result 错误仅传输层失败。
     static asio::awaitable<Result<HttpStreamReader>> open(
         asio::any_io_executor ex, std::string_view url,
         nlohmann::json body, HttpRequestOptions options);
 
-    /// 下一块 body 字节（chunked 已由 curl 解码）；nullopt = 流正常结束。
-    /// 首字节后的错误（断流 / idle 超时 / 取消）→ Result 错误，绝不重试。
+    /// @brief 下一块 body 字节（chunked 已由 curl 解码）；nullopt = 流正常结束。
+    ///        首字节后的错误（断流 / idle 超时 / 取消）→ Result 错误，绝不重试。
     asio::awaitable<Result<std::optional<std::string>>> next_chunk();
 
-    /// 最终响应状态码（open 成功后有效）。
+    /// @brief 最终响应状态码（open 成功后有效）。
     int status() const;
 
-    /// 全部响应头（open 成功后有效；1xx 中间响应的头已被最终响应覆盖）。
+    /// @brief 全部响应头（open 成功后有效；1xx 中间响应的头已被最终响应覆盖）。
     std::vector<std::pair<std::string, std::string>> const& headers() const;
 
-    /// 响应头取值（open 成功后有效；名字大小写不敏感）；不存在返回空。
+    /// @brief 响应头取值（open 成功后有效；名字大小写不敏感）；不存在返回空。
     std::string_view header(std::string_view name) const;
 
     HttpStreamReader(HttpStreamReader&& other) noexcept;
@@ -112,14 +112,14 @@ namespace detail {
 
 /// @brief SSE 事件切分器。
 ///
-/// 流式喂字节，产出完整 SSE 事件（data: 行内容，多行 data: 用 \n join）。
-/// 注释行（以 : 开头）跳过；空行触发一个事件输出。
-/// 事件名（event:）暂不解析——当前三家都是纯 data: JSON。
+///        流式喂字节，产出完整 SSE 事件（data: 行内容，多行 data: 用 \n join）。
+///        注释行（以 : 开头）跳过；空行触发一个事件输出。
+///        事件名（event:）暂不解析——当前三家都是纯 data: JSON。
 class SseParser {
 public:
-    /// 喂入一段字节。
+    /// @brief 喂入一段字节。
     void feed(std::string_view chunk);
-    /// 取出一个完整事件；尚无完整事件返回 nullopt（需继续 feed）。
+    /// @brief 取出一个完整事件；尚无完整事件返回 nullopt（需继续 feed）。
     std::optional<std::string> next_event();
 
 private:

@@ -9,9 +9,9 @@
 
 namespace agent {
 
-/// 惰性加载内置表：把生成器产物的全部模型灌入 index_ 与 static_order_。
-/// call_once 保证只执行一次；内部持 unique_lock 写容器，
-/// 与各方法的锁互斥（先 init 再拿锁，call_once 完成后不再执行，无死锁）。
+/// @brief 惰性加载内置表：把生成器产物的全部模型灌入 index_ 与 static_order_。
+///        call_once 保证只执行一次；内部持 unique_lock 写容器，
+///        与各方法的锁互斥（先 init 再拿锁，call_once 完成后不再执行，无死锁）。
 void ModelRegistry::init()
 {
     std::call_once(init_flag_, [] {
@@ -35,6 +35,10 @@ ModelView ModelRegistry::to_view(detail::BuiltinModel const& m)
     v.supports_image_input = m.supports_image_input;
     v.thinking_level_map = m.thinking_level_map;
     v.thinking_field = m.thinking_field;
+    v.price_input = m.price_input;
+    v.price_output = m.price_output;
+    v.price_cache_read = m.price_cache_read;
+    v.price_cache_write = m.price_cache_write;
     return v;
 }
 
@@ -51,6 +55,10 @@ ModelView ModelRegistry::to_view(RuntimeModel const& m)
             v.thinking_level_map[i] = *m.thinking_level_map[i];
     }
     v.thinking_field = m.thinking_field;
+    v.price_input = m.price_input;
+    v.price_output = m.price_output;
+    v.price_cache_read = m.price_cache_read;
+    v.price_cache_write = m.price_cache_write;
     return v;
 }
 
@@ -78,8 +86,8 @@ std::optional<ModelView> ModelRegistry::find_model(std::string_view id)
     return it->second;
 }
 
-/// 把请求等级收敛到模型支持的范围：从请求等级向下找第一个支持的档位。
-/// Off 恒「支持」（引擎不发 thinking 参数即关闭）；全部不支持 → Off。
+/// @brief 把请求等级收敛到模型支持的范围：从请求等级向下找第一个支持的档位。
+///        Off 恒「支持」（引擎不发 thinking 参数即关闭）；全部不支持 → Off。
 ThinkingLevel clamp_thinking_level(ModelView const& model, ThinkingLevel level)
 {
     int idx = static_cast<int>(level);

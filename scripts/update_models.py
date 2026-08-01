@@ -19,6 +19,18 @@ OUTPUT_PATH = Path(__file__).resolve().parent.parent / "include" / "agent" / "mo
 # 我们的 ThinkingLevel 枚举按序 0..6 = Off/Minimal/Low/Medium/High/XHigh/Max
 THINKING_LEVEL_NAMES = ["minimal", "low", "medium", "high", "xhigh", "max"]
 
+# budget_tokens 型模型的档位 → 预算 token 表（库定义归一化默认）。
+# Anthropic 约束 budget_tokens ≥ 1024 且 < max_tokens（本地 SDK 源码确认）。
+# 幂次表：Minimal=1024 … Max=32768。RuntimeModel 可覆盖。
+BUDGET_LEVEL_TOKENS = {
+    "minimal": "1024",
+    "low": "2048",
+    "medium": "4096",
+    "high": "8192",
+    "xhigh": "16384",
+    "max": "32768",
+}
+
 
 def fetch_catalog() -> dict:
     """拉取 models.dev 全量目录。需要 User-Agent（否则 403）。"""
@@ -40,22 +52,51 @@ def is_llm(model: dict) -> bool:
 
 
 def build_thinking_level_map(model: dict) -> list:
-    """从 reasoning_options 生成 7 档 thinking_level_map（None = 该等级不支持）。
+    """生成 7 档 thinking_level_map。值唯一语义，无混用：
 
-    - effort 型：枚举名直接进 map（与 models.dev effort values 同名，pi 同思路）
-    - toggle / budget_tokens 型：无细分等级，全 None，由引擎用默认行为
-    - Off(索引0) 恒 None：= 引擎不发 thinking 参数即关闭
+    - nullopt：模型无思考能力（reasoning=false）
+    - "off"（index 0）：Off 档，关闭思考（引擎不发 thinking 参数）
+    - "on"：toggle 型（支持思考但无强度细分）的启用档
+    - effort 值（"low".."max"）：effort 型档位强度
+    - budget 值（"1024".."32768"）：budget 型档位预算（BUDGET_LEVEL_TOKENS）
+
+    effort 型非 Off 档预填「向下收敛最近有效值」：低于最低支持档 → 最低档值，
+    中间空缺 → 向下最近档——引擎取 map[level] 非 Off 恒有值，免判空。
     """
     result = [None] * 7
     if not model.get("reasoning"):
         return result
+    result[0] = "off"
     efforts = []
+    has_budget = False
     for opt in model.get("reasoning_options") or []:
         if opt.get("type") == "effort":
             efforts.extend(opt.get("values") or [])
-    for idx, name in enumerate(THINKING_LEVEL_NAMES, start=1):
-        if name in efforts:
-            result[idx] = name
+        elif opt.get("type") == "budget_tokens":
+            has_budget = True
+
+    if efforts:
+        supported = {}
+        for idx, name in enumerate(THINKING_LEVEL_NAMES, start=1):
+            if name in efforts:
+                supported[idx] = name
+        if supported:
+            lowest_idx = min(supported)
+            last = None
+            for idx in range(1, 7):
+                if idx in supported:
+                    last = supported[idx]
+                    result[idx] = last
+                else:
+                    # 向下最近支持档；低于最低 → 最低支持档
+                    result[idx] = last if last is not None else supported[lowest_idx]
+    elif has_budget:
+        for idx, name in enumerate(THINKING_LEVEL_NAMES, start=1):
+            result[idx] = BUDGET_LEVEL_TOKENS[name]
+    else:
+        # toggle 型（仅开/关）：非 Off 档全部 "on"
+        for idx in range(1, 7):
+            result[idx] = "on"
     return result
 
 
@@ -64,6 +105,7 @@ def build_model(model: dict) -> list:
     limit = model.get("limit") or {}
     modalities = model.get("modalities") or {}
     inputs = modalities.get("input") or []
+    cost = model.get("cost") or {}
     thinking_map = build_thinking_level_map(model)
     return [
         model["id"],
@@ -72,6 +114,10 @@ def build_model(model: dict) -> list:
         bool(model.get("reasoning")),
         "image" in inputs,
         thinking_map,
+        cost.get("input", 0),        # 美元/百万 token
+        cost.get("output", 0),
+        cost.get("cache_read", 0),
+        cost.get("cache_write", 0),  # tiers 多档先忽略（RuntimeModel 可覆盖）
     ]
 
 
@@ -94,6 +140,14 @@ def cpp_bool(value: bool) -> str:
     return "true" if value else "false"
 
 
+def cpp_double(value) -> str:
+    """C++ 浮点字面量：整数转 .0，浮点原样。"""
+    number = float(value)
+    if number.is_integer():
+        return str(int(number)) + ".0"
+    return repr(number)
+
+
 def cpp_thinking_map(thinking_map: list) -> str:
     """std::array<std::optional<std::string_view>, 7> 聚合初始化。"""
     parts = []
@@ -113,9 +167,10 @@ def generate_header(providers: list, catalog: dict, generated_at: str) -> str:
     lines.append("// 重新生成：python scripts/update_models.py")
     lines.append("#pragma once")
     lines.append("")
-    lines.append("#include <array>")
+    # 仅直接使用的类型才 include：std::nullopt（optional）、std::span（kAllProviders）；
+    # BuiltinModel 的 array/string_view 成员类型由 agent/llm.hpp 提供，不重复引入。
     lines.append("#include <optional>")
-    lines.append("#include <string_view>")
+    lines.append("#include <span>")
     lines.append("#include <agent/llm.hpp>")
     lines.append("")
     lines.append("namespace agent::detail {")
@@ -139,6 +194,10 @@ def generate_header(providers: list, catalog: dict, generated_at: str) -> str:
             lines.append(f"        .supports_image_input = {cpp_bool(f[4])},")
             lines.append(f"        .thinking_level_map = {cpp_thinking_map(f[5])},")
             lines.append("        .thinking_field = {},")
+            lines.append(f"        .price_input = {cpp_double(f[6])},")
+            lines.append(f"        .price_output = {cpp_double(f[7])},")
+            lines.append(f"        .price_cache_read = {cpp_double(f[8])},")
+            lines.append(f"        .price_cache_write = {cpp_double(f[9])},")
             lines.append("    },")
 
     lines.append("};")
