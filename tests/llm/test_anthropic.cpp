@@ -547,6 +547,59 @@ TEST_CASE("Anthropic 工具调用闭环 fixture：两轮（tool_result 合并 us
     CHECK(server.request_count() == 2);
 }
 
+TEST_CASE("Anthropic 异步流式 stream_async")
+{
+    ensure_claude_sonnet();
+    auto model = ModelRegistry::find_model("claude-sonnet-4-5");
+    REQUIRE(model.has_value());
+    agent::test::MockServer server;
+    server.enqueue({ {}, sse_response(load_fixture("anthropic_text.sse")) });
+
+    AnthropicMessagesProvider provider({ .name = "anthropic", .api_key = "k", .base_url = server.base_url() });
+    asio::io_context io;
+    std::vector<StreamEvent> events;
+    bool completed = false;
+    asio::co_spawn(io, [&]() -> asio::awaitable<void> {
+        AsyncStream<StreamEvent> sink(io.get_executor());
+        auto local = sink;   // 共享 channel：生产端 move 进协程，本协程留消费副本
+        asio::co_spawn(io, [&]() -> asio::awaitable<void> {
+            co_await provider.stream_async(*model, simple_ctx("hi"), StreamOptions{}, std::move(local));
+        }, asio::detached);
+        while (auto event = co_await sink.receive())
+            events.push_back(std::move(*event));
+        completed = true;
+    }, asio::detached);
+    io.run();
+    CHECK(completed);
+    CHECK(joined_text(events).size() > 0);
+    auto done = done_response(events);
+    REQUIRE(done.has_value());
+    CHECK(done->stop_reason == StopReason::Stop);
+    CHECK(server.errors().empty());
+}
+
+TEST_CASE("Anthropic 异步非流式 complete_async")
+{
+    ensure_claude_sonnet();
+    auto model = ModelRegistry::find_model("claude-sonnet-4-5");
+    REQUIRE(model.has_value());
+    agent::test::MockServer server;
+    server.enqueue({ {}, sse_response(load_fixture("anthropic_text.sse")) });
+
+    AnthropicMessagesProvider provider({ .name = "anthropic", .api_key = "k", .base_url = server.base_url() });
+    asio::io_context io;
+    std::optional<Result<ChatResponse>> outcome;
+    asio::co_spawn(io, [&]() -> asio::awaitable<void> {
+        outcome = co_await provider.complete_async(*model, simple_ctx("hi"), StreamOptions{});
+    }, asio::detached);
+    io.run();
+    REQUIRE(outcome.has_value());
+    REQUIRE(outcome->has_value());
+    CHECK(outcome->value().stop_reason == StopReason::Stop);
+    CHECK(outcome->value().usage.input_tokens == 25);
+    CHECK(server.errors().empty());
+}
+
 // ───────────────────── 难样例（Anthropic 引擎路径）─────────────────────
 
 TEST_CASE("Anthropic 难样例：EOF 无 message_stop → 兜底 Done")
