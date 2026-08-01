@@ -1,4 +1,13 @@
-add_executable(agent main.cpp tools.cpp model_registry.cpp http_client.cpp)
+add_executable(agent
+    main.cpp
+    tools/tools.cpp
+    core/http_client.cpp
+    llm/model_registry.cpp
+    llm/engine/openai_completions.cpp
+    llm/providers/openai.cpp
+    llm/providers/deepseek.cpp
+    llm/providers/gemini.cpp
+)
 
 target_include_directories(agent
     PUBLIC

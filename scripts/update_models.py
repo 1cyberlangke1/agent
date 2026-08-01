@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-# 模型表生成器：拉取 models.dev/api.json → LLM 过滤 → 生成 include/agent/models/generated.hpp
+# 模型表生成器：拉取 models.dev/api.json → LLM 过滤 → 生成 include/agent/llm/models/generated.hpp
 # 用法：
 #   python scripts/update_models.py                       # 默认 4 个 provider
 #   python scripts/update_models.py --providers mistral   # 扩展 provider
@@ -14,7 +14,7 @@ from pathlib import Path
 MODELS_DEV_URL = "https://models.dev/api.json"
 DEFAULT_PROVIDERS = ["deepseek", "openai", "anthropic", "google"]
 
-OUTPUT_PATH = Path(__file__).resolve().parent.parent / "include" / "agent" / "models" / "generated.hpp"
+OUTPUT_PATH = Path(__file__).resolve().parent.parent / "include" / "agent" / "llm" / "models" / "generated.hpp"
 
 # 我们的 ThinkingLevel 枚举按序 0..6 = Off/Minimal/Low/Medium/High/XHigh/Max
 THINKING_LEVEL_NAMES = ["minimal", "low", "medium", "high", "xhigh", "max"]
@@ -168,10 +168,10 @@ def generate_header(providers: list, catalog: dict, generated_at: str) -> str:
     lines.append("#pragma once")
     lines.append("")
     # 仅直接使用的类型才 include：std::nullopt（optional）、std::span（kAllProviders）；
-    # BuiltinModel 的 array/string_view 成员类型由 agent/llm.hpp 提供，不重复引入。
+    # BuiltinModel 的 array/string_view 成员类型由 agent/llm/model.hpp 提供，不重复引入。
     lines.append("#include <optional>")
     lines.append("#include <span>")
-    lines.append("#include <agent/llm.hpp>")
+    lines.append("#include <agent/llm/model.hpp>")
     lines.append("")
     lines.append("namespace agent::detail {")
     lines.append("")

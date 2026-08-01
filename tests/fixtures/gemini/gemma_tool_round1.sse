@@ -1,0 +1,15 @@
+: source: recorded via real Google Gemini API (tool call round 1)
+data: {"candidates": [{"content": {"parts": [{"text": "The user is asking for the weather in Beijing today and explicitly requests using","thought": true}],"role": "model"},"index": 0}],"usageMetadata": {"promptTokenCount": 63,"totalTokenCount": 77,"promptTokensDetails": [{"modality": "TEXT","tokenCount": 63}],"thoughtsTokenCount": 14,"serviceTier": "standard"},"modelVersion": "gemma-4-26b-a4b-it","responseId": "n61tarmAEbH_vr0PuNeE-A4"}
+
+data: {"candidates": [{"content": {"parts": [{"text": " the `get_weather` tool.\n\n1.  **Identify the tool**: The user mentioned `get_weather","thought": true}],"role": "model"},"index": 0}],"usageMetadata": {"promptTokenCount": 63,"totalTokenCount": 101,"promptTokensDetails": [{"modality": "TEXT","tokenCount": 63}],"thoughtsTokenCount": 38,"serviceTier": "standard"},"modelVersion": "gemma-4-26b-a4b-it","responseId": "n61tarmAEbH_vr0PuNeE-A4"}
+
+data: {"candidates": [{"content": {"parts": [{"text": "`.\n2.  **Identify the parameters**: The tool `get_weather` requires a `city` parameter.","thought": true}],"role": "model"},"index": 0}],"usageMetadata": {"promptTokenCount": 63,"totalTokenCount": 125,"promptTokensDetails": [{"modality": "TEXT","tokenCount": 63}],"thoughtsTokenCount": 62,"serviceTier": "standard"},"modelVersion": "gemma-4-26b-a4b-it","responseId": "n61tarmAEbH_vr0PuNeE-A4"}
+
+data: {"candidates": [{"content": {"parts": [{"text": " The user specified \"北京\" (Beijing).\n3.  **Formulate the tool call**: `get_weather","thought": true}],"role": "model"},"index": 0}],"usageMetadata": {"promptTokenCount": 63,"totalTokenCount": 149,"promptTokensDetails": [{"modality": "TEXT","tokenCount": 63}],"thoughtsTokenCount": 86,"serviceTier": "standard"},"modelVersion": "gemma-4-26b-a4b-it","responseId": "n61tarmAEbH_vr0PuNeE-A4"}
+
+data: {"candidates": [{"content": {"parts": [{"text": "(city=\"北京\")`.","thought": true}],"role": "model"},"index": 0}],"usageMetadata": {"promptTokenCount": 63,"totalTokenCount": 155,"promptTokensDetails": [{"modality": "TEXT","tokenCount": 63}],"thoughtsTokenCount": 92,"serviceTier": "standard"},"modelVersion": "gemma-4-26b-a4b-it","responseId": "n61tarmAEbH_vr0PuNeE-A4"}
+
+data: {"candidates": [{"content": {"parts": [{"functionCall": {"name": "get_weather","args": {"city": "北京"},"id": "2rpn8nvf"},"thoughtSignature": "EiYKJGUyNDgzMGE3LTVjZDYtNDJmZS05OThiLWVlNTM5ZTcyYjljMw=="}],"role": "model"},"index": 0}],"usageMetadata": {"promptTokenCount": 63,"candidatesTokenCount": 16,"totalTokenCount": 171,"promptTokensDetails": [{"modality": "TEXT","tokenCount": 63}],"thoughtsTokenCount": 92,"serviceTier": "standard"},"modelVersion": "gemma-4-26b-a4b-it","responseId": "n61tarmAEbH_vr0PuNeE-A4"}
+
+data: {"candidates": [{"content": {"parts": [{"text": ""}],"role": "model"},"finishReason": "STOP","index": 0}],"usageMetadata": {"promptTokenCount": 63,"candidatesTokenCount": 16,"totalTokenCount": 171,"promptTokensDetails": [{"modality": "TEXT","tokenCount": 63}],"thoughtsTokenCount": 92,"serviceTier": "standard"},"modelVersion": "gemma-4-26b-a4b-it","responseId": "n61tarmAEbH_vr0PuNeE-A4"}
+

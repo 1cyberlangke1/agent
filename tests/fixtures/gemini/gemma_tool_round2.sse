@@ -1,0 +1,9 @@
+: source: recorded via real Google Gemini API (tool call round 2 (final answer))
+data: {"candidates": [{"content": {"parts": [{"text": "","thought": true}],"role": "model"},"index": 0}],"usageMetadata": {"promptTokenCount": 103,"totalTokenCount": 103,"promptTokensDetails": [{"modality": "TEXT","tokenCount": 103}],"serviceTier": "standard"},"modelVersion": "gemma-4-26b-a4b-it","responseId": "oq1taq7nLaSxvr0PxYjAgA8"}
+
+data: {"candidates": [{"content": {"parts": [{"text": "北京今天天气晴，气温为 25°C"}],"role": "model"},"index": 0}],"usageMetadata": {"promptTokenCount": 103,"candidatesTokenCount": 13,"totalTokenCount": 116,"promptTokensDetails": [{"modality": "TEXT","tokenCount": 103}],"serviceTier": "standard"},"modelVersion": "gemma-4-26b-a4b-it","responseId": "oq1taq7nLaSxvr0PxYjAgA8"}
+
+data: {"candidates": [{"content": {"parts": [{"text": "。"}],"role": "model"},"index": 0}],"usageMetadata": {"promptTokenCount": 103,"candidatesTokenCount": 14,"totalTokenCount": 117,"promptTokensDetails": [{"modality": "TEXT","tokenCount": 103}],"serviceTier": "standard"},"modelVersion": "gemma-4-26b-a4b-it","responseId": "oq1taq7nLaSxvr0PxYjAgA8"}
+
+data: {"candidates": [{"content": {"parts": [{"text": ""}],"role": "model"},"finishReason": "STOP","index": 0}],"usageMetadata": {"promptTokenCount": 103,"candidatesTokenCount": 14,"totalTokenCount": 117,"promptTokensDetails": [{"modality": "TEXT","tokenCount": 103}],"serviceTier": "standard"},"modelVersion": "gemma-4-26b-a4b-it","responseId": "oq1taq7nLaSxvr0PxYjAgA8"}
+

@@ -1,0 +1,21 @@
+: source: recorded via real Google Gemini API (text stream (thinking model))
+data: {"candidates": [{"content": {"parts": [{"text": "*   Input question: \"27 的立方根是多少？请","thought": true}],"role": "model"},"index": 0}],"usageMetadata": {"promptTokenCount": 12,"totalTokenCount": 26,"promptTokensDetails": [{"modality": "TEXT","tokenCount": 12}],"thoughtsTokenCount": 14,"serviceTier": "standard"},"modelVersion": "gemma-4-26b-a4b-it","responseId": "mq1tatWFAb-2vr0PpbnvGA"}
+
+data: {"candidates": [{"content": {"parts": [{"text": "简单回答。\" (What is the cube root of 27? Please answer simply.)\n    *   Key mathematical","thought": true}],"role": "model"},"index": 0}],"usageMetadata": {"promptTokenCount": 12,"totalTokenCount": 50,"promptTokensDetails": [{"modality": "TEXT","tokenCount": 12}],"thoughtsTokenCount": 38,"serviceTier": "standard"},"modelVersion": "gemma-4-26b-a4b-it","responseId": "mq1tatWFAb-2vr0PpbnvGA"}
+
+data: {"candidates": [{"content": {"parts": [{"text": " operation: Cube root ($\\sqrt[3]{x}$).\n    *   Target number: 27.\n\n    ","thought": true}],"role": "model"},"index": 0}],"usageMetadata": {"promptTokenCount": 12,"totalTokenCount": 74,"promptTokensDetails": [{"modality": "TEXT","tokenCount": 12}],"thoughtsTokenCount": 62,"serviceTier": "standard"},"modelVersion": "gemma-4-26b-a4b-it","responseId": "mq1tatWFAb-2vr0PpbnvGA"}
+
+data: {"candidates": [{"content": {"parts": [{"text": "*   $x^3 = 27$\n    *   $3 \\times 3 = 9","thought": true}],"role": "model"},"index": 0}],"usageMetadata": {"promptTokenCount": 12,"totalTokenCount": 98,"promptTokensDetails": [{"modality": "TEXT","tokenCount": 12}],"thoughtsTokenCount": 86,"serviceTier": "standard"},"modelVersion": "gemma-4-26b-a4b-it","responseId": "mq1tatWFAb-2vr0PpbnvGA"}
+
+data: {"candidates": [{"content": {"parts": [{"text": "$\n    *   $9 \\times 3 = 27$\n    *   Therefore, $3","thought": true}],"role": "model"},"index": 0}],"usageMetadata": {"promptTokenCount": 12,"totalTokenCount": 122,"promptTokensDetails": [{"modality": "TEXT","tokenCount": 12}],"thoughtsTokenCount": 110,"serviceTier": "standard"},"modelVersion": "gemma-4-26b-a4b-it","responseId": "mq1tatWFAb-2vr0PpbnvGA"}
+
+data: {"candidates": [{"content": {"parts": [{"text": "^3 = 27$.\n    *   $\\sqrt[3]{27} = 3$.\n\n","thought": true}],"role": "model"},"index": 0}],"usageMetadata": {"promptTokenCount": 12,"totalTokenCount": 146,"promptTokensDetails": [{"modality": "TEXT","tokenCount": 12}],"thoughtsTokenCount": 134,"serviceTier": "standard"},"modelVersion": "gemma-4-26b-a4b-it","responseId": "mq1tatWFAb-2vr0PpbnvGA"}
+
+data: {"candidates": [{"content": {"parts": [{"text": "    *   Constraint: \"简单回答\" (Answer simply).\n\n    *   \"3\" or \"是 ","thought": true}],"role": "model"},"index": 0}],"usageMetadata": {"promptTokenCount": 12,"totalTokenCount": 170,"promptTokensDetails": [{"modality": "TEXT","tokenCount": 12}],"thoughtsTokenCount": 158,"serviceTier": "standard"},"modelVersion": "gemma-4-26b-a4b-it","responseId": "mq1tatWFAb-2vr0PpbnvGA"}
+
+data: {"candidates": [{"content": {"parts": [{"text": "3\".","thought": true}],"role": "model"},"index": 0}],"usageMetadata": {"promptTokenCount": 12,"totalTokenCount": 172,"promptTokensDetails": [{"modality": "TEXT","tokenCount": 12}],"thoughtsTokenCount": 160,"serviceTier": "standard"},"modelVersion": "gemma-4-26b-a4b-it","responseId": "mq1tatWFAb-2vr0PpbnvGA"}
+
+data: {"candidates": [{"content": {"parts": [{"text": "3"}],"role": "model"},"index": 0}],"usageMetadata": {"promptTokenCount": 12,"candidatesTokenCount": 1,"totalTokenCount": 173,"promptTokensDetails": [{"modality": "TEXT","tokenCount": 12}],"thoughtsTokenCount": 160,"serviceTier": "standard"},"modelVersion": "gemma-4-26b-a4b-it","responseId": "mq1tatWFAb-2vr0PpbnvGA"}
+
+data: {"candidates": [{"content": {"parts": [{"text": ""}],"role": "model"},"finishReason": "STOP","index": 0}],"usageMetadata": {"promptTokenCount": 12,"candidatesTokenCount": 1,"totalTokenCount": 173,"promptTokensDetails": [{"modality": "TEXT","tokenCount": 12}],"thoughtsTokenCount": 160,"serviceTier": "standard"},"modelVersion": "gemma-4-26b-a4b-it","responseId": "mq1tatWFAb-2vr0PpbnvGA"}
+
