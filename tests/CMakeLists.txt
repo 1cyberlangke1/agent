@@ -25,6 +25,7 @@ if(AGENT_BUILD_TESTS)
         llm/test_anthropic.cpp
         llm/test_multimodal.cpp
         llm/test_llm_concurrency.cpp
+        llm/test_contract_response.cpp
         ${CMAKE_SOURCE_DIR}/src/tools/tools.cpp
         ${CMAKE_SOURCE_DIR}/src/llm/model_registry.cpp
         ${CMAKE_SOURCE_DIR}/src/core/http_client.cpp
@@ -93,4 +94,8 @@ if(AGENT_BUILD_TESTS)
         COMMAND ${CONTRACT_PYTHON} ${CMAKE_SOURCE_DIR}/tests/contract/compare_requests.py
             ${CMAKE_BINARY_DIR}/contract/out ${CMAKE_BINARY_DIR}/contract/golden)
     set_tests_properties(contract_compare PROPERTIES SKIP_RETURN_CODE 2)
+    add_test(NAME contract_responses
+        COMMAND ${CONTRACT_PYTHON} ${CMAKE_SOURCE_DIR}/tests/contract/compare_responses.py
+            ${CMAKE_BINARY_DIR}/contract/out ${CMAKE_BINARY_DIR}/contract/sdk_response)
+    set_tests_properties(contract_responses PROPERTIES SKIP_RETURN_CODE 2)
 endif()

@@ -41,6 +41,24 @@ except ImportError:
 
 REPO = pathlib.Path(__file__).resolve().parent.parent.parent
 SCRIPT = pathlib.Path(__file__).resolve().parent / "mirror_server.py"
+SDK_RESPONSE = REPO / "build" / "contract" / "sdk_response"
+
+# stop 映射：与 C++ 侧（test_contract_response.cpp stop_str）一致，供镜像对比
+OPENAI_STOP = {"stop": "stop", "length": "length", "tool_calls": "tool_use",
+               "function_call": "tool_use", "content_filter": "error"}
+ANTHROPIC_STOP = {"end_turn": "stop", "max_tokens": "length", "tool_use": "tool_use",
+                  "pause_turn": "stop", "stop_sequence": "stop"}
+
+
+def dump_sdk_response(case: str, text: str, thinking: str, tools: list,
+                      stop_reason: str, usage: dict) -> None:
+    """SDK 解析 fixture 的结构化结果落盘（与 C++ 侧 *_response.json 同 schema，
+    compare_responses.py 据此做两边镜像对比）。"""
+    SDK_RESPONSE.mkdir(parents=True, exist_ok=True)
+    (SDK_RESPONSE / f"{case}_response.json").write_text(
+        json.dumps({"text": text, "thinking": thinking, "tools": tools,
+                    "stop_reason": stop_reason, "usage": usage},
+                   indent=2, ensure_ascii=False), encoding="utf-8")
 
 
 def wait_port(port: int, timeout: float = 10.0) -> bool:
@@ -74,10 +92,13 @@ def run_openai_case(fixture: str, case: str) -> None:
         text = ""
         tool_calls = {}      # index -> {"id","name","args"}
         finish = None
-        saw_usage = False
+        usage = {"input": 0, "output": 0, "cache_read": 0, "cache_write": 0}
         for chunk in stream:
             if getattr(chunk, "usage", None):
-                saw_usage = True
+                usage["input"] = getattr(chunk.usage, "prompt_tokens", 0) or 0
+                usage["output"] = getattr(chunk.usage, "completion_tokens", 0) or 0
+                usage["cache_read"] = getattr(getattr(chunk.usage, "prompt_tokens_details", None),
+                                              "cached_tokens", 0) or 0
             for choice in chunk.choices:
                 if choice.delta.content:
                     text += choice.delta.content
@@ -108,7 +129,13 @@ def run_openai_case(fixture: str, case: str) -> None:
         else:
             raise AssertionError(f"unknown case {case!r}")
 
-        print(f"PASS {case}: finish={finish} text_len={len(text)} tools={len(tool_calls)} usage={saw_usage}")
+        # 镜像 dump：结构化结果（与 C++ 侧一致）
+        tools = [{"id": slot["id"], "name": slot["name"],
+                  "arguments": json.loads(slot["args"]) if slot["args"] else {}}
+                 for slot in tool_calls.values()]
+        dump_sdk_response(case, text, "", tools, OPENAI_STOP.get(finish or "", "error"), usage)
+        print(f"PASS {case}: finish={finish} text_len={len(text)} tools={len(tool_calls)} "
+              f"usage_in={usage['input']}")
     finally:
         proc.terminate()
         proc.wait(timeout=5)
@@ -187,7 +214,7 @@ def run_anthropic_case(fixture: str, case: str) -> None:
             final = stream.get_final_message()
             for block in final.content:
                 if block.type == "tool_use":
-                    tool_uses.append({"name": block.name, "input": block.input})
+                    tool_uses.append({"id": block.id, "name": block.name, "input": block.input})
             stop_reason = final.stop_reason
             usage = final.usage
 
@@ -203,8 +230,16 @@ def run_anthropic_case(fixture: str, case: str) -> None:
         else:
             raise AssertionError(f"unknown case {case!r}")
 
+        # 镜像 dump：结构化结果（与 C++ 侧一致）
+        tools = [{"id": t["id"], "name": t["name"], "arguments": t["input"]} for t in tool_uses]
+        dump_sdk_response(case, text, thinking, tools,
+                          ANTHROPIC_STOP.get(stop_reason or "", "error"),
+                          {"input": usage.input_tokens or 0, "output": usage.output_tokens or 0,
+                           "cache_read": usage.cache_read_input_tokens or 0,
+                           "cache_write": usage.cache_creation_input_tokens or 0})
         print(f"PASS {case}: stop={stop_reason} text_len={len(text)} "
-              f"thinking_len={len(thinking)} tools={len(tool_uses)} usage_tokens={usage.output_tokens}")
+              f"thinking_len={len(thinking)} tools={len(tool_uses)} "
+              f"usage_in={usage.input_tokens}")
     finally:
         proc.terminate()
         proc.wait(timeout=5)
