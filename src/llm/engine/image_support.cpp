@@ -1,4 +1,4 @@
-// 多模态图片降级实现（模型不支持图片时的占位符替换，对齐 pi transform-messages.ts）。
+// 多模态图片降级实现：模型不支持图片时，把 Image 内容块替换为占位符文本。
 
 #include <agent/llm/engine/image_support.hpp>
 
@@ -22,7 +22,7 @@ void downgrade_unsupported_images(std::vector<Message>& messages, bool supports_
         bool previous_was_placeholder = false;
         for (auto& block : msg.content) {
             if (std::get_if<Image>(&block)) {
-                // 连续图片只保留一个占位符（对齐 pi：previousWasPlaceholder 去重）
+                // 连续图片只保留一个占位符（连续图合并，去重）
                 if (!previous_was_placeholder)
                     out.push_back(Text{ std::string(placeholder) });
                 previous_was_placeholder = true;

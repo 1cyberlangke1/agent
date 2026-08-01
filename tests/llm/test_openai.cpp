@@ -1243,7 +1243,7 @@ TEST_CASE("难样例：异步取消中断流 → Error")
     CHECK(std::get<Error>(error->data).code == Errc::NetworkError);
 }
 
-// ───────────────────── session affinity 头（对齐 pi）─────────────────────
+// ───────────────────── session affinity 头─────────────────────
 
 TEST_CASE("session affinity 头：openai 三头格式")
 {

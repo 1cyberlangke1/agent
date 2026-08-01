@@ -5,7 +5,6 @@
 //   OpenAI:  https://platform.openai.com/docs/api-reference/chat
 //   DeepSeek: https://api-docs.deepseek.com/api/create-chat-completion
 //            https://api-docs.deepseek.com/guides/thinking_mode
-//   pi 参考实现：tmp/pi/packages/ai/src/api/openai-completions.ts
 
 #include <agent/core/http_client.hpp>
 #include <agent/llm/engine/openai_completions.hpp>
@@ -89,12 +88,12 @@ std::string extract_error_message(std::string const& body)
 
 }  // namespace
 
-// ───────────────────── session affinity 头（对齐 pi）─────────────────────
+// ───────────────────── session affinity 头 ─────────────────────
 
 void add_session_affinity_headers(std::vector<std::pair<std::string, std::string>>& headers,
                                   std::string_view format, std::string_view session_id)
 {
-    // 对齐 pi createClient（tmp/pi/.../openai-completions.ts:647-657）：
+    // 三种头格式：
     //   openai → session_id + x-client-request-id + x-session-affinity
     //   openai-nosession → x-client-request-id + x-session-affinity（无 session_id）
     //   openrouter → x-session-id
@@ -122,7 +121,7 @@ template<typename ThinkingPolicy, typename Compat>
 nlohmann::json OpenAICompletionsEngine<ThinkingPolicy, Compat>::convert_messages(Context const& ctx,
                                                                                   bool supports_image)
 {
-    // 模型不支持图片 → 图片替换为占位符文本（对齐 pi downgradeUnsupportedImages）
+    // 模型不支持图片 → 图片替换为占位符文本
     std::vector<Message> messages = ctx.messages;
     downgrade_unsupported_images(messages, supports_image);
 
@@ -178,7 +177,7 @@ nlohmann::json OpenAICompletionsEngine<ThinkingPolicy, Compat>::convert_messages
             }
             case Role::ToolResult: {
                 // tool_result 文本照发 tool 消息；消息里的图片（支持时）作为独立
-                // user 消息附加（对齐 pi：Attached image(s) from tool result + image_url 块）
+                // user 消息附加（Attached image(s) from tool result + image_url 块）
                 std::vector<nlohmann::json> image_parts;
                 for (auto const& b : m.content) {
                     if (auto tr = std::get_if<ToolResult>(&b)) {
@@ -408,7 +407,7 @@ asio::awaitable<void> OpenAICompletionsEngine<ThinkingPolicy, Compat>::stream_as
     std::string api_key = opts.api_key.value_or(config_.api_key);
     if (!api_key.empty())
         req.headers.emplace_back("Authorization", "Bearer " + api_key);
-    // session affinity 头（对齐 pi）：cache_retention≠none 且给了 session_id 且 Compat 开启才发
+    // session affinity 头：cache_retention≠none 且给了 session_id 且 Compat 开启才发
     if (opts.cache_retention.has_value() && *opts.cache_retention != CacheRetention::None
         && opts.session_id.has_value() && Compat::send_session_affinity) {
         add_session_affinity_headers(req.headers, Compat::session_affinity_format, *opts.session_id);

@@ -4,7 +4,6 @@
 // 官方文档依据（实现对照文档 / 官方 SDK，无依据不写）：
 //   https://docs.anthropic.com/en/api/messages-streaming
 //   https://platform.claude.com/docs/api-reference/messages
-// 参考实现：tmp/pi/packages/ai/src/api/anthropic-messages.ts
 // 事件契约（官方 SSE data 行 JSON，按 type 判别）：
 //   message_start / message_delta / message_stop / content_block_start /
 //   content_block_delta / content_block_stop / ping / error
@@ -86,7 +85,7 @@ public:
     asio::awaitable<void> stream_async(ModelView const& model, Context const& ctx, StreamOptions const& opts,
                                        AsyncStream<StreamEvent> sink);
 
-    /// session affinity 头开关（对齐 pi 的 sendSessionAffinityHeaders；默认 false）。
+    /// session affinity 头开关（默认 false）。
     /// 触发：cache_retention≠none 且给了 session_id 才发 x-session-affinity。
     static constexpr bool send_session_affinity = false;
 

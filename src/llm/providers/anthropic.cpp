@@ -15,7 +15,6 @@
 //     - usage 无 total_tokens：由 input/output/cache_read/cache_creation 求和
 //     - stop_reason 值表：end_turn/max_tokens/stop_sequence/tool_use/pause_turn/refusal/
 //       model_context_window_exceeded（文档要求当截断处理）
-//   pi 参考实现：tmp/pi/packages/ai/src/api/anthropic-messages.ts
 
 #include <agent/core/http_client.hpp>
 #include <agent/llm/providers/anthropic.hpp>
@@ -150,7 +149,7 @@ Result<nlohmann::json> AnthropicMessagesEngine::convert_tools(std::vector<std::s
 nlohmann::json AnthropicMessagesEngine::convert_messages(Context const& ctx, nlohmann::json const* cache_control,
                                                          bool supports_image)
 {
-    // 模型不支持图片 → 图片替换为占位符文本（对齐 pi downgradeUnsupportedImages）
+    // 模型不支持图片 → 图片替换为占位符文本
     std::vector<Message> input_messages = ctx.messages;
     downgrade_unsupported_images(input_messages, supports_image);
 
@@ -206,7 +205,7 @@ nlohmann::json AnthropicMessagesEngine::convert_messages(Context const& ctx, nlo
                                                { "thinking", th->text },
                                                { "signature", th->signature } });
                         } else if (!th->text.empty()) {
-                            // 无签名（如中断流）→ 降级为文本（对齐 pi：不触发 thinking 校验）
+                            // 无签名（如中断流）→ 降级为文本（避免 thinking 校验失败）
                             blocks.push_back({ { "type", "text" }, { "text", th->text } });
                         }
                     } else if (auto tc = std::get_if<ToolCall>(&block)) {
@@ -222,7 +221,7 @@ nlohmann::json AnthropicMessagesEngine::convert_messages(Context const& ctx, nlo
             }
             case Role::ToolResult: {
                 // 合并连续 tool_result → 单个 user 消息（Anthropic 要求角色交替，
-                // tool_result 必须包在 user 里；对齐 pi 的连续合并）
+                // tool_result 必须包在 user 里）
                 nlohmann::json blocks = nlohmann::json::array();
                 std::size_t j = i;
                 while (j < input_messages.size() && input_messages[j].role == Role::ToolResult) {
@@ -517,7 +516,7 @@ asio::awaitable<void> AnthropicMessagesEngine::stream_async(
     if (!api_key.empty())
         req.headers.emplace_back("x-api-key", api_key);
     req.headers.emplace_back("anthropic-version", "2023-06-01");   // 官方 API 版本头
-    // session affinity 头（对齐 pi：sessionId && sendSessionAffinityHeaders）
+    // session affinity 头（sessionId 存在且开关开启时）
     if (opts.cache_retention.has_value() && *opts.cache_retention != CacheRetention::None
         && opts.session_id.has_value() && send_session_affinity) {
         req.headers.emplace_back("x-session-affinity", *opts.session_id);

@@ -106,7 +106,7 @@ Result<nlohmann::json> GeminiGenerateContentEngine::convert_tools(std::vector<st
 }
 nlohmann::json GeminiGenerateContentEngine::convert_contents(Context const& ctx, ModelView const& model)
 {
-    // 模型不支持图片 → 图片替换为占位符文本（对齐 pi downgradeUnsupportedImages）
+    // 模型不支持图片 → 图片替换为占位符文本
     std::vector<Message> messages = ctx.messages;
     downgrade_unsupported_images(messages, model.supports_image_input);
 

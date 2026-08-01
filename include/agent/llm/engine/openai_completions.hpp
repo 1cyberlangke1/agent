@@ -31,7 +31,7 @@ namespace agent::detail {
 struct OpenAICompatibleCompat {
     static constexpr std::string_view max_tokens_field = "max_tokens";
     static constexpr std::string_view system_role = "system";
-    /// session affinity 头开关（对齐 pi 参考实现；默认 false，代理/网关场景可开）。
+    /// session affinity 头开关（默认 false，代理/网关场景可开）。
     /// 触发：cache_retention≠none 且给了 session_id 才发。
     static constexpr bool send_session_affinity = false;
     /// 头格式：openai = session_id + x-client-request-id + x-session-affinity；
@@ -40,7 +40,7 @@ struct OpenAICompatibleCompat {
     static constexpr std::string_view session_affinity_format = "openai";
 };
 
-/// @brief 添加 session affinity 头（对齐 pi 的 createClient 逻辑）。
+/// @brief 添加 session affinity 头（三种格式，见函数体注释）。
 ///        触发条件（cache_retention≠none && session_id）由调用方（引擎）判断，
 ///        本函数只按格式把对应头追加到 headers。
 /// @param headers   目标请求头（追加）

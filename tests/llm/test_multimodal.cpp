@@ -166,7 +166,7 @@ TEST_CASE("multimodal 降级：非视觉模型 user 图片 → 占位符文本")
     auto params = *OpenAICompletionsEngine<OpenAIThinking, OpenAICompat>::build_params(*model, image_ctx("hi"), {});
     auto const& content = params["messages"][0]["content"];
     CHECK(content.is_string());
-    // 图片 → 占位符（文本在前 → 拼接；对齐 pi replaceImagesWithPlaceholder）
+    // 图片 → 占位符（文本在前 → 拼接，连续图合并）
     CHECK(content == "hi" + std::string(kNonVisionUserImagePlaceholder));
 }
 

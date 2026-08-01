@@ -29,7 +29,7 @@ namespace detail {
 struct OpenAICompat {
     static constexpr std::string_view max_tokens_field = "max_completion_tokens";  // OpenAI o 系列需要
     static constexpr std::string_view system_role = "system";                      // 兼容端点普遍接受
-    /// session affinity 头开关（对齐 pi；默认 false）。见 OpenAICompatibleCompat 同名字段。
+    /// session affinity 头开关（默认 false）。见 OpenAICompatibleCompat 同名字段。
     static constexpr bool send_session_affinity = false;
     static constexpr std::string_view session_affinity_format = "openai";
 };
