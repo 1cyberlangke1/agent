@@ -1,5 +1,6 @@
 #include <algorithm>
 #include <mutex>
+#include <optional>
 
 #include <agent/tools/tools.hpp>
 
@@ -136,6 +137,29 @@ Result<void> Tools::reg(ToolInfo info,
             "tool '" + tool->info.name + "' already registered"});
     st.registry.emplace(tool->info.name, std::move(tool));
     return {};
+}
+
+Result<void> Tools::reg(ToolInfo info,
+    std::function<asio::awaitable<Result<std::string>>(nlohmann::json)> async_fn,
+    ArgsCheck check)
+{
+    // 异步工具 → 同步包装：exec 时 io_context 桥接等协程完成（同步壳包异步核心）
+    std::function<Result<std::string>(nlohmann::json)> sync_fn;
+    if (async_fn) {
+        sync_fn = [async_fn = std::move(async_fn)](nlohmann::json args) -> Result<std::string> {
+            asio::io_context io;
+            std::optional<Result<std::string>> outcome;
+            asio::co_spawn(io, [&]() -> asio::awaitable<void> {
+                outcome = co_await async_fn(std::move(args));
+            }, asio::detached);
+            io.run();
+            if (!outcome)
+                return std::unexpected(Error{Errc::NetworkError, "async tool: no outcome"});
+            return std::move(*outcome);
+        };
+    }
+    // 复用同步注册（校验链一致）
+    return reg(std::move(info), std::move(sync_fn), check);
 }
 
 Result<std::string> Tools::exec(std::string_view name, nlohmann::json args)

@@ -13,6 +13,7 @@
 #include <vector>
 
 #include <agent/core/result.hpp>
+#include <asio.hpp>
 #include <nlohmann/json.hpp>
 
 namespace agent {
@@ -238,6 +239,15 @@ public:
     /// @param check exec 前参数预校验策略，默认按 schema 校验
     static Result<void> reg(ToolInfo info,
         std::function<Result<std::string>(nlohmann::json)> fn,
+        ArgsCheck check = ArgsCheck::Schema);
+
+    /// @brief 注册异步工具：fn 是协程（内部可 co_await async_http_get 等）。
+    ///        exec 仍同步返回 Result——库在 exec 时用 io_context 桥接等协程完成。
+    /// @param info  工具信息
+    /// @param fn    异步工具函数，返回 asio 协程
+    /// @param check exec 前参数预校验策略
+    static Result<void> reg(ToolInfo info,
+        std::function<asio::awaitable<Result<std::string>>(nlohmann::json)> fn,
         ArgsCheck check = ArgsCheck::Schema);
 
     /// @brief 列出所有已注册工具（副本）。

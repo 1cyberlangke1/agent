@@ -78,6 +78,16 @@ asio::awaitable<Result<HttpResponse>> async_http_post(
 asio::awaitable<Result<HttpResponse>> async_http_get(
     asio::any_io_executor ex, std::string_view url, HttpRequestOptions options);
 
+/// @brief 同步 GET（同步壳包异步核心，与 StreamFacade::complete 同哲学）。
+///        内部自建 io_context 阻塞等待完整响应；错误语义同 async_http_get。
+///        供同步上下文使用（如工具 exec 里发请求）。
+/// @param url     完整 URL（http/https，含查询参数）
+/// @param options 请求配置
+Result<HttpResponse> sync_http_get(std::string_view url, HttpRequestOptions options);
+
+/// @brief 同步 POST（同上）。
+Result<HttpResponse> sync_http_post(std::string_view url, nlohmann::json body, HttpRequestOptions options);
+
 /// @brief 流式响应逐块读取器（pull 形态）。**L0 域无关**：http 层不认识 chat 类型，
 ///        引擎协程 co_await 逐块拿「原始 body 字节」，自行解析。
 ///        对象持有传输会话（curl multi/easy + asio socket），仅可移动（pimpl）。

@@ -14,6 +14,7 @@
 #include <vector>
 
 #include <agent/tools/tools.hpp>
+#include <asio.hpp>
 
 namespace agent {
 
@@ -533,15 +534,31 @@ ToolBase<T>::Registrar::Registrar()
         detail::schema_of<Params>()
     };
 
-    // ArgsCheck::Tool：assign_from_json 已全量校验，跳过 exec 的 schema 预校验
-    Result<void> registered = Tools::reg(std::move(info),
-        [](nlohmann::json args) -> Result<std::string> {
-            Result<Params> params = detail::assign_from_json<Params>(args);
-            if (!params)
-                return std::unexpected(params.error());
-            return T::invoke(std::move(*params));
-        },
-        ArgsCheck::Tool);
+    // ArgsCheck::Tool：assign_from_json 已全量校验，跳过 exec 的 schema 预校验。
+    // 工具类若定义 `static asio::awaitable<Result<std::string>> invoke_async(params_type const&)`
+    // → 异步注册（exec 内部桥接）；否则用同步 invoke（两种工具并存）。
+    Result<void> registered;
+    if constexpr (requires(Params const& p) {
+                      { T::invoke_async(p) } -> std::same_as<asio::awaitable<Result<std::string>>>;
+                  }) {
+        registered = Tools::reg(std::move(info),
+            [](nlohmann::json args) -> asio::awaitable<Result<std::string>> {
+                Result<Params> params = detail::assign_from_json<Params>(args);
+                if (!params)
+                    co_return std::unexpected(params.error());
+                co_return co_await T::invoke_async(std::move(*params));
+            },
+            ArgsCheck::Tool);
+    } else {
+        registered = Tools::reg(std::move(info),
+            [](nlohmann::json args) -> Result<std::string> {
+                Result<Params> params = detail::assign_from_json<Params>(args);
+                if (!params)
+                    return std::unexpected(params.error());
+                return T::invoke(std::move(*params));
+            },
+            ArgsCheck::Tool);
+    }
 
     // 静态初始化阶段无处返回错误，stderr 警告是唯一可靠通道
     // （重复注册几乎必然是程序员错误，宜早暴露）

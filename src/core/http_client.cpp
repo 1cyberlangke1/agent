@@ -755,6 +755,36 @@ asio::awaitable<Result<HttpResponse>> async_http_get(
     co_return response;
 }
 
+// ───────────────────── 同步壳（sync 包 async）─────────────────────
+
+Result<HttpResponse> sync_http_get(std::string_view url, HttpRequestOptions options)
+{
+    asio::io_context io;
+    std::optional<Result<HttpResponse>> outcome;
+    asio::co_spawn(io, [&]() -> asio::awaitable<void> {
+        outcome = co_await async_http_get(
+            co_await asio::this_coro::executor, url, std::move(options));
+    }, asio::detached);
+    io.run();
+    if (!outcome)
+        return std::unexpected(Error{ Errc::NetworkError, "sync_http_get: no outcome" });
+    return std::move(*outcome);
+}
+
+Result<HttpResponse> sync_http_post(std::string_view url, nlohmann::json body, HttpRequestOptions options)
+{
+    asio::io_context io;
+    std::optional<Result<HttpResponse>> outcome;
+    asio::co_spawn(io, [&]() -> asio::awaitable<void> {
+        outcome = co_await async_http_post(
+            co_await asio::this_coro::executor, url, std::move(body), std::move(options));
+    }, asio::detached);
+    io.run();
+    if (!outcome)
+        return std::unexpected(Error{ Errc::NetworkError, "sync_http_post: no outcome" });
+    return std::move(*outcome);
+}
+
 namespace detail {
 
 // ───────────────────── SseParser ─────────────────────
