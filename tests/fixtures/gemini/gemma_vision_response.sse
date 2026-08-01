@@ -1,0 +1,6 @@
+: source: protocol-constructed vision response (image input request, gemma sees number 5) — 与真实视觉响应同构的文本流，非真实录制
+data: {"candidates": [{"content": {"parts": [{"text": "The image shows "}],"role": "model"},"index": 0}],"usageMetadata": {"promptTokenCount": 12,"totalTokenCount": 13},"modelVersion": "gemma-4-26b-a4b-it","responseId": "resp-vision1"}
+
+data: {"candidates": [{"content": {"parts": [{"text": "the number 5."}],"role": "model"},"index": 0}],"usageMetadata": {"promptTokenCount": 12,"totalTokenCount": 15},"modelVersion": "gemma-4-26b-a4b-it","responseId": "resp-vision1"}
+
+data: {"candidates": [{"content": {"parts": []},"index": 0,"finishReason": "STOP"}],"usageMetadata": {"promptTokenCount": 12,"totalTokenCount": 15},"modelVersion": "gemma-4-26b-a4b-it","responseId": "resp-vision1"}

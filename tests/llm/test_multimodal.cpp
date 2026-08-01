@@ -10,10 +10,13 @@
 #include <agent/llm/providers/gemini.hpp>
 #include <agent/llm/providers/openai.hpp>
 
+#include "../core/mock_server.hpp"
+
 #include <doctest/doctest.h>
 
 #include <filesystem>
 #include <fstream>
+#include <sstream>
 #include <string>
 #include <vector>
 
@@ -68,6 +71,48 @@ ToolInfo weather_tool()
                         { "properties", { { "city", { { "type", "string" } } } } },
                         { "required", { "city" } } },
     };
+}
+
+std::string load_fixture(std::string const& provider, std::string const& name)
+{
+    std::filesystem::path dir = AGENT_TEST_FIXTURES_DIR;
+    std::ifstream in(dir / provider / name, std::ios::binary);
+    std::stringstream ss;
+    ss << in.rdbuf();
+    return ss.str();
+}
+
+std::vector<agent::test::MockServer::Chunk> sse_response(std::string const& body)
+{
+    std::string head = "HTTP/1.1 200 OK\r\nContent-Type: text/event-stream\r\nConnection: close\r\n\r\n";
+    return { { { head + body } } };
+}
+
+template<typename Provider>
+std::vector<StreamEvent> collect_stream(Provider& provider, ModelView const& model,
+                                        Context const& ctx, StreamOptions const& opts = {})
+{
+    std::vector<StreamEvent> events;
+    for (auto event : provider.stream(model, ctx, opts))
+        events.push_back(std::move(event));
+    return events;
+}
+
+std::string joined_text(std::vector<StreamEvent> const& events)
+{
+    std::string text;
+    for (auto const& e : events)
+        if (e.type() == StreamEvent::Type::TextDelta)
+            text += std::get<TextDelta>(e.data).text;
+    return text;
+}
+
+std::optional<ChatResponse> done_response(std::vector<StreamEvent> const& events)
+{
+    for (auto const& e : events)
+        if (e.type() == StreamEvent::Type::Done)
+            return std::get<DoneEvent>(e.data).response;
+    return std::nullopt;
 }
 
 }  // namespace
@@ -276,6 +321,62 @@ TEST_CASE("multimodal 降级 helper：assistant 消息不受影响")
     CHECK(std::get_if<Text>(&messages[0].content[0]) != nullptr);
     CHECK(std::get_if<Text>(&messages[1].content[0]) != nullptr);
     CHECK(std::get<Text>(messages[1].content[0]).text == kNonVisionUserImagePlaceholder);
+}
+
+// ───────────────────── T1: 图片请求 → 视觉响应回放 ─────────────────────
+// fixture 为协议构造（与真实视觉响应同构的文本流，图片输入请求的响应）。
+
+TEST_CASE("multimodal T1：OpenAI 图片请求 → 视觉响应回放")
+{
+    ensure_vision_model();
+    auto model = ModelRegistry::find_model("gpt-4o-vision");
+    REQUIRE(model.has_value());
+    agent::test::MockServer server;
+    server.enqueue({ {}, sse_response(load_fixture("openai", "openai_vision_response.sse")) });
+
+    OpenAIProvider provider({ .name = "openai", .api_key = "k", .base_url = server.base_url() });
+    auto events = collect_stream(provider, *model, image_ctx("图里是什么"));
+    CHECK(joined_text(events) == "The image shows the number 5.");
+    auto done = done_response(events);
+    REQUIRE(done.has_value());
+    CHECK(done->stop_reason == StopReason::Stop);
+    CHECK(done->usage.input_tokens == 85);
+    CHECK(server.errors().empty());
+}
+
+TEST_CASE("multimodal T1：Anthropic 图片请求 → 视觉响应回放")
+{
+    ensure_vision_model();
+    auto model = ModelRegistry::find_model("gpt-4o-vision");
+    REQUIRE(model.has_value());
+    agent::test::MockServer server;
+    server.enqueue({ {}, sse_response(load_fixture("anthropic", "anthropic_vision_response.sse")) });
+
+    AnthropicMessagesProvider provider({ .name = "anthropic", .api_key = "k", .base_url = server.base_url() });
+    auto events = collect_stream(provider, *model, image_ctx("图里是什么"));
+    CHECK(joined_text(events) == "The image shows the number 5.");
+    auto done = done_response(events);
+    REQUIRE(done.has_value());
+    CHECK(done->stop_reason == StopReason::Stop);
+    CHECK(done->usage.input_tokens == 88);
+    CHECK(server.errors().empty());
+}
+
+TEST_CASE("multimodal T1：Gemini 图片请求 → 视觉响应回放")
+{
+    ensure_vision_model();
+    auto model = ModelRegistry::find_model("gpt-4o-vision");
+    REQUIRE(model.has_value());
+    agent::test::MockServer server;
+    server.enqueue({ {}, sse_response(load_fixture("gemini", "gemma_vision_response.sse")) });
+
+    GeminiGenerateContentProvider provider({ .name = "gemini", .api_key = "k", .base_url = server.base_url() });
+    auto events = collect_stream(provider, *model, image_ctx("图里是什么"));
+    CHECK(joined_text(events) == "The image shows the number 5.");
+    auto done = done_response(events);
+    REQUIRE(done.has_value());
+    CHECK(done->stop_reason == StopReason::Stop);
+    CHECK(server.errors().empty());
 }
 
 // ───────────────────── T2 契约 dump（AGENT_CONTRACT=ON 时编译）─────────────────────

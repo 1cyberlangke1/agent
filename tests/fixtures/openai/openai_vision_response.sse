@@ -1,0 +1,12 @@
+: source: protocol-constructed vision response (image input request, gpt-4o sees number 5) — 与真实视觉响应同构的文本流，非真实录制
+data: {"id":"chatcmpl-vision1","object":"chat.completion.chunk","model":"gpt-4o-2024-08-06","choices":[{"index":0,"delta":{"role":"assistant","content":""},"logprobs":null,"finish_reason":null}]}
+
+data: {"id":"chatcmpl-vision1","object":"chat.completion.chunk","model":"gpt-4o-2024-08-06","choices":[{"index":0,"delta":{"content":"The image "},"logprobs":null,"finish_reason":null}]}
+
+data: {"id":"chatcmpl-vision1","object":"chat.completion.chunk","model":"gpt-4o-2024-08-06","choices":[{"index":0,"delta":{"content":"shows the number 5."},"logprobs":null,"finish_reason":null}]}
+
+data: {"id":"chatcmpl-vision1","object":"chat.completion.chunk","model":"gpt-4o-2024-08-06","choices":[{"index":0,"delta":{},"logprobs":null,"finish_reason":"stop"}]}
+
+data: {"id":"chatcmpl-vision1","object":"chat.completion.chunk","model":"gpt-4o-2024-08-06","choices":[],"usage":{"prompt_tokens":85,"completion_tokens":8,"total_tokens":93}}
+
+data: [DONE]
