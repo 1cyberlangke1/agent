@@ -14,12 +14,16 @@
 
 #include <doctest/doctest.h>
 
+#include <brotli/encode.h>
 #include <zlib.h>
 
+#include <atomic>
 #include <chrono>
 #include <optional>
 #include <string>
+#include <thread>
 #include <utility>
+#include <vector>
 
 using agent::HttpRequestOptions;
 using agent::HttpResponse;
@@ -90,6 +94,22 @@ std::string zlib_compress(std::string const& input)
     REQUIRE(deflate(&stream, Z_FINISH) == Z_STREAM_END);
     output.resize(stream.total_out);
     deflateEnd(&stream);
+    return output;
+}
+
+/// brotli 现场压缩（BrotliEncoderCompress），供 br 剧本用。
+std::string brotli_compress(std::string const& input)
+{
+    std::size_t bound = BrotliEncoderMaxCompressedSize(input.size());
+    std::string output(bound, '\0');
+    std::size_t out_len = bound;
+    REQUIRE(BrotliEncoderCompress(BROTLI_DEFAULT_QUALITY, BROTLI_DEFAULT_WINDOW, BROTLI_MODE_GENERIC,
+                                  input.size(),
+                                  reinterpret_cast<std::uint8_t const*>(input.data()),
+                                  &out_len,
+                                  reinterpret_cast<std::uint8_t*>(output.data()))
+            == BROTLI_TRUE);
+    output.resize(out_len);
     return output;
 }
 
@@ -577,5 +597,70 @@ TEST_CASE("压缩流式响应逐块解压")
     CHECK(outcome.open_ok);
     CHECK(outcome.collected == plain_body);
     CHECK(outcome.clean_eof);
+    CHECK(server.errors().empty());
+}
+
+TEST_CASE("brotli 响应自动解压")
+{
+    std::string const plain_body = "brotli-encoded-response-body-你好";
+    std::string const br_body = brotli_compress(plain_body);
+
+    MockServer server;
+    server.enqueue(plain_response(200, "OK", "text/plain", br_body,
+                                  "Content-Encoding: br\r\n"));
+
+    Result<HttpResponse> response = run_awaitable([&]() -> asio::awaitable<Result<HttpResponse>> {
+        co_return co_await agent::async_http_post(
+            co_await asio::this_coro::executor, server.base_url() + "/br",
+            nlohmann::json::object(), HttpRequestOptions{});
+    }());
+
+    REQUIRE(response.has_value());
+    CHECK(response->status == 200);
+    CHECK(response->body == plain_body);   // br 字节已被 curl 透明解压
+    CHECK(server.errors().empty());
+}
+
+TEST_CASE("并发压力：20 线程 × 25 请求全部成功且数据正确")
+{
+    // 验证传输层无共享可变状态：多线程并发请求同一 server，全部成功、响应不串扰
+    constexpr int kThreads = 20;
+    constexpr int kPerThread = 25;
+    constexpr int kTotal = kThreads * kPerThread;
+
+    MockServer server;
+    for (int i = 0; i < kTotal; ++i)
+        server.enqueue(plain_response(200, "OK", "text/plain", "ok-" + std::to_string(i)));
+
+    std::atomic<int> succeeded{0};
+    std::atomic<int> mismatched{0};
+    std::vector<std::thread> threads;
+    threads.reserve(kThreads);
+    for (int t = 0; t < kThreads; ++t) {
+        threads.emplace_back([&, t]() {
+            asio::io_context io;
+            for (int i = 0; i < kPerThread; ++i) {
+                // 每请求独立 io_context（单线程模型），跨线程并发无共享状态
+                Result<HttpResponse> response;
+                asio::co_spawn(io, [&]() -> asio::awaitable<void> {
+                    response = co_await agent::async_http_post(
+                        co_await asio::this_coro::executor, server.base_url() + "/concurrent",
+                        nlohmann::json::object(), HttpRequestOptions{});
+                }, asio::detached);
+                io.restart();
+                io.run();
+                if (response && response->status == 200)
+                    ++succeeded;
+                else
+                    ++mismatched;
+            }
+        });
+    }
+    for (auto& th : threads)
+        th.join();
+
+    CHECK(succeeded == kTotal);
+    CHECK(mismatched == 0);
+    CHECK(server.request_count() == kTotal);
     CHECK(server.errors().empty());
 }

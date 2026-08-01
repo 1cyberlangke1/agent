@@ -23,6 +23,7 @@ if(AGENT_BUILD_TESTS)
         llm/test_gemini.cpp
         llm/test_anthropic.cpp
         llm/test_multimodal.cpp
+        llm/test_llm_concurrency.cpp
         ${CMAKE_SOURCE_DIR}/src/tools/tools.cpp
         ${CMAKE_SOURCE_DIR}/src/llm/model_registry.cpp
         ${CMAKE_SOURCE_DIR}/src/core/http_client.cpp
@@ -46,6 +47,7 @@ if(AGENT_BUILD_TESTS)
             CURL::libcurl
             nlohmann_json
             Threads::Threads
+            brotlienc
     )
     if(WIN32)
         target_link_libraries(test_agent PRIVATE ws2_32)
