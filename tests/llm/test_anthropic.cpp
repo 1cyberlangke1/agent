@@ -651,6 +651,56 @@ TEST_CASE("Anthropic 难样例：流中断流 → Error 事件")
     CHECK(server.errors().empty());
 }
 
+TEST_CASE("Anthropic 难样例：异步取消中断流 → Error")
+{
+    ensure_claude_sonnet();
+    auto model = ModelRegistry::find_model("claude-sonnet-4-5");
+    REQUIRE(model.has_value());
+    agent::test::MockServer server;
+    // 慢滴流：每块 30ms，取消发生在前几个块后
+    std::vector<agent::test::MockServer::Chunk> slow;
+    std::string sse = load_fixture("anthropic_text.sse");
+    std::size_t pos = 0;
+    while (pos < sse.size()) {
+        std::size_t next = sse.find("\n\n", pos);
+        if (next == std::string::npos) {
+            slow.push_back({ { sse.substr(pos) }, 30 });
+            break;
+        }
+        slow.push_back({ { sse.substr(pos, next - pos + 2) }, 30 });
+        pos = next + 2;
+    }
+    server.enqueue({ {}, slow });
+
+    AnthropicMessagesProvider provider({ .name = "anthropic", .api_key = "k", .base_url = server.base_url() });
+    asio::io_context io;
+    asio::cancellation_signal cancel;
+    std::vector<StreamEvent> events;
+    bool completed = false;
+    asio::co_spawn(io, [&]() -> asio::awaitable<void> {
+        StreamOptions opts;
+        opts.cancel = &cancel;
+        AsyncStream<StreamEvent> sink(io.get_executor());
+        auto local = sink;
+        asio::co_spawn(io, [&]() -> asio::awaitable<void> {
+            co_await provider.stream_async(*model, simple_ctx("hi"), opts, std::move(local));
+        }, asio::detached);
+        int count = 0;
+        while (auto event = co_await sink.receive()) {
+            events.push_back(std::move(*event));
+            if (++count == 2)
+                cancel.emit(asio::cancellation_type::all);
+        }
+        completed = true;
+    }, asio::detached);
+    io.run();
+    CHECK(completed);
+    auto error = std::find_if(events.begin(), events.end(), [](auto const& e) {
+        return e.type() == StreamEvent::Type::Error;
+    });
+    REQUIRE(error != events.end());
+}
+
 TEST_CASE("Anthropic 难样例：401 → AuthError + 请求头断言")
 {
     ensure_claude_sonnet();

@@ -309,6 +309,130 @@ TEST_CASE("Gemini 异步非流式 complete_async")
     CHECK(server.errors().empty());
 }
 
+// ───────────────────── 请求中途失败（Gemini 引擎路径）─────────────────────
+
+TEST_CASE("Gemini 难样例：流中断连（RST）→ Error 事件")
+{
+    ensure_gemma_model();
+    auto model = ModelRegistry::find_model("gemma-4-26b-a4b-it");
+    REQUIRE(model.has_value());
+    agent::test::MockServer server;
+    std::string half = load_fixture("gemma_text.sse").substr(0, 256);
+    server.enqueue({ {}, { { "HTTP/1.1 200 OK\r\nContent-Type: text/event-stream\r\nConnection: close\r\n\r\n" + half } },
+                          true /* close_abruptly = RST */ });
+
+    GeminiGenerateContentProvider provider({ .name = "gemini", .api_key = "k", .base_url = server.base_url() });
+    auto events = collect_stream(provider, *model, simple_ctx("hi"));
+    auto error = std::find_if(events.begin(), events.end(), [](auto const& e) {
+        return e.type() == StreamEvent::Type::Error;
+    });
+    REQUIRE(error != events.end());
+    CHECK(std::get<Error>(error->data).code == Errc::NetworkError);
+}
+
+TEST_CASE("Gemini 难样例：idle 超时（流中停顿）→ NetworkError")
+{
+    ensure_gemma_model();
+    auto model = ModelRegistry::find_model("gemma-4-26b-a4b-it");
+    REQUIRE(model.has_value());
+    agent::test::MockServer server;
+    // 发一个事件后服务器停顿 > idle → 引擎等待剩余 body 时超时（确定性）
+    std::string sse = "data: {\"candidates\":[{\"content\":{\"parts\":[{\"text\":\"start\"}]}}]}\n\n";
+    std::string head = "HTTP/1.1 200 OK\r\nContent-Type: text/event-stream\r\nConnection: close\r\n\r\n";
+    std::vector<agent::test::MockServer::Chunk> chunks;
+    chunks.push_back({ { head + sse } });
+    chunks.push_back({ { "" }, 1000 });   // 停顿 1s 超 idle 200ms
+    server.enqueue({ {}, std::move(chunks) });
+
+    GeminiGenerateContentProvider provider({ .name = "gemini", .api_key = "k", .base_url = server.base_url() });
+    StreamOptions opts;
+    opts.idle_timeout_ms = 200;
+    opts.max_retries = 0;
+    auto events = collect_stream(provider, *model, simple_ctx("hi"), opts);
+    auto error = std::find_if(events.begin(), events.end(), [](auto const& e) {
+        return e.type() == StreamEvent::Type::Error;
+    });
+    REQUIRE(error != events.end());
+    CHECK(std::get<Error>(error->data).code == Errc::NetworkError);
+}
+
+TEST_CASE("Gemini 难样例：异步取消中断流 → Error")
+{
+    ensure_gemma_model();
+    auto model = ModelRegistry::find_model("gemma-4-26b-a4b-it");
+    REQUIRE(model.has_value());
+    agent::test::MockServer server;
+    // 慢滴流：每块 30ms，取消发生在前几个块后
+    std::vector<agent::test::MockServer::Chunk> slow;
+    std::string sse = load_fixture("gemma_text.sse");
+    std::size_t pos = 0;
+    while (pos < sse.size()) {
+        std::size_t next = sse.find("\n\n", pos);
+        if (next == std::string::npos) {
+            slow.push_back({ { sse.substr(pos) }, 30 });
+            break;
+        }
+        slow.push_back({ { sse.substr(pos, next - pos + 2) }, 30 });
+        pos = next + 2;
+    }
+    server.enqueue({ {}, slow });
+
+    GeminiGenerateContentProvider provider({ .name = "gemini", .api_key = "k", .base_url = server.base_url() });
+    asio::io_context io;
+    asio::cancellation_signal cancel;
+    std::vector<StreamEvent> events;
+    bool completed = false;
+    asio::co_spawn(io, [&]() -> asio::awaitable<void> {
+        StreamOptions opts;
+        opts.cancel = &cancel;
+        AsyncStream<StreamEvent> sink(io.get_executor());
+        auto local = sink;
+        asio::co_spawn(io, [&]() -> asio::awaitable<void> {
+            co_await provider.stream_async(*model, simple_ctx("hi"), opts, std::move(local));
+        }, asio::detached);
+        // 收到几个事件后触发取消
+        int count = 0;
+        while (auto event = co_await sink.receive()) {
+            events.push_back(std::move(*event));
+            if (++count == 2)
+                cancel.emit(asio::cancellation_type::all);
+        }
+        completed = true;
+    }, asio::detached);
+    io.run();
+    CHECK(completed);
+    auto error = std::find_if(events.begin(), events.end(), [](auto const& e) {
+        return e.type() == StreamEvent::Type::Error;
+    });
+    REQUIRE(error != events.end());
+}
+
+TEST_CASE("Gemini 难样例：401 → AuthError + 请求头断言")
+{
+    ensure_gemma_model();
+    auto model = ModelRegistry::find_model("gemma-4-26b-a4b-it");
+    REQUIRE(model.has_value());
+    agent::test::MockServer server;
+    std::string err_body = "{\"error\":{\"message\":\"API key not valid\",\"code\":400}}";
+    server.enqueue({
+        [](agent::test::RequestView const& request) {
+            CHECK(request.target.find(":streamGenerateContent") != std::string::npos);
+            CHECK(request.header("x-goog-api-key") == "bad-key");
+        },
+        sse_response(err_body, 401),
+    });
+
+    GeminiGenerateContentProvider provider({ .name = "gemini", .api_key = "bad-key", .base_url = server.base_url() });
+    auto events = collect_stream(provider, *model, simple_ctx("hi"));
+    bool auth_error = false;
+    for (auto const& e : events)
+        if (auto err = std::get_if<Error>(&e.data))
+            if (err->code == Errc::AuthError)
+                auth_error = true;
+    CHECK(auth_error);
+    CHECK(server.errors().empty());
+}
+
 TEST_CASE("Gemini 真实 gemma 工具调用闭环 fixture：两轮")
 {
     ensure_gemma_model();
