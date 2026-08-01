@@ -41,7 +41,10 @@ struct EndpointConfig {
 struct Context {
     std::string system_prompt;
     std::vector<Message> messages;
-    std::vector<ToolInfo> tools;
+    /// 本次请求声明的工具名。工具定义（name/description/schema）统一由全局
+    /// Tools 注册表持有，引擎 build_params 时按名 resolve——Context 只存名字，
+    /// 不重复拷贝工具描述。未注册的工具名 → 请求构建失败（Result 错误）。
+    std::vector<std::string> tools;
 };
 
 // ─────────────────────────────────────────────────────────────

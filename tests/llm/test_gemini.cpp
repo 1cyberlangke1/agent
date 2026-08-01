@@ -114,17 +114,13 @@ TEST_CASE("gemini build_params：contents/systemInstruction/tools/generationConf
     REQUIRE(model.has_value());
     Context ctx = simple_ctx("hi");
     ctx.system_prompt = "你是助手";
-    ctx.tools.push_back(ToolInfo{
-        .name = "get_weather", .description = "查天气",
-        .parameters = { { "type", "object" },
-                        { "properties", { { "city", { { "type", "string" } } } } },
-                        { "required", { "city" } } },
-    });
+    ensure_get_weather_tool();
+    ctx.tools.push_back("get_weather");
     StreamOptions opts;
     opts.max_tokens = 512;
     opts.temperature = 0.5;
 
-    auto params = GeminiGenerateContentEngine::build_params(*model, ctx, opts);
+    auto params = *GeminiGenerateContentEngine::build_params(*model, ctx, opts);
     CHECK(params["systemInstruction"]["parts"][0]["text"] == "你是助手");
     REQUIRE(params["contents"].is_array());
     CHECK(params["contents"][0]["role"] == "user");
@@ -142,7 +138,7 @@ TEST_CASE("gemini build_params：thinking → thinkingConfig.thinkingBudget")
     REQUIRE(model.has_value());
     StreamOptions opts;
     opts.reasoning = ThinkingLevel::High;
-    auto params = GeminiGenerateContentEngine::build_params(*model, simple_ctx("hi"), opts);
+    auto params = *GeminiGenerateContentEngine::build_params(*model, simple_ctx("hi"), opts);
     // gemma map High=8192 → thinkingBudget
     CHECK(params["generationConfig"]["thinkingConfig"]["thinkingBudget"] == 8192);
 }
@@ -152,7 +148,7 @@ TEST_CASE("gemini build_params：不传采样参数不上传")
     ensure_gemma_model();
     auto model = ModelRegistry::find_model("gemma-4-26b-a4b-it");
     REQUIRE(model.has_value());
-    auto params = GeminiGenerateContentEngine::build_params(*model, simple_ctx("hi"), {});
+    auto params = *GeminiGenerateContentEngine::build_params(*model, simple_ctx("hi"), {});
     CHECK(!params.contains("maxOutputTokens"));
     CHECK(!params.contains("temperature"));
 }

@@ -124,19 +124,23 @@ std::string extract_error_message(std::string const& body)
 
 // ───────────────────── 请求体构建 ─────────────────────
 
-nlohmann::json AnthropicMessagesEngine::convert_tools(std::vector<ToolInfo> const& tools,
-                                                      nlohmann::json const* cache_control)
+Result<nlohmann::json> AnthropicMessagesEngine::convert_tools(std::vector<std::string> const& names,
+                                                              nlohmann::json const* cache_control)
 {
+    // 从全局 Tools 注册表按名取定义（未注册名 → NotFound 错误，请求构建失败）
+    Result<std::vector<ToolInfo>> tools = Tools::resolve(names);
+    if (!tools)
+        return std::unexpected(std::move(tools).error());
     nlohmann::json arr = nlohmann::json::array();
-    for (std::size_t i = 0; i < tools.size(); ++i) {
-        auto const& tool = tools[i];
+    for (std::size_t i = 0; i < tools->size(); ++i) {
+        auto const& tool = (*tools)[i];
         nlohmann::json entry{{"name", tool.name}};
         if (!tool.description.empty())
             entry["description"] = tool.description;
         // Anthropic input_schema = 标准 JSON Schema（我们工具的 parameters 已是）。
         entry["input_schema"] = tool.parameters;
         // 缓存挂最后一个 tool（官方推荐位置，文档: Cache tool definitions）。
-        if (cache_control && i + 1 == tools.size())
+        if (cache_control && i + 1 == tools->size())
             entry["cache_control"] = *cache_control;
         arr.push_back(std::move(entry));
     }
@@ -279,7 +283,7 @@ nlohmann::json AnthropicMessagesEngine::convert_messages(Context const& ctx, nlo
     return messages;
 }
 
-nlohmann::json AnthropicMessagesEngine::build_params(
+Result<nlohmann::json> AnthropicMessagesEngine::build_params(
     ModelView const& model, Context const& ctx, StreamOptions const& opts)
 {
     nlohmann::json params;
@@ -337,8 +341,12 @@ nlohmann::json AnthropicMessagesEngine::build_params(
         }
     }
     // tools：input_schema，cache_control 挂最后一个 tool
-    if (!ctx.tools.empty())
-        params["tools"] = convert_tools(ctx.tools, cache_control ? &*cache_control : nullptr);
+    if (!ctx.tools.empty()) {
+        Result<nlohmann::json> tools = convert_tools(ctx.tools, cache_control ? &*cache_control : nullptr);
+        if (!tools)
+            return std::unexpected(std::move(tools).error());
+        params["tools"] = std::move(*tools);
+    }
     // 非公约数透传：原样并入（引擎不解释）
     if (!opts.extra.empty()) {
         for (auto it = opts.extra.begin(); it != opts.extra.end(); ++it)
@@ -533,7 +541,14 @@ asio::awaitable<void> AnthropicMessagesEngine::stream_async(
     if (opts.cancel)
         req.cancel = opts.cancel->slot();
 
-    nlohmann::json body = build_params(model, ctx, opts);
+    // 构建请求体：工具名未注册 → 请求构建失败（Result 错误），发 Error 终结
+    Result<nlohmann::json> body_result = build_params(model, ctx, opts);
+    if (!body_result) {
+        co_await sink.send(StreamEvent{ Error{ body_result.error().code, body_result.error().message } });
+        sink.close();
+        co_return;
+    }
+    nlohmann::json body = std::move(*body_result);
     auto reader = co_await HttpStreamReader::open(ex, url, body, req);
     if (!reader) {
         co_await sink.send(StreamEvent{ Error{ reader.error().code, reader.error().message } });

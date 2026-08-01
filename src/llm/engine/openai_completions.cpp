@@ -205,11 +205,15 @@ nlohmann::json OpenAICompletionsEngine<ThinkingPolicy, Compat>::convert_messages
 }
 
 template<typename ThinkingPolicy, typename Compat>
-nlohmann::json OpenAICompletionsEngine<ThinkingPolicy, Compat>::convert_tools(
-    std::vector<ToolInfo> const& tools)
+Result<nlohmann::json> OpenAICompletionsEngine<ThinkingPolicy, Compat>::convert_tools(
+    std::vector<std::string> const& names)
 {
+    // 从全局 Tools 注册表按名取定义（未注册名 → NotFound 错误，请求构建失败）
+    Result<std::vector<ToolInfo>> tools = Tools::resolve(names);
+    if (!tools)
+        return std::unexpected(std::move(tools).error());
     nlohmann::json arr = nlohmann::json::array();
-    for (auto const& t : tools) {
+    for (auto const& t : *tools) {
         nlohmann::json fn{{"name", t.name}};
         if (!t.description.empty()) fn["description"] = t.description;
         if (!t.parameters.empty()) fn["parameters"] = t.parameters;
@@ -219,7 +223,7 @@ nlohmann::json OpenAICompletionsEngine<ThinkingPolicy, Compat>::convert_tools(
 }
 
 template<typename ThinkingPolicy, typename Compat>
-nlohmann::json OpenAICompletionsEngine<ThinkingPolicy, Compat>::build_params(
+Result<nlohmann::json> OpenAICompletionsEngine<ThinkingPolicy, Compat>::build_params(
     ModelView const& model, Context const& ctx, StreamOptions const& opts)
 {
     nlohmann::json params;
@@ -234,8 +238,12 @@ nlohmann::json OpenAICompletionsEngine<ThinkingPolicy, Compat>::build_params(
         params[Compat::max_tokens_field] = *opts.max_tokens;
     if (opts.temperature.has_value())
         params["temperature"] = *opts.temperature;
-    if (!ctx.tools.empty())
-        params["tools"] = convert_tools(ctx.tools);
+    if (!ctx.tools.empty()) {
+        Result<nlohmann::json> tools = convert_tools(ctx.tools);
+        if (!tools)
+            return std::unexpected(std::move(tools).error());
+        params["tools"] = std::move(*tools);
+    }
     // 缓存（官方文档 prompt_cache_key / prompt_cache_retention）：
     //   有缓存意图且给了 session_id → prompt_cache_key（截断 64）；
     //   Long → prompt_cache_retention = "24h"（官方最长档）。
@@ -424,7 +432,14 @@ asio::awaitable<void> OpenAICompletionsEngine<ThinkingPolicy, Compat>::stream_as
     if (opts.cancel)
         req.cancel = opts.cancel->slot();
 
-    nlohmann::json body = build_params(model, ctx, opts);
+    // 构建请求体：工具名未注册 → 请求构建失败（Result 错误），发 Error 终结
+    Result<nlohmann::json> body_result = build_params(model, ctx, opts);
+    if (!body_result) {
+        co_await sink.send(StreamEvent{ Error{ body_result.error().code, body_result.error().message } });
+        sink.close();
+        co_return;
+    }
+    nlohmann::json body = std::move(*body_result);
     auto reader = co_await HttpStreamReader::open(ex, url, body, req);
     if (!reader) {
         co_await sink.send(StreamEvent{ Error{ reader.error().code, reader.error().message } });

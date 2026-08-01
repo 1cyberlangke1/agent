@@ -249,6 +249,14 @@ public:
     /// @brief 按名称查询工具信息。不存在返回 Errc::NotFound。
     static Result<ToolInfo> get(std::string_view name);
 
+    /// @brief 批量按名解析工具定义（一次 shared_lock，避免逐个 get 反复加锁）。
+    ///        按传入名字顺序返回；遇到未注册的名字 → Result 错误（NotFound）。
+    ///        供引擎 build_params 用：Context.tools 存工具名，这里取定义转各家 schema。
+    static Result<std::vector<ToolInfo>> resolve(std::vector<std::string> const& names);
+
+    /// @brief 全部已注册工具名（供调用方「本次要全部工具」时填 Context.tools）。
+    static std::vector<std::string> names();
+
 private:
     struct State
     {

@@ -59,8 +59,9 @@ public:
 
     explicit GeminiGenerateContentEngine(EndpointConfig config);
 
-    /// @brief 构建请求体（协议纯函数）。
-    static nlohmann::json build_params(ModelView const& model, Context const& ctx, StreamOptions const& opts);
+    /// @brief 构建请求体（协议纯函数）。Context.tools 存工具名 → 从全局
+    ///        Tools 注册表 resolve 定义；未注册工具名 → Result 错误。
+    static Result<nlohmann::json> build_params(ModelView const& model, Context const& ctx, StreamOptions const& opts);
 
     /// @brief 解析单个流式事件 → 事件序列（纯函数，T0 可测）。
     static std::vector<StreamEvent> parse_chunk(GeminiStreamState& state, nlohmann::json const& chunk);
@@ -70,7 +71,7 @@ public:
 
 private:
     static nlohmann::json convert_contents(Context const& ctx, ModelView const& model);
-    static nlohmann::json convert_tools(std::vector<ToolInfo> const& tools);
+    static Result<nlohmann::json> convert_tools(std::vector<std::string> const& names);
     static ChatResponse build_response(GeminiStreamState const& state);
     EndpointConfig config_;
 };

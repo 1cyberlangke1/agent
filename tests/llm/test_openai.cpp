@@ -155,6 +155,18 @@ void ensure_get_weather_tool()
 
 // ───────────────────── T0: build_params ─────────────────────
 
+TEST_CASE("build_params：未注册工具名 → Result 错误")
+{
+    ensure_test_models();
+    auto model = ModelRegistry::find_model("t-plain");
+    REQUIRE(model.has_value());
+    Context ctx = simple_ctx("hi");
+    ctx.tools.push_back("no_such_tool");
+    auto result = OpenAICompletionsEngine<OpenAIThinking, OpenAICompat>::build_params(*model, ctx, {});
+    CHECK(!result.has_value());
+    CHECK(result.error().code == Errc::NotFound);
+}
+
 TEST_CASE("build_params 基本结构 + system role")
 {
     ensure_test_models();
@@ -162,7 +174,7 @@ TEST_CASE("build_params 基本结构 + system role")
     REQUIRE(model.has_value());
     OpenAIProvider provider({ .name = "openai", .api_key = "k", .base_url = "http://x" });
 
-    auto params = OpenAICompletionsEngine<OpenAIThinking, OpenAICompat>::build_params(*model, simple_ctx("hi"), {});
+    auto params = *OpenAICompletionsEngine<OpenAIThinking, OpenAICompat>::build_params(*model, simple_ctx("hi"), {});
     CHECK(params["model"] == "t-effort");
     CHECK(params["stream"] == true);
     CHECK(params["stream_options"]["include_usage"] == true);
@@ -183,12 +195,12 @@ TEST_CASE("build_params max_tokens 字段名随 Compat")
     StreamOptions opts;
     opts.max_tokens = 2048;
 
-    auto openai_params = OpenAICompletionsEngine<OpenAIThinking, OpenAICompat>::build_params(
+    auto openai_params = *OpenAICompletionsEngine<OpenAIThinking, OpenAICompat>::build_params(
         *model, simple_ctx("hi"), opts);
     CHECK(openai_params["max_completion_tokens"] == 2048);   // OpenAI 官方 o 系列字段
     CHECK(!openai_params.contains("max_tokens"));
 
-    auto deepseek_params = OpenAICompletionsEngine<DeepSeekThinking, OpenAICompatibleCompat>::build_params(
+    auto deepseek_params = *OpenAICompletionsEngine<DeepSeekThinking, OpenAICompatibleCompat>::build_params(
         *model, simple_ctx("hi"), opts);
     CHECK(deepseek_params["max_tokens"] == 2048);            // 第三方兼容端点通用字段
     CHECK(!deepseek_params.contains("max_completion_tokens"));
@@ -203,16 +215,14 @@ TEST_CASE("build_params temperature + tools 转换")
     opts.temperature = 0.7;
 
     Context ctx = simple_ctx("hi");
-    ctx.tools.push_back(ToolInfo{
-        .name = "get_weather", .description = "查天气",
-        .parameters = { { "type", "object" }, { "properties", { { "city", { { "type", "string" } } } } } },
-    });
-    auto params = OpenAICompletionsEngine<OpenAIThinking, OpenAICompat>::build_params(*model, ctx, opts);
+    ensure_get_weather_tool();
+    ctx.tools.push_back("get_weather");
+    auto params = *OpenAICompletionsEngine<OpenAIThinking, OpenAICompat>::build_params(*model, ctx, opts);
     CHECK(params["temperature"] == 0.7);
     REQUIRE(params["tools"].is_array());
     CHECK(params["tools"][0]["type"] == "function");
     CHECK(params["tools"][0]["function"]["name"] == "get_weather");
-    CHECK(params["tools"][0]["function"]["description"] == "查天气");
+    CHECK(params["tools"][0]["function"]["description"] == "查询城市天气");
     CHECK(params["tools"][0]["function"]["parameters"]["type"] == "object");
 }
 
@@ -223,19 +233,19 @@ TEST_CASE("build_params thinking：OpenAI effort 映射 + 未指定不发")
     REQUIRE(model.has_value());
 
     // 未指定 reasoning → 不发 reasoning_effort（模型默认）
-    auto plain = OpenAICompletionsEngine<OpenAIThinking, OpenAICompat>::build_params(*model, simple_ctx("hi"), {});
+    auto plain = *OpenAICompletionsEngine<OpenAIThinking, OpenAICompat>::build_params(*model, simple_ctx("hi"), {});
     CHECK(!plain.contains("reasoning_effort"));
 
     // High → clamp 到 t-effort map[High]=="high"
     StreamOptions opts;
     opts.reasoning = ThinkingLevel::High;
-    auto params = OpenAICompletionsEngine<OpenAIThinking, OpenAICompat>::build_params(*model, simple_ctx("hi"), opts);
+    auto params = *OpenAICompletionsEngine<OpenAIThinking, OpenAICompat>::build_params(*model, simple_ctx("hi"), opts);
     CHECK(params["reasoning_effort"] == "high");
 
     // 非推理模型 → 不发
     auto plain_model = ModelRegistry::find_model("t-plain");
     REQUIRE(plain_model.has_value());
-    auto noop = OpenAICompletionsEngine<OpenAIThinking, OpenAICompat>::build_params(*plain_model, simple_ctx("hi"), opts);
+    auto noop = *OpenAICompletionsEngine<OpenAIThinking, OpenAICompat>::build_params(*plain_model, simple_ctx("hi"), opts);
     CHECK(!noop.contains("reasoning_effort"));
 }
 
@@ -248,7 +258,7 @@ TEST_CASE("build_params thinking：DeepSeek thinking + 移除采样参数")
     opts.reasoning = ThinkingLevel::Max;
     opts.temperature = 0.9;
 
-    auto params = OpenAICompletionsEngine<DeepSeekThinking, OpenAICompatibleCompat>::build_params(
+    auto params = *OpenAICompletionsEngine<DeepSeekThinking, OpenAICompatibleCompat>::build_params(
         *model, simple_ctx("hi"), opts);
     CHECK(params["thinking"]["type"] == "enabled");
     CHECK(params["reasoning_effort"] == "max");
@@ -261,7 +271,7 @@ TEST_CASE("build_params thinking：DeepSeek thinking + 移除采样参数")
     // Off → 明确关闭
     StreamOptions off_opts;
     off_opts.reasoning = ThinkingLevel::Off;
-    auto off = OpenAICompletionsEngine<DeepSeekThinking, OpenAICompatibleCompat>::build_params(
+    auto off = *OpenAICompletionsEngine<DeepSeekThinking, OpenAICompatibleCompat>::build_params(
         *model, simple_ctx("hi"), off_opts);
     CHECK(off["thinking"]["type"] == "disabled");
 }
@@ -275,7 +285,7 @@ TEST_CASE("build_params 缓存：prompt_cache_key + retention")
     opts.cache_retention = CacheRetention::Long;
     opts.session_id = "session-abc";
 
-    auto params = OpenAICompletionsEngine<OpenAIThinking, OpenAICompat>::build_params(*model, simple_ctx("hi"), opts);
+    auto params = *OpenAICompletionsEngine<OpenAIThinking, OpenAICompat>::build_params(*model, simple_ctx("hi"), opts);
     CHECK(params["prompt_cache_key"] == "session-abc");
     CHECK(params["prompt_cache_retention"] == "24h");
 
@@ -283,7 +293,7 @@ TEST_CASE("build_params 缓存：prompt_cache_key + retention")
     StreamOptions none_opts;
     none_opts.cache_retention = CacheRetention::None;
     none_opts.session_id = "session-abc";
-    auto no_cache = OpenAICompletionsEngine<OpenAIThinking, OpenAICompat>::build_params(*model, simple_ctx("hi"), none_opts);
+    auto no_cache = *OpenAICompletionsEngine<OpenAIThinking, OpenAICompat>::build_params(*model, simple_ctx("hi"), none_opts);
     CHECK(!no_cache.contains("prompt_cache_key"));
     CHECK(!no_cache.contains("prompt_cache_retention"));
 }
@@ -296,7 +306,7 @@ TEST_CASE("build_params extra 透传 + 覆盖")
     StreamOptions opts;
     opts.extra = { { "store", false }, { "metadata", { { "k", "v" } } } };
 
-    auto params = OpenAICompletionsEngine<OpenAIThinking, OpenAICompat>::build_params(*model, simple_ctx("hi"), opts);
+    auto params = *OpenAICompletionsEngine<OpenAIThinking, OpenAICompat>::build_params(*model, simple_ctx("hi"), opts);
     CHECK(params["store"] == false);
     CHECK(params["metadata"]["k"] == "v");
 }
@@ -1535,7 +1545,7 @@ TEST_CASE("猴子测试：build_params 随机参数组合 → 不抛 + 结构合
         if (flag(rng)) opts.extra = { { "custom", i }, { "nested", { { "k", true } } } };
 
         // 不抛异常即通过；结构必须合法
-        auto params = OpenAICompletionsEngine<OpenAIThinking, OpenAICompat>::build_params(*model, simple_ctx("hi"), opts);
+        auto params = *OpenAICompletionsEngine<OpenAIThinking, OpenAICompat>::build_params(*model, simple_ctx("hi"), opts);
         CHECK(params["model"] == "t-effort");
         CHECK(params["messages"].is_array());
         CHECK(params["stream"] == true);
@@ -1584,13 +1594,9 @@ TEST_CASE("contract: dump build_params 工具场景")
     REQUIRE(model.has_value());
     Context ctx;
     ctx.messages.push_back(Message{ Role::User, { Text{ "hi" } } });
-    ctx.tools.push_back(ToolInfo{
-        .name = "get_weather", .description = "查天气",
-        .parameters = { { "type", "object" },
-                        { "properties", { { "city", { { "type", "string" } } } } },
-                        { "required", { "city" } } },
-    });
-    auto params = OpenAICompletionsEngine<OpenAIThinking, OpenAICompat>::build_params(*model, ctx, {});
+    ensure_get_weather_tool();
+    ctx.tools.push_back("get_weather");
+    auto params = *OpenAICompletionsEngine<OpenAIThinking, OpenAICompat>::build_params(*model, ctx, {});
     std::filesystem::path dir = AGENT_CONTRACT_OUT;
     std::filesystem::create_directories(dir);
     std::ofstream(dir / "tool_1.json") << params.dump(2);
@@ -1603,7 +1609,7 @@ TEST_CASE("contract: dump build_params 文本场景")
     REQUIRE(model.has_value());
     Context ctx;
     ctx.messages.push_back(Message{ Role::User, { Text{ "hi" } } });
-    auto params = OpenAICompletionsEngine<OpenAIThinking, OpenAICompat>::build_params(*model, ctx, {});
+    auto params = *OpenAICompletionsEngine<OpenAIThinking, OpenAICompat>::build_params(*model, ctx, {});
     std::filesystem::path dir = AGENT_CONTRACT_OUT;
     std::filesystem::create_directories(dir);
     std::ofstream(dir / "text_4.json") << params.dump(2);

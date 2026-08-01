@@ -286,7 +286,7 @@ int main(int argc, char* argv[])
         while (true) {
             Context ctx;
             ctx.messages = messages;
-            ctx.tools = Tools::list();   // Add + Weather 已自动注册
+            ctx.tools = Tools::names();   // Add + Weather 已自动注册（工具名 → 引擎按名查注册表）
 
             StreamOptions opts;
             if (config.thinking)

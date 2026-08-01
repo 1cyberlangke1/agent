@@ -82,10 +82,14 @@ std::string extract_error_message(std::string const& body)
 
 // ───────────────────── 请求体构建 ─────────────────────
 
-nlohmann::json GeminiGenerateContentEngine::convert_tools(std::vector<ToolInfo> const& tools)
+Result<nlohmann::json> GeminiGenerateContentEngine::convert_tools(std::vector<std::string> const& names)
 {
+    // 从全局 Tools 注册表按名取定义（未注册名 → NotFound 错误，请求构建失败）
+    Result<std::vector<ToolInfo>> tools = Tools::resolve(names);
+    if (!tools)
+        return std::unexpected(std::move(tools).error());
     nlohmann::json decls = nlohmann::json::array();
-    for (auto const& t : tools) {
+    for (auto const& t : *tools) {
         nlohmann::json fn{{"name", t.name}};
         if (!t.description.empty()) fn["description"] = t.description;
         if (!t.parameters.empty()) fn["parameters"] = t.parameters;
@@ -100,7 +104,6 @@ nlohmann::json GeminiGenerateContentEngine::convert_tools(std::vector<ToolInfo> 
     tools_arr.push_back(std::move(entry));
     return tools_arr;
 }
-
 nlohmann::json GeminiGenerateContentEngine::convert_contents(Context const& ctx, ModelView const& model)
 {
     // 模型不支持图片 → 图片替换为占位符文本（对齐 pi downgradeUnsupportedImages）
@@ -183,15 +186,19 @@ nlohmann::json GeminiGenerateContentEngine::convert_contents(Context const& ctx,
     return contents;
 }
 
-nlohmann::json GeminiGenerateContentEngine::build_params(
+Result<nlohmann::json> GeminiGenerateContentEngine::build_params(
     ModelView const& model, Context const& ctx, StreamOptions const& opts)
 {
     nlohmann::json params;
     if (!ctx.system_prompt.empty())
         params["systemInstruction"] = { { "parts", { { { "text", ctx.system_prompt } } } } };
     params["contents"] = convert_contents(ctx, model);
-    if (!ctx.tools.empty())
-        params["tools"] = convert_tools(ctx.tools);
+    if (!ctx.tools.empty()) {
+        Result<nlohmann::json> tools = convert_tools(ctx.tools);
+        if (!tools)
+            return std::unexpected(std::move(tools).error());
+        params["tools"] = std::move(*tools);
+    }
 
     nlohmann::json gc;
     if (opts.temperature.has_value())
@@ -351,7 +358,14 @@ asio::awaitable<void> GeminiGenerateContentEngine::stream_async(
     if (opts.cancel)
         req.cancel = opts.cancel->slot();
 
-    nlohmann::json body = build_params(model, ctx, opts);
+    // 构建请求体：工具名未注册 → 请求构建失败（Result 错误），发 Error 终结
+    Result<nlohmann::json> body_result = build_params(model, ctx, opts);
+    if (!body_result) {
+        co_await sink.send(StreamEvent{ Error{ body_result.error().code, body_result.error().message } });
+        sink.close();
+        co_return;
+    }
+    nlohmann::json body = std::move(*body_result);
     auto reader = co_await HttpStreamReader::open(ex, url, body, req);
     if (!reader) {
         co_await sink.send(StreamEvent{ Error{ reader.error().code, reader.error().message } });

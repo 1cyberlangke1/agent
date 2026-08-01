@@ -82,7 +82,9 @@ public:
     explicit OpenAICompletionsEngine(EndpointConfig config);
 
     /// @brief 构建请求体（协议纯函数）。字段对照官方文档逐条写入，无依据不写。
-    static nlohmann::json build_params(ModelView const& model, Context const& ctx, StreamOptions const& opts);
+    ///        Context.tools 存工具名 → 从全局 Tools 注册表 resolve 定义；
+    ///        未注册工具名 → Result 错误（NotFound）。
+    static Result<nlohmann::json> build_params(ModelView const& model, Context const& ctx, StreamOptions const& opts);
 
     /// @brief 解析单个流式 chunk → 事件序列（纯函数，T0 可测）。
     ///        返回的事件不含 Done——Done 由 stream_async 在流结束聚合。
@@ -93,7 +95,7 @@ public:
 
 private:
     static nlohmann::json convert_messages(Context const& ctx, bool supports_image);
-    static nlohmann::json convert_tools(std::vector<ToolInfo> const& tools);
+    static Result<nlohmann::json> convert_tools(std::vector<std::string> const& names);
     static ChatResponse build_response(OpenAIStreamState const& state);
     EndpointConfig config_;
 };

@@ -75,7 +75,9 @@ public:
     ///        budget 档 → enabled + budget_tokens；"off" → disabled；"on" → enabled(1024)。
     ///        缓存：cache_control{type:ephemeral}（Long → ttl:"1h"）挂
     ///        system / 最后一个 tool / 最后一个 user 消息。
-    static nlohmann::json build_params(ModelView const& model, Context const& ctx, StreamOptions const& opts);
+    /// @brief 构建请求体（协议纯函数）。Context.tools 存工具名 → 从全局
+    ///        Tools 注册表 resolve 定义；未注册工具名 → Result 错误。
+    static Result<nlohmann::json> build_params(ModelView const& model, Context const& ctx, StreamOptions const& opts);
 
     /// @brief 解析单个流式事件 → 事件序列（纯函数，T0 可测）。
     ///        返回的事件不含 Done——Done 由 stream_async 在 message_stop/EOF 聚合。
@@ -91,7 +93,8 @@ public:
 private:
     static nlohmann::json convert_messages(Context const& ctx, nlohmann::json const* cache_control,
                                            bool supports_image);
-    static nlohmann::json convert_tools(std::vector<ToolInfo> const& tools, nlohmann::json const* cache_control);
+    static Result<nlohmann::json> convert_tools(std::vector<std::string> const& names,
+                                                nlohmann::json const* cache_control);
     static ChatResponse build_response(AnthropicStreamState const& state);
     EndpointConfig config_;
 };

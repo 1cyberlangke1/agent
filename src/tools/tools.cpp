@@ -202,4 +202,31 @@ Result<ToolInfo> Tools::get(std::string_view name)
     return it->second->info;
 }
 
+Result<std::vector<ToolInfo>> Tools::resolve(std::vector<std::string> const& names)
+{
+    State& st = state();
+    std::shared_lock lock(st.mtx);
+    std::vector<ToolInfo> result;
+    result.reserve(names.size());
+    for (auto const& name : names) {
+        auto it = st.registry.find(name);
+        if (it == st.registry.end())
+            return std::unexpected(Error{Errc::NotFound,
+                "tool '" + name + "' not registered"});
+        result.push_back(it->second->info);
+    }
+    return result;
+}
+
+std::vector<std::string> Tools::names()
+{
+    State& st = state();
+    std::shared_lock lock(st.mtx);
+    std::vector<std::string> result;
+    result.reserve(st.registry.size());
+    for (auto const& [name, tool] : st.registry)
+        result.push_back(name);
+    return result;
+}
+
 } // namespace agent

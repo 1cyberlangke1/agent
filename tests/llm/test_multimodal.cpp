@@ -125,7 +125,7 @@ TEST_CASE("multimodal openai：user 图片 → content 数组 image_url data URL
     auto model = ModelRegistry::find_model("gpt-4o-vision");
     REQUIRE(model.has_value());
     Context ctx = image_ctx("图里是什么");
-    auto params = OpenAICompletionsEngine<OpenAIThinking, OpenAICompat>::build_params(*model, ctx, {});
+    auto params = *OpenAICompletionsEngine<OpenAIThinking, OpenAICompat>::build_params(*model, ctx, {});
     auto const& content = params["messages"][0]["content"];
     REQUIRE(content.is_array());
     REQUIRE(content.size() == 2);
@@ -145,7 +145,7 @@ TEST_CASE("multimodal openai：tool_result 图片 → 独立 user 消息 Attache
     ctx.messages.push_back(Message{ Role::User, { Text{ "看下截图" } } });
     ctx.messages.push_back(Message{ Role::ToolResult,
                                     { ToolResult{ "call_1", "ok", false }, Image{ kPngBase64, "image/png" } } });
-    auto params = OpenAICompletionsEngine<OpenAIThinking, OpenAICompat>::build_params(*model, ctx, {});
+    auto params = *OpenAICompletionsEngine<OpenAIThinking, OpenAICompat>::build_params(*model, ctx, {});
     auto const& messages = params["messages"];
     REQUIRE(messages.size() == 3);
     CHECK(messages[1]["role"] == "tool");
@@ -163,7 +163,7 @@ TEST_CASE("multimodal 降级：非视觉模型 user 图片 → 占位符文本")
     ensure_text_model();
     auto model = ModelRegistry::find_model("text-only");
     REQUIRE(model.has_value());
-    auto params = OpenAICompletionsEngine<OpenAIThinking, OpenAICompat>::build_params(*model, image_ctx("hi"), {});
+    auto params = *OpenAICompletionsEngine<OpenAIThinking, OpenAICompat>::build_params(*model, image_ctx("hi"), {});
     auto const& content = params["messages"][0]["content"];
     CHECK(content.is_string());
     // 图片 → 占位符（文本在前 → 拼接；对齐 pi replaceImagesWithPlaceholder）
@@ -181,7 +181,7 @@ TEST_CASE("multimodal 降级：非视觉模型 tool_result 图片 → 占位符 
     ctx.messages.push_back(Message{ Role::ToolResult,
                                     { ToolResult{ "call_1", "ok", false },
                                       Image{ kPngBase64, "image/png" }, Image{ kPngBase64, "image/png" } } });
-    auto params = OpenAICompletionsEngine<OpenAIThinking, OpenAICompat>::build_params(*model, ctx, {});
+    auto params = *OpenAICompletionsEngine<OpenAIThinking, OpenAICompat>::build_params(*model, ctx, {});
     auto const& messages = params["messages"];
     REQUIRE(messages.size() == 2);
     CHECK(messages[1]["role"] == "tool");
@@ -197,7 +197,7 @@ TEST_CASE("multimodal gemini：user 图片 → parts inlineData")
     ensure_vision_model();
     auto model = ModelRegistry::find_model("gpt-4o-vision");
     REQUIRE(model.has_value());
-    auto params = GeminiGenerateContentEngine::build_params(*model, image_ctx("图里是什么"), {});
+    auto params = *GeminiGenerateContentEngine::build_params(*model, image_ctx("图里是什么"), {});
     auto const& parts = params["contents"][0]["parts"];
     REQUIRE(parts.is_array());
     REQUIRE(parts.size() == 2);
@@ -217,7 +217,7 @@ TEST_CASE("multimodal gemini：tool_result 图片 → functionResponse.parts 内
     ctx.messages.push_back(Message{ Role::Assistant, { ToolCall{ "call_1", "screenshot", { } } } });
     ctx.messages.push_back(Message{ Role::ToolResult,
                                     { ToolResult{ "call_1", "done", false }, Image{ kPngBase64, "image/png" } } });
-    auto params = GeminiGenerateContentEngine::build_params(*model, ctx, {});
+    auto params = *GeminiGenerateContentEngine::build_params(*model, ctx, {});
     auto const& fn_part = params["contents"][2]["parts"][0]["functionResponse"];
     CHECK(fn_part["name"] == "screenshot");
     REQUIRE(fn_part.contains("parts"));
@@ -234,7 +234,7 @@ TEST_CASE("multimodal gemini：非视觉模型降级 → 占位符 + 无 parts �
     ctx.messages.push_back(Message{ Role::Assistant, { ToolCall{ "call_1", "screenshot", { } } } });
     ctx.messages.push_back(Message{ Role::ToolResult,
                                     { ToolResult{ "call_1", "done", false }, Image{ kPngBase64, "image/png" } } });
-    auto params = GeminiGenerateContentEngine::build_params(*model, ctx, {});
+    auto params = *GeminiGenerateContentEngine::build_params(*model, ctx, {});
     // user 图片 → 占位符文本 part
     CHECK(params["contents"][0]["parts"][0]["text"] == kNonVisionUserImagePlaceholder);
     // tool_result 图片降级 → 无 parts 内嵌
@@ -249,7 +249,7 @@ TEST_CASE("multimodal anthropic：user 图片 → image block")
     ensure_vision_model();
     auto model = ModelRegistry::find_model("gpt-4o-vision");
     REQUIRE(model.has_value());
-    auto params = AnthropicMessagesEngine::build_params(*model, image_ctx("图里是什么"), {});
+    auto params = *AnthropicMessagesEngine::build_params(*model, image_ctx("图里是什么"), {});
     auto const& content = params["messages"][0]["content"];
     REQUIRE(content.is_array());
     REQUIRE(content.size() == 2);
@@ -269,7 +269,7 @@ TEST_CASE("multimodal anthropic：tool_result 图片 → content blocks 含 imag
     ctx.messages.push_back(Message{ Role::Assistant, { ToolCall{ "toolu_1", "screenshot", { } } } });
     ctx.messages.push_back(Message{ Role::ToolResult,
                                     { ToolResult{ "toolu_1", "done", false }, Image{ kPngBase64, "image/png" } } });
-    auto params = AnthropicMessagesEngine::build_params(*model, ctx, {});
+    auto params = *AnthropicMessagesEngine::build_params(*model, ctx, {});
     auto const& tr_block = params["messages"][2]["content"][0];
     CHECK(tr_block["type"] == "tool_result");
     REQUIRE(tr_block["content"].is_array());
@@ -283,7 +283,7 @@ TEST_CASE("multimodal anthropic：非视觉模型降级 → 占位符")
     ensure_text_model();
     auto model = ModelRegistry::find_model("text-only");
     REQUIRE(model.has_value());
-    auto params = AnthropicMessagesEngine::build_params(*model, image_ctx("hi"), {});
+    auto params = *AnthropicMessagesEngine::build_params(*model, image_ctx("hi"), {});
     // 图片 → 占位符（文本在前 → 拼接成字符串 content）
     CHECK(params["messages"][0]["content"] == "hi" + std::string(kNonVisionUserImagePlaceholder));
 }
@@ -389,7 +389,7 @@ TEST_CASE("contract: dump openai 图片 build_params")
     ensure_vision_model();
     auto model = ModelRegistry::find_model("gpt-4o-vision");
     REQUIRE(model.has_value());
-    auto params = OpenAICompletionsEngine<OpenAIThinking, OpenAICompat>::build_params(
+    auto params = *OpenAICompletionsEngine<OpenAIThinking, OpenAICompat>::build_params(
         *model, image_ctx("what's in this image?"), {});
     std::filesystem::path dir = AGENT_CONTRACT_OUT;
     std::filesystem::create_directories(dir);
@@ -401,7 +401,7 @@ TEST_CASE("contract: dump anthropic 图片 build_params")
     ensure_vision_model();
     auto model = ModelRegistry::find_model("gpt-4o-vision");
     REQUIRE(model.has_value());
-    auto params = AnthropicMessagesEngine::build_params(
+    auto params = *AnthropicMessagesEngine::build_params(
         *model, image_ctx("what's in this image?"), {});
     std::filesystem::path dir = AGENT_CONTRACT_OUT;
     std::filesystem::create_directories(dir);

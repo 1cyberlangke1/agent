@@ -138,12 +138,13 @@ TEST_CASE("anthropic build_params：基础字段 + system + tools input_schema")
     REQUIRE(model.has_value());
     Context ctx = simple_ctx("hi");
     ctx.system_prompt = "你是助手";
-    ctx.tools.push_back(weather_tool());
+    ensure_get_weather_tool();
+    ctx.tools.push_back("get_weather");
     StreamOptions opts;
     opts.max_tokens = 512;
     opts.temperature = 0.5;
 
-    auto params = AnthropicMessagesEngine::build_params(*model, ctx, opts);
+    auto params = *AnthropicMessagesEngine::build_params(*model, ctx, opts);
     CHECK(params["model"] == "claude-sonnet-4-5");
     CHECK(params["max_tokens"] == 512);
     CHECK(params["stream"] == true);
@@ -165,7 +166,7 @@ TEST_CASE("anthropic build_params：max_tokens 必填，用户不传用模型表
     ensure_claude_sonnet();
     auto model = ModelRegistry::find_model("claude-sonnet-4-5");
     REQUIRE(model.has_value());
-    auto params = AnthropicMessagesEngine::build_params(*model, simple_ctx("hi"), {});
+    auto params = *AnthropicMessagesEngine::build_params(*model, simple_ctx("hi"), {});
     CHECK(params["max_tokens"] == 8192);   // model.max_output_tokens
     CHECK(!params.contains("temperature"));
     CHECK(!params.contains("thinking"));
@@ -178,7 +179,7 @@ TEST_CASE("anthropic build_params：effort 档 → adaptive + output_config.effo
     REQUIRE(model.has_value());
     StreamOptions opts;
     opts.reasoning = ThinkingLevel::High;
-    auto params = AnthropicMessagesEngine::build_params(*model, simple_ctx("hi"), opts);
+    auto params = *AnthropicMessagesEngine::build_params(*model, simple_ctx("hi"), opts);
     CHECK(params["thinking"]["type"] == "adaptive");
     CHECK(params["output_config"]["effort"] == "xhigh");   // sonnet map High=xhigh
     CHECK(!params.contains("temperature"));   // 思考开启 → temperature 不传
@@ -191,7 +192,7 @@ TEST_CASE("anthropic build_params：budget 档 → enabled + budget_tokens")
     REQUIRE(model.has_value());
     StreamOptions opts;
     opts.reasoning = ThinkingLevel::Medium;
-    auto params = AnthropicMessagesEngine::build_params(*model, simple_ctx("hi"), opts);
+    auto params = *AnthropicMessagesEngine::build_params(*model, simple_ctx("hi"), opts);
     CHECK(params["thinking"]["type"] == "enabled");
     CHECK(params["thinking"]["budget_tokens"] == 4096);   // haiku map Medium=4096
     CHECK(params["thinking"]["display"] == "summarized");
@@ -204,7 +205,7 @@ TEST_CASE("anthropic build_params：Off → disabled，toggle on → enabled(102
     REQUIRE(model.has_value());
     StreamOptions opts;
     opts.reasoning = ThinkingLevel::Off;
-    auto params = AnthropicMessagesEngine::build_params(*model, simple_ctx("hi"), opts);
+    auto params = *AnthropicMessagesEngine::build_params(*model, simple_ctx("hi"), opts);
     CHECK(params["thinking"]["type"] == "disabled");
 }
 
@@ -215,11 +216,12 @@ TEST_CASE("anthropic build_params：缓存挂 system/最后 tool/最后 user")
     REQUIRE(model.has_value());
     Context ctx = simple_ctx("hi");
     ctx.system_prompt = "你是助手";
-    ctx.tools.push_back(weather_tool());
+    ensure_get_weather_tool();
+    ctx.tools.push_back("get_weather");
     StreamOptions opts;
     opts.cache_retention = CacheRetention::Long;
 
-    auto params = AnthropicMessagesEngine::build_params(*model, ctx, opts);
+    auto params = *AnthropicMessagesEngine::build_params(*model, ctx, opts);
     // system 块
     REQUIRE(params["system"][0].contains("cache_control"));
     CHECK(params["system"][0]["cache_control"]["type"] == "ephemeral");
@@ -236,7 +238,7 @@ TEST_CASE("anthropic build_params：缓存挂 system/最后 tool/最后 user")
     // None → 不挂
     StreamOptions none;
     none.cache_retention = CacheRetention::None;
-    auto params_none = AnthropicMessagesEngine::build_params(*model, simple_ctx("hi"), none);
+    auto params_none = *AnthropicMessagesEngine::build_params(*model, simple_ctx("hi"), none);
     CHECK(!params_none.contains("system"));
     CHECK(!params_none.contains("tools"));
     CHECK(params_none["messages"][0]["content"] == "hi");   // 未转 blocks
@@ -259,7 +261,7 @@ TEST_CASE("anthropic build_params：多轮消息转换（thinking 签名回传 /
     ctx.messages.push_back(tool_result1);
     ctx.messages.push_back(tool_result2);
 
-    auto params = AnthropicMessagesEngine::build_params(*model, ctx, {});
+    auto params = *AnthropicMessagesEngine::build_params(*model, ctx, {});
     auto const& messages = params["messages"];
     REQUIRE(messages.size() == 3);
     // [0] user, [1] assistant, [2] user(tool_result 合并)
@@ -292,7 +294,7 @@ TEST_CASE("anthropic build_params：无签名 thinking 降级为文本，redacte
     Context ctx = simple_ctx("hi");
     Message assistant{ Role::Assistant, { Thinking{ "no sig text" } } };   // 无签名
     ctx.messages.push_back(assistant);
-    auto params = AnthropicMessagesEngine::build_params(*model, ctx, {});
+    auto params = *AnthropicMessagesEngine::build_params(*model, ctx, {});
     auto const& blocks = params["messages"][1]["content"];
     REQUIRE(blocks.size() == 1);
     CHECK(blocks[0]["type"] == "text");          // 降级
@@ -301,7 +303,7 @@ TEST_CASE("anthropic build_params：无签名 thinking 降级为文本，redacte
     Context ctx2 = simple_ctx("hi");
     Message redacted{ Role::Assistant, { Thinking{ "", true, "redacted-data" } } };
     ctx2.messages.push_back(redacted);
-    auto params2 = AnthropicMessagesEngine::build_params(*model, ctx2, {});
+    auto params2 = *AnthropicMessagesEngine::build_params(*model, ctx2, {});
     auto const& blocks2 = params2["messages"][1]["content"];
     REQUIRE(blocks2.size() == 1);
     CHECK(blocks2[0]["type"] == "redacted_thinking");
@@ -738,7 +740,7 @@ TEST_CASE("contract: dump anthropic build_params 文本场景")
     REQUIRE(model.has_value());
     Context ctx;
     ctx.messages.push_back(Message{ Role::User, { Text{ "hi" } } });
-    auto params = AnthropicMessagesEngine::build_params(*model, ctx, {});
+    auto params = *AnthropicMessagesEngine::build_params(*model, ctx, {});
     std::filesystem::path dir = AGENT_CONTRACT_OUT;
     std::filesystem::create_directories(dir);
     std::ofstream(dir / "anthropic_text.json") << params.dump(2);
@@ -751,8 +753,9 @@ TEST_CASE("contract: dump anthropic build_params 工具场景")
     REQUIRE(model.has_value());
     Context ctx;
     ctx.messages.push_back(Message{ Role::User, { Text{ "hi" } } });
-    ctx.tools.push_back(weather_tool());
-    auto params = AnthropicMessagesEngine::build_params(*model, ctx, {});
+    ensure_get_weather_tool();
+    ctx.tools.push_back("get_weather");
+    auto params = *AnthropicMessagesEngine::build_params(*model, ctx, {});
     std::filesystem::path dir = AGENT_CONTRACT_OUT;
     std::filesystem::create_directories(dir);
     std::ofstream(dir / "anthropic_tool_1.json") << params.dump(2);
