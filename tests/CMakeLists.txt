@@ -11,6 +11,7 @@ if(AGENT_BUILD_TESTS)
         main.cpp
         core/test_result.cpp
         core/test_http_client.cpp
+        core/test_https_smoke.cpp
         tools/test_tools.cpp
         tools/test_tools_concurrency.cpp
         tools/test_multi_tu_tool_a.cpp
