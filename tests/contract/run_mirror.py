@@ -114,6 +114,44 @@ def run_openai_case(fixture: str, case: str) -> None:
         proc.wait(timeout=5)
 
 
+def run_openai_image_case(fixture: str, case: str) -> None:
+    """官方 openai SDK 发送含图片（image_url data URL）的请求 → golden 落盘。
+    响应是普通文本流，fixture 复用 openai_text_4.sse；请求侧才是多模态验证点。"""
+    proc = subprocess.Popen(
+        [sys.executable, str(SCRIPT), fixture, case, "openai"],
+        stdout=subprocess.PIPE, text=True,
+    )
+    line = proc.stdout.readline().strip()
+    port = int(line)
+    wait_port(port)
+
+    png_b64 = "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNkYPhfDwAChwGA60e6kgAAAABJRU5ErkJggg=="
+    try:
+        client = OpenAI(api_key="contract-test", base_url=f"http://127.0.0.1:{port}/v1")
+        stream = client.chat.completions.create(
+            model="gpt-4o-vision",
+            messages=[{
+                "role": "user",
+                "content": [
+                    {"type": "text", "text": "what's in this image?"},
+                    {"type": "image_url", "image_url": {"url": f"data:image/png;base64,{png_b64}"}},
+                ],
+            }],
+            stream=True,
+        )
+        text = ""
+        for chunk in stream:
+            for choice in chunk.choices:
+                if choice.delta.content:
+                    text += choice.delta.content
+        assert stream is not None
+        assert text, "no text content"
+        print(f"PASS {case}: image_url 请求已发送，SDK 完整消费响应 text_len={len(text)}")
+    finally:
+        proc.terminate()
+        proc.wait(timeout=5)
+
+
 def run_anthropic_case(fixture: str, case: str) -> None:
     proc = subprocess.Popen(
         [sys.executable, str(SCRIPT), fixture, case, "anthropic"],
@@ -172,12 +210,48 @@ def run_anthropic_case(fixture: str, case: str) -> None:
         proc.wait(timeout=5)
 
 
+def run_anthropic_image_case(fixture: str, case: str) -> None:
+    """官方 anthropic SDK 发送含图片（image content block）的请求 → golden 落盘。
+    响应是普通文本流，fixture 复用 anthropic_text.sse；请求侧才是多模态验证点。"""
+    proc = subprocess.Popen(
+        [sys.executable, str(SCRIPT), fixture, case, "anthropic"],
+        stdout=subprocess.PIPE, text=True,
+    )
+    line = proc.stdout.readline().strip()
+    port = int(line)
+    wait_port(port)
+
+    png_b64 = "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNkYPhfDwAChwGA60e6kgAAAABJRU5ErkJggg=="
+    try:
+        client = Anthropic(api_key="contract-test", base_url=f"http://127.0.0.1:{port}")
+        with client.messages.stream(
+            model="claude-sonnet-4-5",
+            messages=[{
+                "role": "user",
+                "content": [
+                    {"type": "text", "text": "what's in this image?"},
+                    {"type": "image", "source": {"type": "base64",
+                                                 "media_type": "image/png", "data": png_b64}},
+                ],
+            }],
+            max_tokens=100,
+        ) as stream:
+            final = stream.get_final_message()
+        assert final.content, "no content"
+        print(f"PASS {case}: 图片 content block 请求已发送，SDK 完整消费响应")
+    finally:
+        proc.terminate()
+        proc.wait(timeout=5)
+
+
 def main() -> None:
     cases = [
         ("openai_tool_1.sse", "tool_1", "openai", run_openai_case),
         ("openai_text_4.sse", "text_4", "openai", run_openai_case),
+        ("openai_text_4.sse", "openai_image_1", "openai", run_openai_image_case),
         ("anthropic_tool_round1.sse", "anthropic_tool_1", "anthropic", run_anthropic_case),
         ("anthropic_text.sse", "anthropic_text", "anthropic", run_anthropic_case),
+        ("anthropic_text.sse", "anthropic_image_1", "anthropic", run_anthropic_image_case),
     ]
     failed = 0
     for fixture, case, provider, runner in cases:

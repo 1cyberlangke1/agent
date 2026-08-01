@@ -10,6 +10,8 @@
 - **思考链归一化**：`reasoning_effort`（OpenAI）/ `thinking + reasoning_effort`（DeepSeek）/ `thinking`（Anthropic adaptive/budget）/ `thinkingBudget`（Gemini）全部从统一 `ThinkingLevel` 映射
 - **缓存归一化**：`prompt_cache_key`（OpenAI）/ `cache_control`（Anthropic 挂 system/工具/最后 user 消息）/ 自动缓存（DeepSeek/Gemini）
 - **工具调用闭环**：反射注册工具（P2996 静态反射）→ 工具 schema → 模型 tool call → 真实执行 → 多轮结果回传
+- **多模态图片输入**：统一 `Image` 内容块 → OpenAI `image_url` / Gemini `inlineData` / Anthropic `image` block；
+  模型能力由模型表 `supports_image_input` 承载（引擎零模型特判），不支持时自动降级为占位符文本
 - **契约级验证**：T0 纯函数 + T1 MockServer 回放官方/真实 fixture + T2 官方 SDK 镜像契约（openai / anthropic SDK 当裁判打破自证循环）
 - **传输层**：libcurl `multi_socket` 嫁接 asio 单事件循环，SSE 流式、分层超时、429/5xx 重试、取消、gzip/br 解压、schannel TLS
 

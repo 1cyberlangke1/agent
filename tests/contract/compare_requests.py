@@ -48,6 +48,14 @@ EXEMPTIONS = {
     "thinking.display": "同上",
     "output_config": "同上 (output_config.effort)",
     "output_config.effort": "同上",
+    # 多模态图片（官方文档 image 输入格式；path_in 的 [i] 只查数组首元素，
+    # 图片块在 content 第二个元素时误报，字段本身在 golden 中存在）
+    "messages.[i].content.[i].image_url": "https://developers.openai.com/api/docs/guides/vision (image_url data URL)",
+    "messages.[i].content.[i].image_url.url": "同上",
+    "messages.[i].content.[i].source": "https://docs.anthropic.com/en/api/messages (image content block source)",
+    "messages.[i].content.[i].source.type": "同上",
+    "messages.[i].content.[i].source.media_type": "同上",
+    "messages.[i].content.[i].source.data": "同上",
 }
 
 

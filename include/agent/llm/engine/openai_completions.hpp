@@ -7,6 +7,7 @@
 // 实现见 src/llm/engine/openai_completions.cpp。
 
 #include <agent/core/result.hpp>
+#include <agent/llm/engine/image_support.hpp>
 #include <agent/llm/model.hpp>
 #include <agent/llm/options.hpp>
 #include <agent/llm/stream.hpp>
@@ -91,7 +92,7 @@ public:
                                        AsyncStream<StreamEvent> sink);
 
 private:
-    static nlohmann::json convert_messages(Context const& ctx);
+    static nlohmann::json convert_messages(Context const& ctx, bool supports_image);
     static nlohmann::json convert_tools(std::vector<ToolInfo> const& tools);
     static ChatResponse build_response(OpenAIStreamState const& state);
     EndpointConfig config_;

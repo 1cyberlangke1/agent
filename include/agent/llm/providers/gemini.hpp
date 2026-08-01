@@ -8,6 +8,7 @@
 //   https://ai.google.dev/gemini-api/docs/text-generation
 
 #include <agent/core/result.hpp>
+#include <agent/llm/engine/image_support.hpp>
 #include <agent/llm/model.hpp>
 #include <agent/llm/options.hpp>
 #include <agent/llm/stream.hpp>
@@ -68,7 +69,7 @@ public:
                                        AsyncStream<StreamEvent> sink);
 
 private:
-    static nlohmann::json convert_contents(Context const& ctx);
+    static nlohmann::json convert_contents(Context const& ctx, ModelView const& model);
     static nlohmann::json convert_tools(std::vector<ToolInfo> const& tools);
     static ChatResponse build_response(GeminiStreamState const& state);
     EndpointConfig config_;

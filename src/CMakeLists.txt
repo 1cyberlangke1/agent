@@ -4,6 +4,7 @@ add_executable(agent
     core/http_client.cpp
     llm/model_registry.cpp
     llm/engine/openai_completions.cpp
+    llm/engine/image_support.cpp
     llm/providers/openai.cpp
     llm/providers/deepseek.cpp
     llm/providers/gemini.cpp

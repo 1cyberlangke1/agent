@@ -143,13 +143,18 @@ nlohmann::json AnthropicMessagesEngine::convert_tools(std::vector<ToolInfo> cons
     return arr;
 }
 
-nlohmann::json AnthropicMessagesEngine::convert_messages(Context const& ctx, nlohmann::json const* cache_control)
+nlohmann::json AnthropicMessagesEngine::convert_messages(Context const& ctx, nlohmann::json const* cache_control,
+                                                         bool supports_image)
 {
+    // 模型不支持图片 → 图片替换为占位符文本（对齐 pi downgradeUnsupportedImages）
+    std::vector<Message> input_messages = ctx.messages;
+    downgrade_unsupported_images(input_messages, supports_image);
+
     nlohmann::json messages = nlohmann::json::array();
     std::size_t last_user_index = SIZE_MAX;   // 缓存挂载点：最后 user 消息（含 tool_result 合并）
 
-    for (std::size_t i = 0; i < ctx.messages.size(); ++i) {
-        auto const& m = ctx.messages[i];
+    for (std::size_t i = 0; i < input_messages.size(); ++i) {
+        auto const& m = input_messages[i];
         switch (m.role) {
             case Role::User: {
                 // 纯文本 → content 字符串；含图片 → content blocks（text/image）
@@ -216,16 +221,39 @@ nlohmann::json AnthropicMessagesEngine::convert_messages(Context const& ctx, nlo
                 // tool_result 必须包在 user 里；对齐 pi 的连续合并）
                 nlohmann::json blocks = nlohmann::json::array();
                 std::size_t j = i;
-                while (j < ctx.messages.size() && ctx.messages[j].role == Role::ToolResult) {
-                    for (auto const& block : ctx.messages[j].content) {
-                        if (auto tr = std::get_if<ToolResult>(&block)) {
-                            nlohmann::json entry{ { "type", "tool_result" },
-                                                  { "tool_use_id", tr->tool_call_id },
-                                                  { "content", tr->output } };
-                            if (tr->is_error)
-                                entry["is_error"] = true;
-                            blocks.push_back(std::move(entry));
+                while (j < input_messages.size() && input_messages[j].role == Role::ToolResult) {
+                    auto const& msg = input_messages[j];
+                    // 收集该消息的图片（支持图片的模型）与 tool_result 块
+                    std::vector<Image const*> images;
+                    std::vector<ToolResult const*> results;
+                    for (auto const& block : msg.content) {
+                        if (auto img = std::get_if<Image>(&block))
+                            images.push_back(img);
+                        else if (auto tr = std::get_if<ToolResult>(&block))
+                            results.push_back(tr);
+                    }
+                    for (std::size_t k = 0; k < results.size(); ++k) {
+                        auto const* tr = results[k];
+                        nlohmann::json entry{ { "type", "tool_result" },
+                                              { "tool_use_id", tr->tool_call_id } };
+                        // 图片附到该消息最后一个 tool_result 的 content（官方 tool_result
+                        // content 支持 text + image blocks 数组）
+                        bool attach_images = (k + 1 == results.size()) && !images.empty();
+                        if (attach_images) {
+                            nlohmann::json content = nlohmann::json::array();
+                            content.push_back({ { "type", "text" }, { "text", tr->output } });
+                            for (auto const* img : images)
+                                content.push_back({ { "type", "image" },
+                                                    { "source", { { "type", "base64" },
+                                                                  { "media_type", img->mime_type },
+                                                                  { "data", img->data } } } });
+                            entry["content"] = std::move(content);
+                        } else {
+                            entry["content"] = tr->output;
                         }
+                        if (tr->is_error)
+                            entry["is_error"] = true;
+                        blocks.push_back(std::move(entry));
                     }
                     ++j;
                 }
@@ -257,7 +285,8 @@ nlohmann::json AnthropicMessagesEngine::build_params(
     nlohmann::json params;
     params["model"] = model.id;
     auto cache_control = make_cache_control(opts.cache_retention.value_or(CacheRetention::None));
-    params["messages"] = convert_messages(ctx, cache_control ? &*cache_control : nullptr);
+    params["messages"] = convert_messages(ctx, cache_control ? &*cache_control : nullptr,
+                                          model.supports_image_input);
     params["stream"] = true;
     // Anthropic max_tokens 必填：用户不传 → 模型表 max_output_tokens；两者皆无则不写。
     int max_tokens = opts.max_tokens.value_or(model.max_output_tokens);

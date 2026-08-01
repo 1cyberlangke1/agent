@@ -15,6 +15,7 @@
 //       cachedContentTokenCount / thoughtsTokenCount（官方 UsageMetadata 字段）
 
 #include <agent/core/http_client.hpp>
+#include <agent/llm/engine/image_support.hpp>
 #include <agent/llm/providers/gemini.hpp>
 
 #include <algorithm>
@@ -27,6 +28,10 @@
 namespace agent::detail {
 
 namespace {
+
+// 无引擎内模型特判：模型能力统一由 ModelView.supports_image_input（模型表）承载，
+// 支持图片的模型（gemini / gemma4 等）tool_result 图片内嵌 functionResponse.parts，
+// 不支持的降级为占位符。引擎不关心具体模型 id。
 
 /// @brief finishReason → StopReason（Gemini 官方值表）。
 StopReason map_finish_reason(std::string_view reason)
@@ -96,24 +101,36 @@ nlohmann::json GeminiGenerateContentEngine::convert_tools(std::vector<ToolInfo> 
     return tools_arr;
 }
 
-nlohmann::json GeminiGenerateContentEngine::convert_contents(Context const& ctx)
+nlohmann::json GeminiGenerateContentEngine::convert_contents(Context const& ctx, ModelView const& model)
 {
+    // 模型不支持图片 → 图片替换为占位符文本（对齐 pi downgradeUnsupportedImages）
+    std::vector<Message> messages = ctx.messages;
+    downgrade_unsupported_images(messages, model.supports_image_input);
+
     // Gemini 的 system 走顶层 systemInstruction（build_params），contents 不含 system。
     nlohmann::json contents = nlohmann::json::array();
     // functionResponse part 需要工具名：从 assistant 的 tool_calls 建立 id → name 映射
     std::unordered_map<std::string, std::string> call_names;
-    for (auto const& m : ctx.messages) {
+    for (auto const& m : messages) {
         if (m.role != Role::Assistant) continue;
         for (auto const& b : m.content)
             if (auto tc = std::get_if<ToolCall>(&b)) call_names[tc->id] = tc->name;
     }
+    // 支持图片的模型：tool_result 图片内嵌 functionResponse.parts（统一行为，无模型特判）
+    bool multimodal_fn_response = model.supports_image_input;
 
-    for (auto const& m : ctx.messages) {
+    for (auto const& m : messages) {
         switch (m.role) {
             case Role::User: {
                 nlohmann::json parts = nlohmann::json::array();
-                for (auto const& b : m.content)
-                    if (auto t = std::get_if<Text>(&b)) parts.push_back({ { "text", t->text } });
+                for (auto const& b : m.content) {
+                    if (auto t = std::get_if<Text>(&b))
+                        parts.push_back({ { "text", t->text } });
+                    else if (auto img = std::get_if<Image>(&b))
+                        // 官方 Part.inlineData：{mimeType, data}
+                        parts.push_back({ { "inlineData", { { "mimeType", img->mime_type },
+                                                             { "data", img->data } } } });
+                }
                 if (!parts.empty())
                     contents.push_back({ { "role", "user" }, { "parts", std::move(parts) } });
                 break;
@@ -139,10 +156,21 @@ nlohmann::json GeminiGenerateContentEngine::convert_contents(Context const& ctx)
                         std::string name = it != call_names.end() ? it->second : "unknown";
                         // 显式构造避免 nlohmann initializer 把 parts 歧义成数组
                         nlohmann::json part;
-                        part["functionResponse"] = nlohmann::json{
-                            { "name", name },
-                            { "response", nlohmann::json{ { "output", tr->output } } },
-                        };
+                        nlohmann::json fr{ { "name", name },
+                                           { "response", nlohmann::json{ { "output", tr->output } } } };
+                        // 图片：functionResponse.parts 内嵌 inlineData（支持图片的模型）
+                        if (multimodal_fn_response) {
+                            nlohmann::json image_parts = nlohmann::json::array();
+                            for (auto const& b2 : m.content) {
+                                if (auto img = std::get_if<Image>(&b2))
+                                    image_parts.push_back(
+                                        { { "inlineData", { { "mimeType", img->mime_type },
+                                                            { "data", img->data } } } });
+                            }
+                            if (!image_parts.empty())
+                                fr["parts"] = std::move(image_parts);
+                        }
+                        part["functionResponse"] = std::move(fr);
                         nlohmann::json parts = nlohmann::json::array();
                         parts.push_back(std::move(part));
                         contents.push_back({ { "role", "function" }, { "parts", std::move(parts) } });
@@ -161,7 +189,7 @@ nlohmann::json GeminiGenerateContentEngine::build_params(
     nlohmann::json params;
     if (!ctx.system_prompt.empty())
         params["systemInstruction"] = { { "parts", { { { "text", ctx.system_prompt } } } } };
-    params["contents"] = convert_contents(ctx);
+    params["contents"] = convert_contents(ctx, model);
     if (!ctx.tools.empty())
         params["tools"] = convert_tools(ctx.tools);
 

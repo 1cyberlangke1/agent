@@ -11,6 +11,7 @@
 // 认证：x-api-key + anthropic-version: 2023-06-01。
 
 #include <agent/core/result.hpp>
+#include <agent/llm/engine/image_support.hpp>
 #include <agent/llm/model.hpp>
 #include <agent/llm/options.hpp>
 #include <agent/llm/stream.hpp>
@@ -88,7 +89,8 @@ public:
     static constexpr bool send_session_affinity = false;
 
 private:
-    static nlohmann::json convert_messages(Context const& ctx, nlohmann::json const* cache_control);
+    static nlohmann::json convert_messages(Context const& ctx, nlohmann::json const* cache_control,
+                                           bool supports_image);
     static nlohmann::json convert_tools(std::vector<ToolInfo> const& tools, nlohmann::json const* cache_control);
     static ChatResponse build_response(AnthropicStreamState const& state);
     EndpointConfig config_;

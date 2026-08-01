@@ -110,19 +110,50 @@ void add_session_affinity_headers(std::vector<std::pair<std::string, std::string
 
 // ───────────────────── 请求体构建 ─────────────────────
 
-template<typename ThinkingPolicy, typename Compat>
-nlohmann::json OpenAICompletionsEngine<ThinkingPolicy, Compat>::convert_messages(Context const& ctx)
+/// @brief Image 内容块 → OpenAI image_url 部分（官方 data URL 格式，见 vision 文档）。
+///        content 数组：{type:"image_url", image_url:{url:"data:<mime>;base64,<data>"}}
+nlohmann::json image_url_part(Image const& img)
 {
-    nlohmann::json messages = nlohmann::json::array();
+    return nlohmann::json{ { "type", "image_url" },
+                           { "image_url", { { "url", "data:" + img.mime_type + ";base64," + img.data } } } };
+}
+
+template<typename ThinkingPolicy, typename Compat>
+nlohmann::json OpenAICompletionsEngine<ThinkingPolicy, Compat>::convert_messages(Context const& ctx,
+                                                                                  bool supports_image)
+{
+    // 模型不支持图片 → 图片替换为占位符文本（对齐 pi downgradeUnsupportedImages）
+    std::vector<Message> messages = ctx.messages;
+    downgrade_unsupported_images(messages, supports_image);
+
+    nlohmann::json out = nlohmann::json::array();
     if (!ctx.system_prompt.empty())
-        messages.push_back({{"role", Compat::system_role}, {"content", ctx.system_prompt}});
-    for (auto const& m : ctx.messages) {
+        out.push_back({{"role", Compat::system_role}, {"content", ctx.system_prompt}});
+    for (auto const& m : messages) {
         switch (m.role) {
             case Role::User: {
+                // 纯文本 → content 字符串；含图片 → content 数组（text + image_url）
                 std::string text;
-                for (auto const& b : m.content)
-                    if (auto t = std::get_if<Text>(&b)) text += t->text;
-                messages.push_back({{"role", "user"}, {"content", std::move(text)}});
+                std::vector<nlohmann::json> parts;
+                bool has_image = false;
+                for (auto const& b : m.content) {
+                    if (auto t = std::get_if<Text>(&b)) {
+                        text += t->text;
+                    } else if (auto img = std::get_if<Image>(&b)) {
+                        has_image = true;
+                        parts.push_back(image_url_part(*img));
+                    }
+                }
+                if (!has_image) {
+                    out.push_back({{"role", "user"}, {"content", std::move(text)}});
+                } else {
+                    nlohmann::json content = nlohmann::json::array();
+                    if (!text.empty())
+                        content.push_back({{"type", "text"}, {"text", std::move(text)}});
+                    for (auto& part : parts)
+                        content.push_back(std::move(part));
+                    out.push_back({{"role", "user"}, {"content", std::move(content)}});
+                }
                 break;
             }
             case Role::Assistant: {
@@ -142,22 +173,35 @@ nlohmann::json OpenAICompletionsEngine<ThinkingPolicy, Compat>::convert_messages
                 if (!tool_calls.empty())
                     msg["tool_calls"] = std::move(tool_calls);
                 ThinkingPolicy::finalize_assistant(msg, m);
-                messages.push_back(std::move(msg));
+                out.push_back(std::move(msg));
                 break;
             }
             case Role::ToolResult: {
+                // tool_result 文本照发 tool 消息；消息里的图片（支持时）作为独立
+                // user 消息附加（对齐 pi：Attached image(s) from tool result + image_url 块）
+                std::vector<nlohmann::json> image_parts;
                 for (auto const& b : m.content) {
                     if (auto tr = std::get_if<ToolResult>(&b)) {
-                        messages.push_back({{"role", "tool"},
-                                            {"tool_call_id", tr->tool_call_id},
-                                            {"content", tr->output}});
+                        out.push_back({{"role", "tool"},
+                                       {"tool_call_id", tr->tool_call_id},
+                                       {"content", tr->output}});
+                    } else if (auto img = std::get_if<Image>(&b)) {
+                        image_parts.push_back(image_url_part(*img));
                     }
+                }
+                if (!image_parts.empty()) {
+                    nlohmann::json content = nlohmann::json::array();
+                    content.push_back({{"type", "text"},
+                                       {"text", "Attached image(s) from tool result:"}});
+                    for (auto& part : image_parts)
+                        content.push_back(std::move(part));
+                    out.push_back({{"role", "user"}, {"content", std::move(content)}});
                 }
                 break;
             }
         }
     }
-    return messages;
+    return out;
 }
 
 template<typename ThinkingPolicy, typename Compat>
@@ -180,7 +224,7 @@ nlohmann::json OpenAICompletionsEngine<ThinkingPolicy, Compat>::build_params(
 {
     nlohmann::json params;
     params["model"] = model.id;
-    params["messages"] = convert_messages(ctx);
+    params["messages"] = convert_messages(ctx, model.supports_image_input);
     params["stream"] = true;
     // 官方文档：include_usage 使流末尾多一个 usage chunk（choices 空）；中断时可能缺失。
     params["stream_options"] = {{"include_usage", true}};

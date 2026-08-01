@@ -22,10 +22,12 @@ if(AGENT_BUILD_TESTS)
         llm/test_openai.cpp
         llm/test_gemini.cpp
         llm/test_anthropic.cpp
+        llm/test_multimodal.cpp
         ${CMAKE_SOURCE_DIR}/src/tools/tools.cpp
         ${CMAKE_SOURCE_DIR}/src/llm/model_registry.cpp
         ${CMAKE_SOURCE_DIR}/src/core/http_client.cpp
         ${CMAKE_SOURCE_DIR}/src/llm/engine/openai_completions.cpp
+        ${CMAKE_SOURCE_DIR}/src/llm/engine/image_support.cpp
         ${CMAKE_SOURCE_DIR}/src/llm/providers/openai.cpp
         ${CMAKE_SOURCE_DIR}/src/llm/providers/deepseek.cpp
         ${CMAKE_SOURCE_DIR}/src/llm/providers/gemini.cpp
