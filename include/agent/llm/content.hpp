@@ -39,6 +39,10 @@ struct Thinking {
     std::string text;
     /// 思考内容是否因安全策略被隐藏（Anthropic redacted_thinking）
     bool redacted = false;
+    /// Anthropic thinking 块签名（signature_delta 累积）。
+    /// 多轮对话回传 assistant 思考块时必须原样带回，否则 Anthropic 拒绝请求；
+    /// 无签名（如中断流）时引擎会降级为普通文本块。其他厂商恒为空。
+    std::string signature;
 };
 
 /// @brief 工具调用内容块

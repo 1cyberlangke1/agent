@@ -35,6 +35,19 @@ EXEMPTIONS = {
     "prompt_cache_retention": "同上 (prompt_cache_retention)",
     "max_completion_tokens": "同上 (max_completion_tokens)",
     "max_tokens": "同上 (max_tokens)",
+    # Anthropic（docs.anthropic.com / platform.claude.com）
+    "system": "https://platform.claude.com/docs/api-reference/messages (system 顶层参数)",
+    "system.[i]": "同上",
+    "system.[i].type": "同上",
+    "system.[i].text": "同上",
+    "cache_control": "https://docs.anthropic.com/en/docs/build-with-claude/prompt-caching (cache_control ephemeral)",
+    "cache_control.type": "同上",
+    "cache_control.ttl": "同上 (Long → ttl:1h)",
+    "thinking.type": "https://platform.claude.com/docs/api-reference/messages (thinking)",
+    "thinking.budget_tokens": "同上",
+    "thinking.display": "同上",
+    "output_config": "同上 (output_config.effort)",
+    "output_config.effort": "同上",
 }
 
 

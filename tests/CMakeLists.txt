@@ -21,6 +21,7 @@ if(AGENT_BUILD_TESTS)
         llm/test_stream.cpp
         llm/test_openai.cpp
         llm/test_gemini.cpp
+        llm/test_anthropic.cpp
         ${CMAKE_SOURCE_DIR}/src/tools/tools.cpp
         ${CMAKE_SOURCE_DIR}/src/llm/model_registry.cpp
         ${CMAKE_SOURCE_DIR}/src/core/http_client.cpp
@@ -28,6 +29,7 @@ if(AGENT_BUILD_TESTS)
         ${CMAKE_SOURCE_DIR}/src/llm/providers/openai.cpp
         ${CMAKE_SOURCE_DIR}/src/llm/providers/deepseek.cpp
         ${CMAKE_SOURCE_DIR}/src/llm/providers/gemini.cpp
+        ${CMAKE_SOURCE_DIR}/src/llm/providers/anthropic.cpp
     )
 
     target_include_directories(test_agent

@@ -7,6 +7,7 @@ add_executable(agent
     llm/providers/openai.cpp
     llm/providers/deepseek.cpp
     llm/providers/gemini.cpp
+    llm/providers/anthropic.cpp
 )
 
 target_include_directories(agent

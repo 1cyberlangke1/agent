@@ -17,7 +17,6 @@ import pathlib
 import sys
 
 REPO = pathlib.Path(__file__).resolve().parent.parent.parent
-FIXTURES = REPO / "tests" / "fixtures" / "openai"
 GOLDEN = REPO / "build" / "contract" / "golden"
 
 
@@ -28,7 +27,8 @@ class _Handler(http.server.BaseHTTPRequestHandler):
         GOLDEN.mkdir(parents=True, exist_ok=True)
         (GOLDEN / f"{self.server.case_name}.json").write_bytes(body)
 
-        fixture = (FIXTURES / self.server.fixture_file).read_bytes()
+        fixtures = REPO / "tests" / "fixtures" / self.server.provider
+        fixture = (fixtures / self.server.fixture_file).read_bytes()
         self.send_response(200)
         self.send_header("Content-Type", "text/event-stream")
         self.send_header("Cache-Control", "no-cache")
@@ -45,17 +45,19 @@ class _Handler(http.server.BaseHTTPRequestHandler):
 class _Server(http.server.ThreadingHTTPServer):
     daemon_threads = True
 
-    def __init__(self, addr, fixture_file, case_name):
+    def __init__(self, addr, fixture_file, case_name, provider):
         super().__init__(addr, _Handler)
         self.fixture_file = fixture_file
         self.case_name = case_name
+        self.provider = provider
 
 
 def main() -> None:
     fixture_file = sys.argv[1]
     case_name = sys.argv[2]
-    port = int(sys.argv[3]) if len(sys.argv) > 3 else 0
-    server = _Server(("127.0.0.1", port), fixture_file, case_name)
+    provider = sys.argv[3] if len(sys.argv) > 3 else "openai"
+    port = int(sys.argv[4]) if len(sys.argv) > 4 else 0
+    server = _Server(("127.0.0.1", port), fixture_file, case_name, provider)
     print(server.server_address[1], flush=True)
     server.serve_forever()
 

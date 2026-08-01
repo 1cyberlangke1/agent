@@ -1,1 +1,2 @@
 openai==2.43.0
+anthropic==0.82.0
