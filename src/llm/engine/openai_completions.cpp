@@ -8,6 +8,7 @@
 
 #include <agent/core/http_client.hpp>
 #include <agent/llm/engine/openai_completions.hpp>
+#include <agent/llm/providers/agnes.hpp>
 #include <agent/llm/providers/deepseek.hpp>
 #include <agent/llm/providers/openai.hpp>
 
@@ -507,6 +508,7 @@ asio::awaitable<void> OpenAICompletionsEngine<ThinkingPolicy, Compat>::stream_as
 // 厂商组合（ThinkingPolicy + Compat）由 providers 类型决定——引擎本身仍共享。
 template class OpenAICompletionsEngine<OpenAIThinking, OpenAICompat>;
 template class OpenAICompletionsEngine<DeepSeekThinking, OpenAICompatibleCompat>;
+template class OpenAICompletionsEngine<AgnesThinking, OpenAICompatibleCompat>;      // Agnes (sglang)
 template class OpenAICompletionsEngine<OpenAIThinking, OpenAICompatibleCompat>;   // 第三方兼容端点通用
 
 }  // namespace agent::detail

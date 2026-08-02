@@ -11,6 +11,7 @@ add_library(agent_core STATIC
     llm/engine/image_support.cpp
     llm/providers/openai.cpp
     llm/providers/deepseek.cpp
+    llm/providers/agnes.cpp
     llm/providers/gemini.cpp
     llm/providers/anthropic.cpp
 )

@@ -17,7 +17,7 @@
 //   <agent/llm/content.hpp>      Message / ContentBlock（对话消息内容）
 //   <agent/llm/options.hpp>      EndpointConfig / Context / StreamOptions
 //   <agent/llm/model.hpp>        模型表三结构 + ModelRegistry（register/find/for_each）
-//   <agent/llm/providers/*.hpp>  各厂商 Provider（OpenAI/DeepSeek/兼容端点/Gemini/Anthropic）
+//   <agent/llm/providers/*.hpp>  各厂商 Provider（OpenAI/DeepSeek/Agnes/兼容端点/Gemini/Anthropic）
 //   <agent/llm/stream.hpp>       AsyncStream 异步通道
 //   <agent/core/result.hpp>      错误处理（Result / Error / Errc）
 //
@@ -31,6 +31,7 @@
 #include <agent/llm/model.hpp>
 #include <agent/llm/options.hpp>
 #include <agent/llm/providers/anthropic.hpp>
+#include <agent/llm/providers/agnes.hpp>
 #include <agent/llm/providers/compatible.hpp>
 #include <agent/llm/providers/deepseek.hpp>
 #include <agent/llm/providers/gemini.hpp>

@@ -33,6 +33,7 @@ if(AGENT_BUILD_TESTS)
         ${CMAKE_SOURCE_DIR}/src/llm/engine/image_support.cpp
         ${CMAKE_SOURCE_DIR}/src/llm/providers/openai.cpp
         ${CMAKE_SOURCE_DIR}/src/llm/providers/deepseek.cpp
+        ${CMAKE_SOURCE_DIR}/src/llm/providers/agnes.cpp
         ${CMAKE_SOURCE_DIR}/src/llm/providers/gemini.cpp
         ${CMAKE_SOURCE_DIR}/src/llm/providers/anthropic.cpp
     )
