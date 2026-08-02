@@ -31,7 +31,8 @@
 namespace agent::test {
 
 /// server 线程解析出的请求（拷贝件，供 expect 断言）。
-struct RequestView {
+class RequestView {
+public:
     std::string method;
     std::string target;
     std::vector<std::pair<std::string, std::string>> headers;

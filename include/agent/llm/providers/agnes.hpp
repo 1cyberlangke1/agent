@@ -25,7 +25,8 @@ namespace detail {
 
 /// @brief Agnes 思考行为：请求侧走 chat_template_kwargs 布尔开关（OpenAI 兼容扩展），
 ///        响应侧思考走 reasoning_content（sglang 推理输出字段）。
-struct AgnesThinking {
+class AgnesThinking {
+public:
     static constexpr std::string_view reasoning_field = "reasoning_content";
     static void add_params(nlohmann::json& params, StreamOptions const& opts, ModelView const& model);
     static std::optional<std::string> extract_delta(nlohmann::json const& delta);

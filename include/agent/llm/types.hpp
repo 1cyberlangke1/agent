@@ -168,7 +168,8 @@ struct DoneEvent {
 ///
 /// 消费方式：用 std::visit 访问载荷（与 ContentBlock 的 variant 风格一致），
 /// 或用 type() 快速判别后 std::get 取具体载荷。
-struct StreamEvent {
+class StreamEvent {
+public:
     /// 事件类型枚举。顺序必须与 data variant 的载荷声明顺序严格一致
     /// （type() 直接强转 variant index，顺序错则判别错位）。
     enum class Type {

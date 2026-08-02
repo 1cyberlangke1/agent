@@ -103,9 +103,10 @@ std::string stop_reason_str(StopReason reason)
 // ───────────────────── 工具一：add（同步工具，纯计算）─────────────────────
 // 同步工具：定义 invoke，ToolBase 同步注册。
 
-struct [[= Desc("计算两个整数的和")]]
-add : ToolBase<add>
+class [[= Desc("计算两个整数的和")]]
+add : public ToolBase<add>
 {
+public:
     struct params_type {
         [[= Desc("第一个加数")]] long long a;
         [[= Desc("第二个加数")]] long long b;
@@ -123,9 +124,10 @@ template struct agent::ToolBase<add>;
 // 异步工具：定义 invoke_async（协程，内部 co_await async_http_get），ToolBase 自动异步注册，
 // exec 时库内部桥接。与同步工具 add 并存演示两种风格。
 
-struct [[= Desc("查询城市当前天气（Open-Meteo 免费 API，无 key）")]]
-get_weather : ToolBase<get_weather>
+class [[= Desc("查询城市当前天气（Open-Meteo 免费 API，无 key）")]]
+get_weather : public ToolBase<get_weather>
 {
+public:
     struct params_type {
         [[= Desc("城市名，如「北京」「杭州」")]] std::string city;
     };
@@ -197,9 +199,10 @@ struct Attendee
     [[= Desc("是否必须出席")]] bool required = true;
 };
 
-struct [[= Desc("创建日程安排（演示复杂嵌套参数：嵌套对象、数组、默认值）")]]
-create_event : ToolBase<create_event>
+class [[= Desc("创建日程安排（演示复杂嵌套参数：嵌套对象、数组、默认值）")]]
+create_event : public ToolBase<create_event>
 {
+public:
     struct params_type {
         [[= Desc("日程标题")]] std::string title;
         [[= Desc("优先级：high/medium/low")]] std::string priority = "medium";

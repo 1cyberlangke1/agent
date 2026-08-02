@@ -1272,8 +1272,9 @@ TEST_CASE("validate_args bizarre inputs do not crash")
 
 // ── 端到端：ToolBase CRTP 注册 + Tools::exec + 运行时注册 ── //
 
-struct [[= Desc("获取指定城市的天气信息")]] GetWeatherTool
+class [[= Desc("获取指定城市的天气信息")]] GetWeatherTool
 {
+public:
     struct params_type {
         [[= Desc("城市名，如「杭州」")]] std::string location;
         [[= Desc("温度单位")]]           std::string unit = "celsius";
@@ -1867,9 +1868,10 @@ TEST_CASE("assign_from_json works without annotations")
     CHECK(!r->flag.has_value());
 }
 
-// 无 Desc 注解的工具 struct：描述为空串，注册照常
-struct NoDescTool
+// 无 Desc 注解的工具：描述为空串，注册照常
+class NoDescTool
 {
+public:
     using params_type = NoDescInput;
     static Result<std::string> invoke(params_type const& p)
     {

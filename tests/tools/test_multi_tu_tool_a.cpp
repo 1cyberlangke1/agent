@@ -14,9 +14,10 @@ struct MultiTuAlphaInput
     [[= Desc("回显文本")]] std::string text;
 };
 
-struct [[= Desc("跨 TU 注册工具 A")]]
-MultiTuAlpha : ToolBase<MultiTuAlpha>
+class [[= Desc("跨 TU 注册工具 A")]]
+MultiTuAlpha : public ToolBase<MultiTuAlpha>
 {
+public:
     using params_type = MultiTuAlphaInput;
     static Result<std::string> invoke(MultiTuAlphaInput const& p)
     {

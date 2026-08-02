@@ -59,8 +59,9 @@ struct RegisteredTool
 };
 
 /// @brief 透明哈希：unordered_map 支持 string_view 直接查找，免临时 std::string 分配。
-struct StringHash
+class StringHash
 {
+public:
     using is_transparent = void;
     std::size_t operator()(std::string_view s) const noexcept
     {

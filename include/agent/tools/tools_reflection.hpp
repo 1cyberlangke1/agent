@@ -515,8 +515,9 @@ Result<T> assign_from_json(nlohmann::json const& j)
 template<typename T>
 struct ToolBase
 {
-    struct Registrar
+    class Registrar
     {
+    public:
         Registrar();
     };
     inline static Registrar reg{};

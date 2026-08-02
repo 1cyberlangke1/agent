@@ -24,7 +24,8 @@ namespace agent {
 namespace detail {
 
 /// @brief DeepSeek 思考行为：thinking 内容走 reasoning_content，须补空字段。
-struct DeepSeekThinking {
+class DeepSeekThinking {
+public:
     static constexpr std::string_view reasoning_field = "reasoning_content";
     static void add_params(nlohmann::json& params, StreamOptions const& opts, ModelView const& model);
     static std::optional<std::string> extract_delta(nlohmann::json const& delta);

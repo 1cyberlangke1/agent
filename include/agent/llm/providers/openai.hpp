@@ -35,7 +35,8 @@ struct OpenAICompat {
 };
 
 /// @brief OpenAI 官方思考行为（模板策略，静态成员函数，编译期绑定）。
-struct OpenAIThinking {
+class OpenAIThinking {
+public:
     static constexpr std::string_view reasoning_field = "reasoning";
     static void add_params(nlohmann::json& params, StreamOptions const& opts, ModelView const& model);
     static std::optional<std::string> extract_delta(nlohmann::json const& delta);

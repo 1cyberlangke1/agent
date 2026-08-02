@@ -12,9 +12,10 @@ struct MultiTuBetaInput
     [[= Desc("回显文本")]] std::string text;
 };
 
-struct [[= Desc("跨 TU 注册工具 B")]]
-MultiTuBeta : ToolBase<MultiTuBeta>
+class [[= Desc("跨 TU 注册工具 B")]]
+MultiTuBeta : public ToolBase<MultiTuBeta>
 {
+public:
     using params_type = MultiTuBetaInput;
     static Result<std::string> invoke(MultiTuBetaInput const& p)
     {

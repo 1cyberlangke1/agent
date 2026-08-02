@@ -17,9 +17,10 @@ struct GreetInput
     [[= Desc("语言")]]   std::string lang = "zh";
 };
 
-struct [[= Desc("打招呼")]]
-Greet : ToolBase<Greet>
+class [[= Desc("打招呼")]]
+Greet : public ToolBase<Greet>
 {
+public:
     using params_type = GreetInput;
     static Result<std::string> invoke(GreetInput const& p)
     {
@@ -30,8 +31,9 @@ template struct agent::ToolBase<Greet>;
 
 // ——— 运行时动态注册：schema 手写，exec 按 schema 预校验 ——— //
 
-struct RuntimeReg
+class RuntimeReg
 {
+public:
     RuntimeReg()
     {
         nlohmann::json schema = {

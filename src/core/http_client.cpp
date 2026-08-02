@@ -75,7 +75,8 @@ struct SocketState {
 };
 
 /// @brief 一次 HTTP 传输的完整状态（单 executor，见文件头注释）。
-struct CurlSession {
+class CurlSession {
+public:
     asio::any_io_executor executor;
     asio::steady_timer curl_timer;   // curl 的超时驱动（CURLMOPT_TIMERFUNCTION）
     asio::steady_timer event;        // 等待/唤醒原语：常驻 max，cancel() = 唤醒
