@@ -19,12 +19,15 @@
 
 ## 📖 文档
 
-**[API 文档（Doxygen 全量：类 / 成员 / 头文件 / 源码浏览）→ `docs/html/index.html`](docs/html/index.html)**
+**[API 文档（Doxygen 全量：类 / 成员 / 头文件 / 源码浏览）→ 在线渲染版](https://raw.githack.com/1cyberlangke1/agent/master/docs/html/index.html)**
 
-仓库自带生成产物，克隆下来直接点开即看，无需装 doxygen。改动公共 API 后重新生成：
+- 在线渲染版走 raw.githack 代理（GitHub 本身不渲染 HTML，点 blob 看到的是源码）
+- 本地离线：`docs/html/index.html`（仓库自带产物，无需 doxygen）
+- 改动公共 API 后重新生成并提交：
 
 ```powershell
 cmake --build --preset default --target doc
+git add docs/ && git commit        # 推送后在线版自动跟随 master 更新
 ```
 
 ---
@@ -196,7 +199,7 @@ include/agent/
   agent/     高层 Agent（agent_event / agent / compaction）
 examples/    可运行示例（agent_chat / deepseek_chat / agnes_chat）
 tests/       T0/T1 测试 + fixtures + contract（T2）
-docs/        Doxygen API 文档（提交 git，[点开即看](docs/html/index.html)）
+docs/        Doxygen API 文档（提交 git，[在线看](https://raw.githack.com/1cyberlangke1/agent/master/docs/html/index.html)）
 ```
 
 ## 已知限制（实验性质的部分诚实交代）
