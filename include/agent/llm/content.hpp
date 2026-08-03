@@ -82,7 +82,7 @@ struct ToolResult {
 /// - ToolCall：工具调用
 /// - ToolResult：工具执行结果
 ///
-/// @usage 使用 std::visit 访问具体类型：
+/// @par 用法：使用 std::visit 访问具体类型：
 ///        std::visit([](auto const& b) { ... }, block);
 using ContentBlock = std::variant<Text, Image, Thinking, ToolCall, ToolResult>;
 

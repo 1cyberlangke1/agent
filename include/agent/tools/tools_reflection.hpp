@@ -518,11 +518,13 @@ Result<T> assign_from_json(nlohmann::json const& j)
 template<typename T>
 struct ToolBase
 {
+    /// 注册器：构造函数在 main() 前调用 Tools::reg 完成静态注册。
     class Registrar
     {
     public:
         Registrar();
     };
+    /// 注册器实例（静态初始化触发注册；无需用户手动调用）。
     inline static Registrar reg{};
 };
 

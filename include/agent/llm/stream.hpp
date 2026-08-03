@@ -37,8 +37,8 @@ namespace agent {
 template<typename T>
 class AsyncStream {
 public:
-    using channel_traits_t = asio::experimental::channel_traits<void(asio::error_code, T)>;
-    using channel_t = asio::experimental::basic_concurrent_channel<asio::any_io_executor, channel_traits_t, void(asio::error_code, T)>;
+    using channel_traits_t = asio::experimental::channel_traits<void(asio::error_code, T)>;  ///< 通道 traits（receive 签名）
+    using channel_t = asio::experimental::basic_concurrent_channel<asio::any_io_executor, channel_traits_t, void(asio::error_code, T)>;  ///< 有界并发通道类型
 
     /// @param executor 生产/消费协程的 io_context executor
     /// @param capacity 有界容量（背压上限）
@@ -47,10 +47,10 @@ public:
     {
     }
 
-    AsyncStream(AsyncStream const&) noexcept = default;   ///< 共享同一 channel
-    AsyncStream& operator=(AsyncStream const&) noexcept = default;
-    AsyncStream(AsyncStream&&) noexcept = default;
-    AsyncStream& operator=(AsyncStream&&) noexcept = default;
+    AsyncStream(AsyncStream const&) noexcept = default;   ///< 拷贝：共享同一 channel
+    AsyncStream& operator=(AsyncStream const&) noexcept = default;  ///< 拷贝赋值：共享同一 channel
+    AsyncStream(AsyncStream&&) noexcept = default;        ///< 移动：通道本体是 shared_ptr，移动即共享
+    AsyncStream& operator=(AsyncStream&&) noexcept = default;       ///< 移动赋值
 
     /// @brief 生产端发送一个事件。channel 满则挂起（背压）。
     /// @param value 事件载荷

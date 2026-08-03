@@ -10,7 +10,6 @@
 #include <string>
 #include <string_view>
 #include <unordered_map>
-#include <utility>
 #include <vector>
 
 #include <agent/core/result.hpp>
@@ -21,18 +20,18 @@ namespace agent {
 
 /// @brief 注解值载体。字符串通过 define_static_string 转为 static-storage 指针后传入。
 ///        必须为 structural type 才能在 NTTP 中作为注解值。
-///        构造函数 Desc() 在 tools_reflection.hpp 中（依赖 <meta>）。
+///        构造函数 Desc() 在 tools_reflection.hpp 中（依赖 \c &lt;meta&gt; 头）。
 struct DescArg
 {
-    const char* msg;
+    const char* msg;  ///< 注解描述文本（static-storage，进程生命周期有效）
 };
 
 /// @brief 工具注册信息。包含名称、描述、参数 JSON Schema。
 struct ToolInfo
 {
-    std::string             name;
-    std::string             description;
-    nlohmann::json          parameters;
+    std::string             name;        ///< 工具名（模型按此调用，唯一）
+    std::string             description; ///< 工具描述（模型决定何时调用）
+    nlohmann::json          parameters;  ///< 参数 JSON Schema（arguments 校验 + 广告）
 };
 
 /// @brief exec() 调用工具函数前的参数预校验策略。

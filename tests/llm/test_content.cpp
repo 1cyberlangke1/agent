@@ -14,7 +14,6 @@
 
 #include <doctest/doctest.h>
 #include <agent/llm/content.hpp>
-#include <string>
 
 using namespace agent;
 

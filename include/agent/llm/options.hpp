@@ -26,7 +26,7 @@ namespace agent {
 /// @brief 厂商连接信息。不绑定 model（model 是请求参数）。
 struct EndpointConfig {
     std::string name;                   ///< "deepseek"
-    std::string api_key;
+    std::string api_key;                ///< API 密钥（sk-...）；可用 StreamOptions.api_key 按请求覆盖
     std::string base_url;               ///< "https://api.deepseek.com"
     /// 该厂商固定默认头：如 Anthropic 的 `anthropic-version`、
     /// 企业代理的 `Organization`/`Project`。StreamOptions.headers 在此之上覆盖。
@@ -39,8 +39,8 @@ struct EndpointConfig {
 
 /// @brief 一次 LLM 调用的完整输入。
 struct Context {
-    std::string system_prompt;
-    std::vector<Message> messages;
+    std::string system_prompt;      ///< 系统提示
+    std::vector<Message> messages;  ///< 对话历史
     /// 本次请求声明的工具名。工具定义（name/description/schema）统一由全局
     /// Tools 注册表持有，引擎 build_params 时按名 resolve——Context 只存名字，
     /// 不重复拷贝工具描述。未注册的工具名 → 请求构建失败（Result 错误）。
@@ -77,18 +77,18 @@ struct StreamOptions {
     /// （generator 析构 / awaitable 完成）之前保持有效，由调用方保证。
     asio::cancellation_signal* cancel = nullptr;
 
-    ///< ── 原始响应捕获（可选，默认不存，零开销）──
+    // ── 原始响应捕获（可选，默认不存，零开销）──
     /// true 时 ChatResponse.raw 填充上游原始响应。
     bool capture_raw_response = false;
     /// capture_raw_response 开启时的原始响应字节上限（默认 1MB），超出丢弃 raw。
     size_t max_raw_bytes = 1 << 20;
 
-    ///< ── 非公约数：透传接口，用户自己决定 ──
+    // ── 非公约数：透传接口，用户自己决定 ──
     /// 用户塞 store / metadata / provider 特有字段。
     /// 引擎不解释、不推断，原样并入请求体（provider 不认识的字段自行忽略或报错）。
     nlohmann::json extra;
 
-    ///< ── 请求体预置（Agent 的 before_payload 钩子落地）──
+    // ── 请求体预置（Agent 的 before_payload 钩子落地）──
     /// 非空时引擎**跳过 build_params** 直接用这个 body 发请求。
     /// 用途：上层（Agent）先调 provider.build_params 拿到请求体 → 应用 before_payload
     /// 改写 → 塞回来，实现「每次请求前改 body」。普通调用方不需要。

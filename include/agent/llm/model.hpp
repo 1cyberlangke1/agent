@@ -8,12 +8,10 @@
 
 #include <array>
 #include <atomic>
-#include <cstddef>
 #include <deque>
 #include <memory>
 #include <mutex>
 #include <optional>
-#include <shared_mutex>
 #include <span>
 #include <string>
 #include <string_view>
@@ -71,17 +69,17 @@ struct BuiltinProviderTable {
 /// @brief 运行时注册的模型（全 std::string 自持）。
 ///        语义同 detail::BuiltinModel，字符串动态，由 ModelRegistry 拥有生命周期。
 struct RuntimeModel {
-    std::string id;
-    int context_window = 0;
-    int max_output_tokens = 0;
-    bool reasoning = false;
-    bool supports_image_input = false;
-    std::array<std::optional<std::string>, thinking_level_count> thinking_level_map;
-    std::string thinking_field;
-    double price_input = 0;          ///< 美元/百万 token；0 = 未知或免费
-    double price_output = 0;
-    double price_cache_read = 0;
-    double price_cache_write = 0;
+    std::string id;                        ///< 模型标识（如 "deepseek-chat"）
+    int context_window = 0;                ///< 上下文窗口大小（token）
+    int max_output_tokens = 0;             ///< 单次最大输出 token
+    bool reasoning = false;                ///< 是否支持思考模式
+    bool supports_image_input = false;     ///< 是否支持图片输入（多模态）
+    std::array<std::optional<std::string>, thinking_level_count> thinking_level_map;  ///< 思考等级 → 厂商字段值映射
+    std::string thinking_field;            ///< 思考输出字段名（如 reasoning_content / thoughts）
+    double price_input = 0;                ///< 美元/百万 token；0 = 未知或免费
+    double price_output = 0;               ///< 输出价（美元/百万 token；0 = 未知或免费）
+    double price_cache_read = 0;           ///< 缓存读取价
+    double price_cache_write = 0;          ///< 缓存写入价
 };
 
 /// @brief 统一模型视图：引擎/调用方唯一消费类型。
@@ -89,17 +87,17 @@ struct RuntimeModel {
 ///        全局存储、地址稳定、进程生命周期），返回后长期有效。
 ///        从 BuiltinModel / RuntimeModel 均可构造（ModelRegistry 内部转换）。
 struct ModelView {
-    std::string_view id;
-    int context_window = 0;
-    int max_output_tokens = 0;
-    bool reasoning = false;
-    bool supports_image_input = false;
-    std::array<std::optional<std::string_view>, thinking_level_count> thinking_level_map;
-    std::string_view thinking_field;
-    double price_input = 0;          ///< 美元/百万 token；0 = 未知或免费
-    double price_output = 0;
-    double price_cache_read = 0;
-    double price_cache_write = 0;
+    std::string_view id;                   ///< 模型标识（string_view，指向全局存储长期有效）
+    int context_window = 0;                ///< 上下文窗口大小（token）
+    int max_output_tokens = 0;             ///< 单次最大输出 token
+    bool reasoning = false;                ///< 是否支持思考模式
+    bool supports_image_input = false;     ///< 是否支持图片输入（多模态）
+    std::array<std::optional<std::string_view>, thinking_level_count> thinking_level_map;  ///< 思考等级 → 厂商字段值映射
+    std::string_view thinking_field;       ///< 思考输出字段名
+    double price_input = 0;                ///< 美元/百万 token；0 = 未知或免费
+    double price_output = 0;               ///< 输出价（美元/百万 token；0 = 未知或免费）
+    double price_cache_read = 0;           ///< 缓存读取价
+    double price_cache_write = 0;          ///< 缓存写入价
 };
 
 namespace detail {

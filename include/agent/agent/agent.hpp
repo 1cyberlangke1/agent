@@ -163,6 +163,14 @@ public:
     { (void)provider; (void)body; return std::nullopt; }
 };
 
+/// @brief 高层 Agent：多轮对话 + 工具调用的驱动核心。
+///
+/// 职责：双层循环（内层对话、外层工具）、行为钩子（DefaultBehaviors，含压缩）、
+/// steer/follow_up 插话、异步 abort、成本核算。持具体 Provider 类型（编译期绑定，
+/// 零虚函数）。默认不开放任何工具，须 set_tools 显式授权。
+///
+/// @tparam Provider  具体 LLM Provider 类型（如 AgnesProvider / OpenAIProvider）。
+/// @tparam Behaviors 行为集合，提供钩子 + 压缩策略，默认 DefaultBehaviors。
 template<typename Provider, typename Behaviors = DefaultBehaviors>
 class Agent {
 public:
@@ -257,15 +265,19 @@ public:
         std::lock_guard<std::mutex> lock(queue_mutex_);
         return !steer_queue_.empty() || !follow_up_queue_.empty();
     }
+    /// 设置插话队列的工作模式（steer 对已有运行中的 run 注入，Mode::Asap 立即打断）。
     void set_steering_mode(QueueMode mode) { steering_mode_ = mode; }
+    /// 设置追加队列的工作模式（follow_up 在 run 空闲时注入）。
     void set_follow_up_mode(QueueMode mode) { follow_up_mode_ = mode; }
 
     // ── 状态 ──
     /// 当前对话（压缩会丢弃旧段；要旧上下文请在压缩前自行读取）。
     std::vector<Message> const& messages() const { return messages_; }
+    /// 当前系统提示。
     std::string const& system_prompt() const { return system_prompt_; }
     /// 当前模型（prepare_next_turn / set_model 换过之后从这取）。
     ModelView model() const { return model_; }
+    /// 换模型（下一轮生效；模型表 ModelView 长期有效）。
     void set_model(ModelView model) { model_ = model; }
     /// 换思考档（下一轮生效）。
     void set_reasoning(ThinkingLevel level) { reasoning_ = level; }
@@ -278,6 +290,7 @@ public:
     /// 传给模型的工具子集（**默认空 = 不开放任何工具**；指定后广告 + 执行门控同时生效，
     /// 未开放的工具调用会被拒绝回传给模型）。
     void set_tools(std::vector<std::string> tools) { tools_ = std::move(tools); }
+    /// 当前传给模型的工具子集（默认空 = 不开放任何工具）。
     std::vector<std::string> const& tools() const { return tools_; }
 
     // ── 生命周期 ──
@@ -312,6 +325,7 @@ public:
     }
 
     // ── 工具执行模式（对齐 pi toolExecution）：Agent 全局默认 ──
+    /// 设置工具执行模式（全执行 / 全拒绝 / 按工具自带 mode）。对尚未开始的本轮生效。
     void set_tool_execution_mode(ToolExecutionMode mode) { tool_execution_mode_ = mode; }
 
     // ── 压缩 ──

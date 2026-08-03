@@ -11,8 +11,6 @@
 #include <agent/llm/stream_facade.hpp>
 #include <agent/llm/types.hpp>
 
-#include <asio.hpp>
-
 #include <nlohmann/json.hpp>
 
 #include <optional>
@@ -39,7 +37,7 @@ public:
 /// 四接口：stream（同步流式）/ complete（同步非流式）/
 /// stream_async（异步流式）/ complete_async（异步非流式）。
 ///
-/// @usage
+/// @par 用法
 /// ```
 /// auto model = *ModelRegistry::find_model("deepseek-v4-flash");
 /// DeepSeekProvider deepseek({.name="deepseek", .api_key=KEY, .base_url="https://api.deepseek.com"});
@@ -53,7 +51,7 @@ public:
 ///   思考模式自动移除 temperature/top_p/presence_penalty/frequency_penalty（官方要求）
 /// - 工具调用多轮回传时 assistant 自动补 reasoning_content（官方要求，否则 400）
 /// - 缓存为官方自动（Context Caching），cache_retention 档位被忽略
-/// - 认证：Authorization: Bearer <api_key>
+/// - 认证：Authorization: Bearer \c &lt;api_key&gt;
 using DeepSeekProvider =
     detail::StreamFacade<detail::OpenAICompletionsEngine<detail::DeepSeekThinking, detail::OpenAICompatibleCompat>>;
 

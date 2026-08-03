@@ -12,6 +12,17 @@ set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 option(AGENT_BUILD_EXAMPLES "Build example targets" ON)
 option(AGENT_BUILD_TESTS "Build tests" OFF)
 
+# 文档：doxygen 存在时提供 `--target doc` 生成 API 文档（build/docs/html）。
+# WARN_AS_ERROR=YES（Doxyfile）强制全部公共注释，缺注释即构建失败。
+find_package(Doxygen QUIET)
+if(DOXYGEN_FOUND)
+    add_custom_target(doc
+        COMMAND ${DOXYGEN_EXECUTABLE} ${CMAKE_CURRENT_SOURCE_DIR}/Doxyfile
+        WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
+        COMMENT "生成 Doxygen 文档 → build/docs/html/index.html"
+    )
+endif()
+
 include("${CMAKE_CURRENT_SOURCE_DIR}/cmake/asio.cmake")
 include("${CMAKE_CURRENT_SOURCE_DIR}/cmake/openssl.cmake")
 include("${CMAKE_CURRENT_SOURCE_DIR}/cmake/zlib.cmake")

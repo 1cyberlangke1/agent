@@ -41,8 +41,8 @@ enum class Errc {
 /// @param message 上游原始详情文本，如 HTTP 429 的 Retry-After 提示，
 ///                用于日志记录或透传给调用方。
 struct Error {
-    Errc code;
-    std::string message;
+    Errc code;         ///< 错误码，程序可据此分支处理（重试 / 跳过 / 报错）
+    std::string message;  ///< 上游原始详情文本，用于日志或透传
 };
 
 /// @brief 通用结果类型。

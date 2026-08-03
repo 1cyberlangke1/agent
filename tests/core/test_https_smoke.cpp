@@ -13,7 +13,6 @@
 #include <doctest/doctest.h>
 
 #include <optional>
-#include <string>
 
 using agent::HttpRequestOptions;
 using agent::HttpResponse;

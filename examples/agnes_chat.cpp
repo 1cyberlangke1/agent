@@ -7,8 +7,6 @@
 
 #include <agent/llm.hpp>
 
-#include <cstdint>
-#include <cstdio>
 #include <fstream>
 #include <iostream>
 #include <sstream>

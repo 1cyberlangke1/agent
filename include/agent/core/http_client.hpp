@@ -46,53 +46,53 @@ enum class HttpProxyType { Http, Https, Socks4, Socks5 };
 
 /// multipart 表单的一个 part：value（文本）/ buffer（内存字节）/ file_path（文件）三选一。
 struct MultipartPart {
-    std::string name;
-    std::optional<std::string> value;
-    std::optional<std::string> buffer;
-    std::optional<std::string> file_path;
-    std::optional<std::string> content_type;
-    std::optional<std::string> filename;
+    std::string name;                              ///< part 名（表单字段名）
+    std::optional<std::string> value;              ///< 文本值（与 buffer / file_path 三选一）
+    std::optional<std::string> buffer;             ///< 内存字节内容
+    std::optional<std::string> file_path;          ///< 文件路径（读文件作 part 内容）
+    std::optional<std::string> content_type;       ///< MIME 类型（如 image/png）
+    std::optional<std::string> filename;           ///< 上传文件名（浏览器表单语义）
 };
 
 /// 一次 HTTP 请求「发什么 + 怎么发」。
 struct HttpRequest {
     std::string method = "GET";                         ///< GET/POST/PUT/PATCH/DELETE/HEAD/OPTIONS/任意
-    std::string url;
+    std::string url;                                    ///< 请求 URL（可已带 query）
     std::vector<std::pair<std::string, std::string>> query;    ///< 自动 url_encode 拼接
-    std::vector<std::pair<std::string, std::string>> headers;
+    std::vector<std::pair<std::string, std::string>> headers;  ///< 请求头
 
     ///< body 三选一：字符串（+ content_type）/ multipart / 大文件流式上传
-    std::optional<std::string> body;
-    std::optional<std::string> content_type;
-    std::vector<MultipartPart> multipart;
-    std::optional<std::string> upload_file;
+    std::optional<std::string> body;                    ///< 请求体（字符串形态）
+    std::optional<std::string> content_type;            ///< body 的 Content-Type
+    std::vector<MultipartPart> multipart;               ///< multipart 表单 parts
+    std::optional<std::string> upload_file;             ///< 大文件流式上传路径
 
     ///< 认证
-    HttpAuth auth = HttpAuth::None;
+    HttpAuth auth = HttpAuth::None;                     ///< 认证方式
     std::optional<std::string> auth_credentials;        ///< "user:pass"（Basic/Digest/Ntlm/Negotiate）
 
-    // TLS
-    bool verify_tls = true;
-    std::optional<std::string> ca_file;
-    std::optional<std::string> client_cert;
-    std::optional<std::string> client_key;
-    std::optional<std::string> client_key_password;
+    ///< TLS
+    bool verify_tls = true;                             ///< 是否校验证书（自签端点可关）
+    std::optional<std::string> ca_file;                 ///< CA 证书文件（覆盖系统信任库）
+    std::optional<std::string> client_cert;             ///< 客户端证书（双向 TLS）
+    std::optional<std::string> client_key;              ///< 客户端私钥
+    std::optional<std::string> client_key_password;     ///< 私钥口令
 
     ///< 重定向
-    bool follow_redirects = false;
-    int max_redirects = 5;
-    bool auto_referer = false;
+    bool follow_redirects = false;                      ///< 是否跟随重定向
+    int max_redirects = 5;                              ///< 最大重定向次数
+    bool auto_referer = false;                          ///< 自动带 Referer
 
     ///< 代理
-    std::optional<std::string> proxy;
-    HttpProxyType proxy_type = HttpProxyType::Http;
-    std::optional<std::string> proxy_auth;
+    std::optional<std::string> proxy;                   ///< 代理地址（如 http://127.0.0.1:7890）
+    HttpProxyType proxy_type = HttpProxyType::Http;     ///< 代理类型
+    std::optional<std::string> proxy_auth;              ///< 代理认证 "user:pass"
 
     ///< Cookie
     std::optional<std::string> cookie;                  ///< 一次性 "k=v; k2=v2"
     std::optional<std::string> cookie_file;             ///< 读 jar 文件（空串 = 内存 jar）
     std::optional<std::string> cookie_jar;              ///< 响应后写 jar 文件
-    bool cookie_session = false;
+    bool cookie_session = false;                        ///< 会话 cookie（不持久化）
 };
 
 // ───────────────────── 非流式响应 ─────────────────────
@@ -101,9 +101,9 @@ struct HttpRequest {
 /// Result 错误仅代表传输层失败（连不上 / 超时 / 取消 / 重试耗尽）。
 class HttpResponse {
 public:
-    int status = 0;
-    std::string body;
-    std::vector<std::pair<std::string, std::string>> headers;
+    int status = 0;                                     ///< HTTP 状态码（0 = 未发送）
+    std::string body;                                   ///< 响应体
+    std::vector<std::pair<std::string, std::string>> headers;  ///< 响应头（header() 取值大小写不敏感）
     std::string effective_url;          ///< 重定向后最终 URL（CURLINFO_EFFECTIVE_URL）
     double total_time_seconds = 0;      ///< 本次传输耗时（CURLINFO_TOTAL_TIME）
 
@@ -126,6 +126,7 @@ public:
         return {};
     }
 
+    /// 是否 2xx 成功。
     bool ok() const { return status / 100 == 2; }
 
     /// 解析 body 为 JSON；失败 → Errc::ParseError。
@@ -134,14 +135,17 @@ public:
 
 // ───────────────────── 传输 I/O 配置（超时 / 重试 / 取消）─────────────────────
 
+/// 传输 I/O 配置：超时分层 + 重试 + 取消。
+/// 超时分层设计：单一整体超时会误杀合法长流（流式可跑数分钟），
+/// 故拆连接/空闲/整体三档，空闲档最松、整体档兜底。
 struct HttpRequestOptions {
-    std::vector<std::pair<std::string, std::string>> headers;
-    int connect_timeout_ms = 30000;
-    int idle_timeout_ms = 120000;
-    int total_timeout_ms = 600000;
-    int max_retries = 2;
-    int max_retry_delay_ms = 60000;
-    asio::cancellation_slot cancel;
+    std::vector<std::pair<std::string, std::string>> headers;   ///< 请求头（合并追加）
+    int connect_timeout_ms = 30000;      ///< 连接建立 + 收到首字节（ms）
+    int idle_timeout_ms = 120000;        ///< 流式块间静默上限（ms，0 = 不限）
+    int total_timeout_ms = 600000;       ///< 整体上限兜底（ms，0 = 不限）
+    int max_retries = 2;                 ///< 传输层重试（429/5xx）
+    int max_retry_delay_ms = 60000;      ///< Retry-After 超此值立即失败
+    asio::cancellation_slot cancel;      ///< 取消槽（无绑定 = 不可取消）
 };
 
 // ───────────────────── 通用请求原语 ─────────────────────
@@ -218,8 +222,8 @@ public:
         HttpRequest request, HttpRequestOptions options = {});
 
     /// cookie jar 持久化：load 读入内存 jar（"k=v; k2=v2" 文本）；save 写出。
-    asio::awaitable<Result<void>> load_cookies(std::string path);
-    asio::awaitable<Result<void>> save_cookies(std::string path);
+    asio::awaitable<Result<void>> load_cookies(std::string path);  ///< 从文件读入 jar
+    asio::awaitable<Result<void>> save_cookies(std::string path);  ///< 写出 jar 到文件
 
 private:
     asio::any_io_executor ex_;
@@ -232,18 +236,26 @@ private:
 
 // ───────────────────── 流式响应读取器（保留）─────────────────────
 
+/// 流式响应读取器：open 发起请求后，next_chunk 逐块拉取响应体（pull 形态），
+/// 供 SSE 等增量解析消费。连接在读取器生命周期内保持。
 class HttpStreamReader {
 public:
+    /// 发起流式请求并返回读取器。失败 → Result 错误。
     static asio::awaitable<Result<HttpStreamReader>> open(
         asio::any_io_executor ex, std::string_view url,
         nlohmann::json body, HttpRequestOptions options,
         std::string_view method = "POST");
+    /// 取下一块响应体。nullopt = 流正常结束；Result 错误 = 传输失败/取消。
     asio::awaitable<Result<std::optional<std::string>>> next_chunk();
+    /// HTTP 状态码。
     int status() const;
+    /// 响应头列表。
     std::vector<std::pair<std::string, std::string>> const& headers() const;
+    /// 按名取头（大小写不敏感）。
     std::string_view header(std::string_view name) const;
+    /// 移动构造 / 移动赋值（读取器不可拷贝）。
     HttpStreamReader(HttpStreamReader&& other) noexcept;
-    HttpStreamReader& operator=(HttpStreamReader&& other) noexcept;
+    HttpStreamReader& operator=(HttpStreamReader&& other) noexcept;  ///< 移动赋值
     HttpStreamReader(HttpStreamReader const&) = delete;
     HttpStreamReader& operator=(HttpStreamReader const&) = delete;
     ~HttpStreamReader();

@@ -11,8 +11,6 @@
 #include <agent/llm/stream_facade.hpp>
 #include <agent/llm/types.hpp>
 
-#include <asio.hpp>
-
 #include <nlohmann/json.hpp>
 
 #include <optional>
@@ -40,7 +38,7 @@ public:
 /// 四接口：stream（同步流式）/ complete（同步非流式）/
 /// stream_async（异步流式）/ complete_async（异步非流式）。
 ///
-/// @usage
+/// @par 用法
 /// ```
 /// ModelRegistry::register_model(RuntimeModel{.id="agnes-2.5-flash", .reasoning=true,
 ///     .thinking_level_map={...非 Off 档填 "on"...}, .supports_image_input=true, ...});
@@ -56,7 +54,7 @@ public:
 ///   不传 reasoning 则请求体不带 thinking 参数
 /// - 思考输出：响应/流式 delta 的 reasoning_content 字段（sglang 推理字段）
 /// - 图像：支持 image_url（公开可访问 URL），模型能力由 supports_image_input 承载
-/// - 认证：Authorization: Bearer <api_key>
+/// - 认证：Authorization: Bearer \c &lt;api_key&gt;
 using AgnesProvider =
     detail::StreamFacade<detail::OpenAICompletionsEngine<detail::AgnesThinking, detail::OpenAICompatibleCompat>>;
 

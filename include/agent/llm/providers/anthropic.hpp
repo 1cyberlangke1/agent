@@ -24,7 +24,6 @@
 #include <map>
 #include <optional>
 #include <string>
-#include <utility>
 #include <vector>
 
 namespace agent {
@@ -105,7 +104,7 @@ private:
 /// 四接口：stream（同步流式）/ complete（同步非流式）/
 /// stream_async（异步流式）/ complete_async（异步非流式）。
 ///
-/// @usage
+/// @par 用法
 /// ```
 /// auto model = *ModelRegistry::find_model("claude-sonnet-4-5");   // 查模型表拿 ModelView
 /// AnthropicMessagesProvider anthropic({.name="anthropic", .api_key=KEY, .base_url="https://api.anthropic.com"});

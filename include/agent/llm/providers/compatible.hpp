@@ -14,7 +14,7 @@ namespace agent {
 /// 四接口：stream（同步流式）/ complete（同步非流式）/
 /// stream_async（异步流式）/ complete_async（异步非流式）。
 ///
-/// @usage
+/// @par 用法
 /// ```
 /// ModelRegistry::register_model(RuntimeModel{.id="my-model", ...});   // 第三方模型注册
 /// auto model = *ModelRegistry::find_model("my-model");
@@ -27,7 +27,7 @@ namespace agent {
 ///   Ollama/vLLM 本地端点通常是 http://host:port/v1
 /// - max_tokens 请求字段用 max_tokens（第三方端点多数只实现旧字段，非 max_completion_tokens）
 /// - 思考：reasoning 传统一 ThinkingLevel → reasoning_effort（端点支持才有效，默认不发）
-/// - 认证：Authorization: Bearer <api_key>（大多数第三方端点同 OpenAI）
+/// - 认证：Authorization: Bearer \c &lt;api_key&gt;（大多数第三方端点同 OpenAI）
 using OpenAICompatibleProvider =
     detail::StreamFacade<detail::OpenAICompletionsEngine<detail::OpenAIThinking, detail::OpenAICompatibleCompat>>;
 

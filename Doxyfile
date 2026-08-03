@@ -1,0 +1,58 @@
+# Doxygen 配置——从 Doxygen 注释（/// @brief / ///< / @param / @return）自动生成 API 文档。
+# 用法：cmake --build --preset default --target doc   （需先安装 doxygen）
+# 产物：build/docs/html/index.html（build/ 已 gitignore，不入库）
+
+# 项目元信息
+PROJECT_NAME           = "agent"
+PROJECT_BRIEF          = "C++26 实验性 LLM / Agent 库"
+PROJECT_NUMBER         = experimental
+
+# 输入 / 输出
+INPUT                  = include/agent
+RECURSIVE              = YES
+OUTPUT_DIRECTORY       = build/docs
+GENERATE_HTML          = YES
+GENERATE_LATEX         = NO
+
+# 注释风格（我们统一用 Doxygen 风格）
+# ⚠️ 强制全部注释：任何公共类 / 成员缺注释 → WARN_AS_ERROR → 文档生成失败。
+WARNINGS               = YES
+WARN_IF_UNDOCUMENTED   = YES          # 公共 API 未注释 → 警告
+WARN_IF_INCOMPLETE_DOC = YES          # 有 @brief 但缺 @param 等 → 警告
+WARN_AS_ERROR          = YES          # 警告一律算错误 → 强制补全注释
+WARN_IF_DOC_ERROR      = YES
+
+# 提取范围：公共 API 为主；detail / 私有不展开
+# 提取策略：EXTRACT_ALL=NO（关键！）—— 设为 YES 会自动禁用 WARN_IF_UNDOCUMENTED，
+# 变成「全当有文档」不警告，强制就失效。NO 才会对已文档化类里未注释的成员报错。
+EXTRACT_ALL            = NO
+EXTRACT_PRIVATE        = NO
+EXTRACT_STATIC         = NO
+EXTRACT_ANON_NSPACES   = NO
+EXTRACT_LOCAL_CLASSES  = YES
+HIDE_UNDOC_MEMBERS     = NO
+INHERIT_DOCS           = YES
+
+# 不纳入强制范围：
+# - agent::detail* 内部实现（用户不需要、随时可改，AGENTS.md 明确不视为 API）
+# - 脚本生成的模型表（generated.hpp 由 scripts/update_models.py 产出，非手写）
+EXCLUDE_SYMBOLS        = agent::detail*
+EXCLUDE_PATTERNS       = */models/generated.hpp
+
+# 易读性
+JAVADOC_AUTOBRIEF      = YES          # @brief 若缺，取首句
+QT_AUTOBRIEF           = YES
+FULL_PATH_NAMES        = NO
+STRIP_FROM_PATH        = include
+SOURCE_BROWSER         = YES          # 源码可点击跳转
+GENERATE_TREEVIEW      = YES
+GENERATE_LEGEND        = YES
+ALPHABETICAL_INDEX     = NO
+
+# 语言 / 编码
+OUTPUT_LANGUAGE        = Chinese
+INPUT_ENCODING         = UTF-8
+
+# 类图（需 graphviz dot；未装则自动跳过）
+HAVE_DOT               = NO
+CLASS_GRAPH            = NO

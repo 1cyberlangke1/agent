@@ -22,7 +22,6 @@
 #include <map>
 #include <optional>
 #include <string>
-#include <utility>
 #include <vector>
 
 namespace agent {
@@ -83,7 +82,7 @@ private:
 /// 四接口：stream（同步流式）/ complete（同步非流式）/
 /// stream_async（异步流式）/ complete_async（异步非流式）。
 ///
-/// @usage
+/// @par 用法
 /// ```
 /// ModelRegistry::register_model(RuntimeModel{.id="gemma-4-26b-a4b-it", ...});
 /// auto model = *ModelRegistry::find_model("gemma-4-26b-a4b-it");

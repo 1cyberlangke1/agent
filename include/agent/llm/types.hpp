@@ -10,7 +10,6 @@
 #include <nlohmann/json.hpp>
 
 #include <cstddef>
-#include <cstdint>
 #include <string>
 #include <variant>
 
@@ -96,10 +95,10 @@ struct Usage {
 
 /// @brief 一次完整（非流式或流式收尾）的模型响应。
 struct ChatResponse {
-    std::vector<ContentBlock> content;
-    StopReason stop_reason = StopReason::Stop;
-    Usage usage;
-    std::string response_id;
+    std::vector<ContentBlock> content;        ///< 响应内容块（文本 / 思考 / 工具调用）
+    StopReason stop_reason = StopReason::Stop;  ///< 停止原因
+    Usage usage;                              ///< token 用量统计
+    std::string response_id;                  ///< 上游响应 id（幂等 / 追踪用）
     /// 原始上游响应 JSON。仅 StreamOptions::capture_raw_response 开启时填充
     /// （流式 = 最终累积的原始对象；非流式 = 完整 body），否则为空对象。
     nlohmann::json raw;
@@ -182,6 +181,7 @@ public:
         Done,
         Error,
     };
+    /// 事件载荷（variant 风格，聚合初始化如 `StreamEvent{ TextDelta{ "hi" } }`）。
     std::variant<TextDelta, ThinkingDelta, ToolCallDelta, ToolCallEnd, UsageEvent, DoneEvent, Error> data;
     /// @brief 类型判别从 variant 下标推导——单一真相源，不存冗余字段
     ///        （存独立 type 字段会出现 type 与 data 失同步的双源真相）。

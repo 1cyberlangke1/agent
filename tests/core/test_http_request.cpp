@@ -10,12 +10,10 @@
 
 #include <doctest/doctest.h>
 
-#include <cstdio>
 #include <fstream>
 #include <optional>
 #include <string>
 #include <utility>
-#include <vector>
 
 using agent::HttpAuth;
 using agent::HttpClient;

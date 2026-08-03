@@ -11,8 +11,6 @@
 #include <agent/llm/stream_facade.hpp>
 #include <agent/llm/types.hpp>
 
-#include <asio.hpp>
-
 #include <nlohmann/json.hpp>
 
 #include <optional>
@@ -50,7 +48,7 @@ public:
 /// 四接口：stream（同步流式）/ complete（同步非流式）/
 /// stream_async（异步流式）/ complete_async（异步非流式）。
 ///
-/// @usage
+/// @par 用法
 /// ```
 /// auto model = *ModelRegistry::find_model("gpt-5.2");   // 查模型表拿 ModelView
 /// OpenAIProvider openai({.name="openai", .api_key=KEY, .base_url="https://api.openai.com/v1"});
@@ -63,7 +61,7 @@ public:
 /// - max_tokens 请求字段用 max_completion_tokens（o 系列不兼容旧的 max_tokens）
 /// - 思考：StreamOptions.reasoning 传统一 ThinkingLevel → 引擎映射 reasoning_effort
 /// - temperature / max_tokens 不传则不上传（让上游模型用默认，绝不代填）
-/// - 认证：Authorization: Bearer <api_key>；缓存：prompt_cache_key + retention
+/// - 认证：Authorization: Bearer \c &lt;api_key&gt;；缓存：prompt_cache_key + retention
 ///   （OpenAI 官方 / 走代理网关时，可开 session affinity 头提升跨轮缓存命中——
 ///   见 Compat::send_session_affinity，默认关闭）
 using OpenAIProvider =
