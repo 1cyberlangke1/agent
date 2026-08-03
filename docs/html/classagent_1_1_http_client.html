@@ -1,0 +1,222 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "https://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="zh">
+<head>
+<meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=11"/>
+<meta name="generator" content="Doxygen 1.17.0"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>agent: agent::HttpClient类 参考</title>
+<link href="tabs.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="codefolding.js"></script>
+<script type="text/javascript" src="clipboard.js"></script>
+<link href="navtree.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="navtreedata.js"></script>
+<script type="text/javascript" src="navtree.js"></script>
+<script type="text/javascript" src="cookie.js"></script>
+<link href="search/search.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="search/searchdata.js"></script>
+<script type="text/javascript" src="search/search.js"></script>
+<script type="module">
+import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.esm.min.mjs';
+const theme = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'default';
+mermaid.initialize({ startOnLoad: true, theme: theme });
+</script>
+<link href="doxygen.css" rel="stylesheet" type="text/css" />
+</head>
+<body>
+<div id="top"><!-- do not remove this div, it is closed by doxygen! -->
+<div id="titlearea">
+<table cellspacing="0" cellpadding="0">
+ <tbody>
+ <tr id="projectrow">
+  <td id="projectalign">
+   <div id="projectname">agent<span id="projectnumber">&#160;experimental</span>
+   </div>
+   <div id="projectbrief">C++26 实验性 LLM / Agent 库</div>
+  </td>
+ </tr>
+ </tbody>
+</table>
+</div>
+<!-- end header part -->
+<!-- 制作者 Doxygen 1.17.0 -->
+<script type="text/javascript">
+let searchBox = new SearchBox("searchBox", "search/",'.html');
+</script>
+<script type="text/javascript">
+document.addEventListener('DOMContentLoaded', codefold.init);
+</script>
+<script type="text/javascript" src="menudata.js"></script>
+<script type="text/javascript" src="menu.js"></script>
+<script type="text/javascript">
+document.addEventListener('DOMContentLoaded', () => {
+  initMenu('',true);
+  init_search();
+});
+</script>
+<div id="main-nav-mobile">
+<div class="sm sm-dox"><input id="main-menu-state" type="checkbox"/>
+<label class="main-menu-btn" for="main-menu-state">
+<span class="main-menu-btn-icon"></span> Toggle main menu visibility</label>
+<span id="searchBoxPos1" style="position:absolute;right:8px;top:8px;height:36px;"></span>
+</div>
+</div><!-- main-nav-mobile -->
+<div id="main-nav">
+  <ul class="sm sm-dox" id="main-menu">
+    <li id="searchBoxPos2" style="float:right">
+        <div id="MSearchBox" class="MSearchBoxInactive">
+        <span class="left">
+          <span id="MSearchSelect" class="search-icon" onmouseover="return searchBox.OnSearchSelectShow()" onmouseout="return searchBox.OnSearchSelectHide()"><span class="search-icon-dropdown"></span></span>
+          <input type="text" id="MSearchField" value="" placeholder="搜索" accesskey="S"
+               onfocus="searchBox.OnSearchFieldFocus(true)" 
+               onblur="searchBox.OnSearchFieldFocus(false)" 
+               onkeyup="searchBox.OnSearchFieldChange(event)"/>
+          </span><span class="right">
+            <a id="MSearchClose" href="javascript:searchBox.CloseResultsWindow()"><div id="MSearchCloseImg" class="close-icon"></div></a>
+          </span>
+        </div>
+    </li>
+  </ul>
+</div><!-- main-nav -->
+</div><!-- top -->
+<div id="side-nav" class="ui-resizable side-nav-resizable">
+  <div id="nav-tree">
+    <div id="nav-tree-contents">
+      <div id="nav-sync" class="sync"></div>
+    </div>
+  </div>
+  <div id="splitbar" style="-moz-user-select:none;" 
+       class="ui-resizable-handle">
+  </div>
+</div>
+<script type="text/javascript">
+document.addEventListener('DOMContentLoaded',() => { initNavTree('classagent_1_1_http_client.html','','classagent_1_1_http_client-members'); });
+</script>
+<div id="container">
+<div id="doc-content">
+<!-- window showing the filter options -->
+<div id="MSearchSelectWindow"
+     onmouseover="return searchBox.OnSearchSelectShow()"
+     onmouseout="return searchBox.OnSearchSelectHide()"
+     onkeydown="return searchBox.OnSearchSelectKey(event)">
+</div>
+
+<!-- iframe showing the search results (closed by default) -->
+<div id="MSearchResultsWindow">
+<div id="MSearchResults">
+<div class="SRPage">
+<div id="SRIndex">
+<div id="SRResults"></div>
+<div class="SRStatus" id="Loading">载入中...</div>
+<div class="SRStatus" id="Searching">搜索中...</div>
+<div class="SRStatus" id="NoMatches">未找到</div>
+</div>
+</div>
+</div>
+</div>
+
+<div class="header">
+  <div class="headertitle"><div class="title">agent::HttpClient类 参考</div></div>
+</div><!--header-->
+<div class="contents">
+
+<p>状态化 HTTP 客户端。纯协程、零线程：executor 懒绑（co_await this_coro::executor） 或构造传入。持有**常驻 curl multi 句柄**（连接池 CURLMOPT_MAXCONNECTS）——curl 8.x 连接缓存挂在 multi 上，跨请求存活，同一 host 后续请求走 keep-alive 复用。 cookie jar 也随客户端持久。 ⚠️ 单 executor 驱动（与 CurlSession 同不变式），非线程安全，须由单一 io_context （或 strand）驱动；多次 async_request 需在同一 executor 上跑（且串行——单活跃请求）。  
+ <a href="#details">更多...</a></p>
+
+<p><code>#include &lt;<a class="el" href="http__client_8hpp_source.html">http_client.hpp</a>&gt;</code></p>
+<table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 id="header-pub-methods" class="groupheader"><a id="pub-methods" name="pub-methods"></a>
+Public 成员函数</h2></td></tr>
+<tr class="memitem:a5c9f520602ce4de5d854150a317246c5" id="r_a5c9f520602ce4de5d854150a317246c5"><td class="memItemLeft">&#160;</td><td class="memItemRight"><a class="el" href="#a5c9f520602ce4de5d854150a317246c5">HttpClient</a> (std::optional&lt; asio::any_io_executor &gt; executor=std::nullopt)</td></tr>
+<tr class="memitem:a5381f3fe4e5ba6a3e65c978bd46314e4" id="r_a5381f3fe4e5ba6a3e65c978bd46314e4"><td class="memItemLeft"><a id="a5381f3fe4e5ba6a3e65c978bd46314e4" name="a5381f3fe4e5ba6a3e65c978bd46314e4"></a>
+&#160;</td><td class="memItemRight"><b>HttpClient</b> (HttpClient const &amp;)=delete</td></tr>
+<tr class="memitem:ae3897cc876aca4ee8cded3b7a2f5643b" id="r_ae3897cc876aca4ee8cded3b7a2f5643b"><td class="memItemLeft"><a id="ae3897cc876aca4ee8cded3b7a2f5643b" name="ae3897cc876aca4ee8cded3b7a2f5643b"></a>
+<a class="el" href="#a5c9f520602ce4de5d854150a317246c5">HttpClient</a> &amp;&#160;</td><td class="memItemRight"><b>operator=</b> (<a class="el" href="#a5c9f520602ce4de5d854150a317246c5">HttpClient</a> const &amp;)=delete</td></tr>
+<tr class="memitem:af58dcdff14ec3145ace03c67a0b00c5f" id="r_af58dcdff14ec3145ace03c67a0b00c5f"><td class="memItemLeft"><a id="af58dcdff14ec3145ace03c67a0b00c5f" name="af58dcdff14ec3145ace03c67a0b00c5f"></a>
+asio::awaitable&lt; Result&lt; <a class="el" href="classagent_1_1_http_response.html">HttpResponse</a> &gt; &gt;&#160;</td><td class="memItemRight"><b>async_request</b> (<a class="el" href="structagent_1_1_http_request.html">HttpRequest</a> request, <a class="el" href="structagent_1_1_http_request_options.html">HttpRequestOptions</a> options={})</td></tr>
+<tr class="memdesc:af58dcdff14ec3145ace03c67a0b00c5f"><td class="mdescLeft">&#160;</td><td class="mdescRight">异步请求：加 easy 到常驻 multi（连接池复用）→ 装配跑完 → 移除。 内部合并本客户端的 cookie jar（request 未显式设 cookie/cookie_file 时）。 <br /></td></tr>
+<tr class="memitem:a592f9fc999419842d54022b9147e8df2" id="r_a592f9fc999419842d54022b9147e8df2"><td class="memItemLeft">asio::awaitable&lt; Result&lt; void &gt; &gt;&#160;</td><td class="memItemRight"><a class="el" href="#a592f9fc999419842d54022b9147e8df2">load_cookies</a> (std::string path)</td></tr>
+<tr class="memdesc:a592f9fc999419842d54022b9147e8df2"><td class="mdescLeft">&#160;</td><td class="mdescRight">cookie jar 持久化：load 读入内存 jar（"k=v; k2=v2" 文本）；save 写出。  <br /></td></tr>
+<tr class="memitem:a783576fad44e8f1826282274e6dfe608" id="r_a783576fad44e8f1826282274e6dfe608"><td class="memItemLeft"><a id="a783576fad44e8f1826282274e6dfe608" name="a783576fad44e8f1826282274e6dfe608"></a>
+asio::awaitable&lt; Result&lt; void &gt; &gt;&#160;</td><td class="memItemRight"><b>save_cookies</b> (std::string path)</td></tr>
+<tr class="memdesc:a783576fad44e8f1826282274e6dfe608"><td class="mdescLeft">&#160;</td><td class="mdescRight">写出 jar 到文件 <br /></td></tr>
+</table>
+<a name="details" id="details"></a><h2 id="header-details" class="groupheader">详细描述</h2>
+<div class="textblock"><p>状态化 HTTP 客户端。纯协程、零线程：executor 懒绑（co_await this_coro::executor） 或构造传入。持有**常驻 curl multi 句柄**（连接池 CURLMOPT_MAXCONNECTS）——curl 8.x 连接缓存挂在 multi 上，跨请求存活，同一 host 后续请求走 keep-alive 复用。 cookie jar 也随客户端持久。 ⚠️ 单 executor 驱动（与 CurlSession 同不变式），非线程安全，须由单一 io_context （或 strand）驱动；多次 async_request 需在同一 executor 上跑（且串行——单活跃请求）。 </p>
+
+<p class="definition">在文件 <a class="el" href="http__client_8hpp_source.html">http_client.hpp</a> 第 <a class="el" href="http__client_8hpp_source.html#l00210">210</a> 行定义.</p>
+</div><a name="doc-constructors" id="doc-constructors"></a><h2 id="header-doc-constructors" class="groupheader">构造及析构函数说明</h2>
+<a id="a5c9f520602ce4de5d854150a317246c5" name="a5c9f520602ce4de5d854150a317246c5"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a5c9f520602ce4de5d854150a317246c5">&#9670;&#160;</a></span>HttpClient()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">agent::HttpClient::HttpClient </td>
+          <td>(</td>
+          <td class="paramtype">std::optional&lt; asio::any_io_executor &gt;</td>          <td class="paramname"><span class="paramname"><em>executor</em></span><span class="paramdefsep"> = </span><span class="paramdefval">std::nullopt</span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel explicit">explicit</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<dl class="params"><dt>参数</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">executor</td><td>可选：绑定客户端 executor（懒绑 = 首个 async_request 的 this_coro）。 </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a name="doc-func-members" id="doc-func-members"></a><h2 id="header-doc-func-members" class="groupheader">成员函数说明</h2>
+<a id="a592f9fc999419842d54022b9147e8df2" name="a592f9fc999419842d54022b9147e8df2"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a592f9fc999419842d54022b9147e8df2">&#9670;&#160;</a></span>load_cookies()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">asio::awaitable&lt; Result&lt; void &gt; &gt; agent::HttpClient::load_cookies </td>
+          <td>(</td>
+          <td class="paramtype">std::string</td>          <td class="paramname"><span class="paramname"><em>path</em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>cookie jar 持久化：load 读入内存 jar（"k=v; k2=v2" 文本）；save 写出。 </p>
+<p>从文件读入 jar </p>
+
+</div>
+</div>
+<hr/>该类的文档由以下文件生成:<ul>
+<li><a class="el" href="http__client_8hpp_source.html">http_client.hpp</a></li>
+</ul>
+</div><!-- contents -->
+</div><!-- doc-content -->
+<div id="page-nav" class="page-nav-panel">
+<div id="page-nav-resize-handle"></div>
+<div id="page-nav-tree">
+<div id="page-nav-contents">
+</div><!-- page-nav-contents -->
+</div><!-- page-nav-tree -->
+</div><!-- page-nav -->
+</div><!-- container -->
+<!-- start footer part -->
+<div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
+  <ul>
+    <li class="navelem"><b>agent</b></li><li class="navelem"><a href="classagent_1_1_http_client.html">HttpClient</a></li>
+    <li class="footer">制作者 <a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.17.0 </li>
+  </ul>
+</div>
+</body>
+</html>

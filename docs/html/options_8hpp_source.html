@@ -1,0 +1,248 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "https://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="zh">
+<head>
+<meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=11"/>
+<meta name="generator" content="Doxygen 1.17.0"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>agent: options.hpp 源文件</title>
+<link href="tabs.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="codefolding.js"></script>
+<script type="text/javascript" src="clipboard.js"></script>
+<link href="navtree.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="navtreedata.js"></script>
+<script type="text/javascript" src="navtree.js"></script>
+<script type="text/javascript" src="cookie.js"></script>
+<link href="search/search.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="search/searchdata.js"></script>
+<script type="text/javascript" src="search/search.js"></script>
+<script type="module">
+import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.esm.min.mjs';
+const theme = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'default';
+mermaid.initialize({ startOnLoad: true, theme: theme });
+</script>
+<link href="doxygen.css" rel="stylesheet" type="text/css" />
+</head>
+<body>
+<div id="top"><!-- do not remove this div, it is closed by doxygen! -->
+<div id="titlearea">
+<table cellspacing="0" cellpadding="0">
+ <tbody>
+ <tr id="projectrow">
+  <td id="projectalign">
+   <div id="projectname">agent<span id="projectnumber">&#160;experimental</span>
+   </div>
+   <div id="projectbrief">C++26 实验性 LLM / Agent 库</div>
+  </td>
+ </tr>
+ </tbody>
+</table>
+</div>
+<!-- end header part -->
+<!-- 制作者 Doxygen 1.17.0 -->
+<script type="text/javascript">
+let searchBox = new SearchBox("searchBox", "search/",'.html');
+</script>
+<script type="text/javascript">
+document.addEventListener('DOMContentLoaded', codefold.init);
+</script>
+<script type="text/javascript" src="menudata.js"></script>
+<script type="text/javascript" src="menu.js"></script>
+<script type="text/javascript">
+document.addEventListener('DOMContentLoaded', () => {
+  initMenu('',true);
+  init_search();
+});
+</script>
+<div id="main-nav-mobile">
+<div class="sm sm-dox"><input id="main-menu-state" type="checkbox"/>
+<label class="main-menu-btn" for="main-menu-state">
+<span class="main-menu-btn-icon"></span> Toggle main menu visibility</label>
+<span id="searchBoxPos1" style="position:absolute;right:8px;top:8px;height:36px;"></span>
+</div>
+</div><!-- main-nav-mobile -->
+<div id="main-nav">
+  <ul class="sm sm-dox" id="main-menu">
+    <li id="searchBoxPos2" style="float:right">
+        <div id="MSearchBox" class="MSearchBoxInactive">
+        <span class="left">
+          <span id="MSearchSelect" class="search-icon" onmouseover="return searchBox.OnSearchSelectShow()" onmouseout="return searchBox.OnSearchSelectHide()"><span class="search-icon-dropdown"></span></span>
+          <input type="text" id="MSearchField" value="" placeholder="搜索" accesskey="S"
+               onfocus="searchBox.OnSearchFieldFocus(true)" 
+               onblur="searchBox.OnSearchFieldFocus(false)" 
+               onkeyup="searchBox.OnSearchFieldChange(event)"/>
+          </span><span class="right">
+            <a id="MSearchClose" href="javascript:searchBox.CloseResultsWindow()"><div id="MSearchCloseImg" class="close-icon"></div></a>
+          </span>
+        </div>
+    </li>
+  </ul>
+</div><!-- main-nav -->
+</div><!-- top -->
+<div id="side-nav" class="ui-resizable side-nav-resizable">
+  <div id="nav-tree">
+    <div id="nav-tree-contents">
+      <div id="nav-sync" class="sync"></div>
+    </div>
+  </div>
+  <div id="splitbar" style="-moz-user-select:none;" 
+       class="ui-resizable-handle">
+  </div>
+</div>
+<script type="text/javascript">
+document.addEventListener('DOMContentLoaded',() => { initNavTree('options_8hpp_source.html','',''); });
+</script>
+<div id="container">
+<div id="doc-content">
+<!-- window showing the filter options -->
+<div id="MSearchSelectWindow"
+     onmouseover="return searchBox.OnSearchSelectShow()"
+     onmouseout="return searchBox.OnSearchSelectHide()"
+     onkeydown="return searchBox.OnSearchSelectKey(event)">
+</div>
+
+<!-- iframe showing the search results (closed by default) -->
+<div id="MSearchResultsWindow">
+<div id="MSearchResults">
+<div class="SRPage">
+<div id="SRIndex">
+<div id="SRResults"></div>
+<div class="SRStatus" id="Loading">载入中...</div>
+<div class="SRStatus" id="Searching">搜索中...</div>
+<div class="SRStatus" id="NoMatches">未找到</div>
+</div>
+</div>
+</div>
+</div>
+
+<div class="header">
+  <div class="headertitle"><div class="title">options.hpp</div></div>
+</div><!--header-->
+<div class="contents">
+<div class="fragment"><div class="line"><a id="l00001" name="l00001"></a><span class="lineno">    1</span><span class="preprocessor">#pragma once</span></div>
+<div class="line"><a id="l00002" name="l00002"></a><span class="lineno">    2</span> </div>
+<div class="line"><a id="l00003" name="l00003"></a><span class="lineno">    3</span><span class="comment">// LLM 调用层请求配置（L1 配置层）。</span></div>
+<div class="line"><a id="l00004" name="l00004"></a><span class="lineno">    4</span><span class="comment">// 包含：EndpointConfig（连接信息）/ Context（对话内容）/ StreamOptions（采样+传输+透传）。</span></div>
+<div class="line"><a id="l00005" name="l00005"></a><span class="lineno">    5</span><span class="comment">// 不包含模型表（model.hpp）、类型层（types.hpp）、异步通道（stream.hpp）。</span></div>
+<div class="line"><a id="l00006" name="l00006"></a><span class="lineno">    6</span> </div>
+<div class="line"><a id="l00007" name="l00007"></a><span class="lineno">    7</span><span class="preprocessor">#include &lt;agent/llm/content.hpp&gt;</span></div>
+<div class="line"><a id="l00008" name="l00008"></a><span class="lineno">    8</span><span class="preprocessor">#include &lt;agent/llm/types.hpp&gt;</span></div>
+<div class="line"><a id="l00009" name="l00009"></a><span class="lineno">    9</span><span class="preprocessor">#include &lt;agent/tools/tools.hpp&gt;</span></div>
+<div class="line"><a id="l00010" name="l00010"></a><span class="lineno">   10</span> </div>
+<div class="line"><a id="l00011" name="l00011"></a><span class="lineno">   11</span><span class="preprocessor">#include &lt;asio.hpp&gt;</span></div>
+<div class="line"><a id="l00012" name="l00012"></a><span class="lineno">   12</span> </div>
+<div class="line"><a id="l00013" name="l00013"></a><span class="lineno">   13</span><span class="preprocessor">#include &lt;nlohmann/json.hpp&gt;</span></div>
+<div class="line"><a id="l00014" name="l00014"></a><span class="lineno">   14</span> </div>
+<div class="line"><a id="l00015" name="l00015"></a><span class="lineno">   15</span><span class="preprocessor">#include &lt;optional&gt;</span></div>
+<div class="line"><a id="l00016" name="l00016"></a><span class="lineno">   16</span><span class="preprocessor">#include &lt;string&gt;</span></div>
+<div class="line"><a id="l00017" name="l00017"></a><span class="lineno">   17</span><span class="preprocessor">#include &lt;utility&gt;</span></div>
+<div class="line"><a id="l00018" name="l00018"></a><span class="lineno">   18</span><span class="preprocessor">#include &lt;vector&gt;</span></div>
+<div class="line"><a id="l00019" name="l00019"></a><span class="lineno">   19</span> </div>
+<div class="line"><a id="l00020" name="l00020"></a><span class="lineno">   20</span><span class="keyword">namespace </span>agent {</div>
+<div class="line"><a id="l00021" name="l00021"></a><span class="lineno">   21</span> </div>
+<div class="line"><a id="l00022" name="l00022"></a><span class="lineno">   22</span><span class="comment">// ─────────────────────────────────────────────────────────────</span></div>
+<div class="line"><a id="l00023" name="l00023"></a><span class="lineno">   23</span><span class="comment">// EndpointConfig — 厂商连接信息</span></div>
+<div class="line"><a id="l00024" name="l00024"></a><span class="lineno">   24</span><span class="comment">// ─────────────────────────────────────────────────────────────</span></div>
+<div class="line"><a id="l00025" name="l00025"></a><span class="lineno">   25</span></div>
+<div class="foldopen" id="foldopen00027" data-start="{" data-end="};">
+<div class="line"><a id="l00027" name="l00027"></a><span class="lineno"><a class="line" href="structagent_1_1_endpoint_config.html">   27</a></span><span class="keyword">struct </span><a class="code hl_struct" href="structagent_1_1_endpoint_config.html">EndpointConfig</a> {</div>
+<div class="line"><a id="l00028" name="l00028"></a><span class="lineno"><a class="line" href="structagent_1_1_endpoint_config.html#a900ab70aa35e9e6aa9b8dbc2389090fa">   28</a></span>    std::string <a class="code hl_variable" href="structagent_1_1_endpoint_config.html#a900ab70aa35e9e6aa9b8dbc2389090fa">name</a>;                   </div>
+<div class="line"><a id="l00029" name="l00029"></a><span class="lineno"><a class="line" href="structagent_1_1_endpoint_config.html#aee4a3dd926d9f987e02a9afd32090afd">   29</a></span>    std::string <a class="code hl_variable" href="structagent_1_1_endpoint_config.html#aee4a3dd926d9f987e02a9afd32090afd">api_key</a>;                </div>
+<div class="line"><a id="l00030" name="l00030"></a><span class="lineno"><a class="line" href="structagent_1_1_endpoint_config.html#a699d4e9386c89df20f3c68db88b1b903">   30</a></span>    std::string <a class="code hl_variable" href="structagent_1_1_endpoint_config.html#a699d4e9386c89df20f3c68db88b1b903">base_url</a>;               </div>
+<div class="line"><a id="l00033" name="l00033"></a><span class="lineno"><a class="line" href="structagent_1_1_endpoint_config.html#aec4b9773cca874f38b1f3aedfac60d60">   33</a></span>    std::vector&lt;std::pair&lt;std::string, std::string&gt;&gt; <a class="code hl_variable" href="structagent_1_1_endpoint_config.html#aec4b9773cca874f38b1f3aedfac60d60">default_headers</a>;</div>
+<div class="line"><a id="l00034" name="l00034"></a><span class="lineno">   34</span>};</div>
+</div>
+<div class="line"><a id="l00035" name="l00035"></a><span class="lineno">   35</span> </div>
+<div class="line"><a id="l00036" name="l00036"></a><span class="lineno">   36</span><span class="comment">// ─────────────────────────────────────────────────────────────</span></div>
+<div class="line"><a id="l00037" name="l00037"></a><span class="lineno">   37</span><span class="comment">// Context — 对话内容（无采样参数）</span></div>
+<div class="line"><a id="l00038" name="l00038"></a><span class="lineno">   38</span><span class="comment">// ─────────────────────────────────────────────────────────────</span></div>
+<div class="line"><a id="l00039" name="l00039"></a><span class="lineno">   39</span></div>
+<div class="foldopen" id="foldopen00041" data-start="{" data-end="};">
+<div class="line"><a id="l00041" name="l00041"></a><span class="lineno"><a class="line" href="structagent_1_1_context.html">   41</a></span><span class="keyword">struct </span><a class="code hl_struct" href="structagent_1_1_context.html">Context</a> {</div>
+<div class="line"><a id="l00042" name="l00042"></a><span class="lineno"><a class="line" href="structagent_1_1_context.html#a786531fc980d3e5eb4832ccbfaf73db7">   42</a></span>    std::string <a class="code hl_variable" href="structagent_1_1_context.html#a786531fc980d3e5eb4832ccbfaf73db7">system_prompt</a>;      </div>
+<div class="line"><a id="l00043" name="l00043"></a><span class="lineno"><a class="line" href="structagent_1_1_context.html#ae8e433227dc038a7339d594f731a0730">   43</a></span>    std::vector&lt;Message&gt; <a class="code hl_variable" href="structagent_1_1_context.html#ae8e433227dc038a7339d594f731a0730">messages</a>;  </div>
+<div class="line"><a id="l00047" name="l00047"></a><span class="lineno"><a class="line" href="structagent_1_1_context.html#a8aeb12abfe08e1765c5de78046d56bef">   47</a></span>    std::vector&lt;std::string&gt; <a class="code hl_variable" href="structagent_1_1_context.html#a8aeb12abfe08e1765c5de78046d56bef">tools</a>;</div>
+<div class="line"><a id="l00048" name="l00048"></a><span class="lineno">   48</span>};</div>
+</div>
+<div class="line"><a id="l00049" name="l00049"></a><span class="lineno">   49</span> </div>
+<div class="line"><a id="l00050" name="l00050"></a><span class="lineno">   50</span><span class="comment">// ─────────────────────────────────────────────────────────────</span></div>
+<div class="line"><a id="l00051" name="l00051"></a><span class="lineno">   51</span><span class="comment">// StreamOptions — 公约数归一化 + extra 透传</span></div>
+<div class="line"><a id="l00052" name="l00052"></a><span class="lineno">   52</span><span class="comment">// ─────────────────────────────────────────────────────────────</span></div>
+<div class="line"><a id="l00053" name="l00053"></a><span class="lineno">   53</span></div>
+<div class="foldopen" id="foldopen00055" data-start="{" data-end="};">
+<div class="line"><a id="l00055" name="l00055"></a><span class="lineno"><a class="line" href="structagent_1_1_stream_options.html">   55</a></span><span class="keyword">struct </span><a class="code hl_struct" href="structagent_1_1_stream_options.html">StreamOptions</a> {</div>
+<div class="line"><a id="l00056" name="l00056"></a><span class="lineno">   56</span>    <span class="comment">// ── 采样参数（公约数，三家都有）──</span></div>
+<div class="line"><a id="l00057" name="l00057"></a><span class="lineno"><a class="line" href="structagent_1_1_stream_options.html#a745424aa91e934a56c8c536abd64a448">   57</a></span>    std::optional&lt;double&gt; <a class="code hl_variable" href="structagent_1_1_stream_options.html#a745424aa91e934a56c8c536abd64a448">temperature</a>;                 </div>
+<div class="line"><a id="l00058" name="l00058"></a><span class="lineno"><a class="line" href="structagent_1_1_stream_options.html#a21548c69b91de1c2d4f822f12331317f">   58</a></span>    std::optional&lt;int&gt; <a class="code hl_variable" href="structagent_1_1_stream_options.html#a21548c69b91de1c2d4f822f12331317f">max_tokens</a>;                     </div>
+<div class="line"><a id="l00059" name="l00059"></a><span class="lineno"><a class="line" href="structagent_1_1_stream_options.html#a95859d0f2b587420eb2df2f8fe0f03d8">   59</a></span>    std::optional&lt;ThinkingLevel&gt; <a class="code hl_variable" href="structagent_1_1_stream_options.html#a95859d0f2b587420eb2df2f8fe0f03d8">reasoning</a>;            </div>
+<div class="line"><a id="l00060" name="l00060"></a><span class="lineno">   60</span> </div>
+<div class="line"><a id="l00061" name="l00061"></a><span class="lineno">   61</span>    <span class="comment">// ── 缓存（公约数归一化，各引擎内部实现）──</span></div>
+<div class="line"><a id="l00062" name="l00062"></a><span class="lineno"><a class="line" href="structagent_1_1_stream_options.html#ac1c0918fd9ab8558725914da903e9b02">   62</a></span>    std::optional&lt;CacheRetention&gt; <a class="code hl_variable" href="structagent_1_1_stream_options.html#ac1c0918fd9ab8558725914da903e9b02">cache_retention</a>;     </div>
+<div class="line"><a id="l00063" name="l00063"></a><span class="lineno"><a class="line" href="structagent_1_1_stream_options.html#ac0aa11daef39e07e809dcd79f93c7425">   63</a></span>    std::optional&lt;std::string&gt; <a class="code hl_variable" href="structagent_1_1_stream_options.html#ac0aa11daef39e07e809dcd79f93c7425">session_id</a>;             </div>
+<div class="line"><a id="l00064" name="l00064"></a><span class="lineno">   64</span> </div>
+<div class="line"><a id="l00065" name="l00065"></a><span class="lineno">   65</span>    <span class="comment">// ── 传输层（都有）──</span></div>
+<div class="line"><a id="l00066" name="l00066"></a><span class="lineno"><a class="line" href="structagent_1_1_stream_options.html#abc42f732cc25171cfa165d341f69a70f">   66</a></span>    std::optional&lt;std::string&gt; <a class="code hl_variable" href="structagent_1_1_stream_options.html#abc42f732cc25171cfa165d341f69a70f">api_key</a>;                </div>
+<div class="line"><a id="l00067" name="l00067"></a><span class="lineno"><a class="line" href="structagent_1_1_stream_options.html#a8bc3f4457834177096b2a32cb3148cf4">   67</a></span>    std::optional&lt;std::string&gt; <a class="code hl_variable" href="structagent_1_1_stream_options.html#a8bc3f4457834177096b2a32cb3148cf4">base_url</a>;               </div>
+<div class="line"><a id="l00068" name="l00068"></a><span class="lineno"><a class="line" href="structagent_1_1_stream_options.html#a59d71dfdea6d5592c55a3d20ca7e7a0d">   68</a></span>    std::vector&lt;std::pair&lt;std::string, std::string&gt;&gt; <a class="code hl_variable" href="structagent_1_1_stream_options.html#a59d71dfdea6d5592c55a3d20ca7e7a0d">headers</a>;     </div>
+<div class="line"><a id="l00069" name="l00069"></a><span class="lineno"><a class="line" href="structagent_1_1_stream_options.html#a5dc2b58b022275606498b80932ab54b4">   69</a></span>    std::vector&lt;std::string&gt; <a class="code hl_variable" href="structagent_1_1_stream_options.html#a5dc2b58b022275606498b80932ab54b4">suppress_headers</a>;                     </div>
+<div class="line"><a id="l00071" name="l00071"></a><span class="lineno"><a class="line" href="structagent_1_1_stream_options.html#ab67ab744b60be52bbe331514f385d9dd">   71</a></span>    <span class="keywordtype">int</span> <a class="code hl_variable" href="structagent_1_1_stream_options.html#ab67ab744b60be52bbe331514f385d9dd">connect_timeout_ms</a> = 30000;                    </div>
+<div class="line"><a id="l00072" name="l00072"></a><span class="lineno"><a class="line" href="structagent_1_1_stream_options.html#aa141a413e8e0aee12e9297670c7825f2">   72</a></span>    <span class="keywordtype">int</span> <a class="code hl_variable" href="structagent_1_1_stream_options.html#aa141a413e8e0aee12e9297670c7825f2">idle_timeout_ms</a> = 120000;                      </div>
+<div class="line"><a id="l00073" name="l00073"></a><span class="lineno"><a class="line" href="structagent_1_1_stream_options.html#a07b8351422bf48753fd4a57a0135aa11">   73</a></span>    <span class="keywordtype">int</span> <a class="code hl_variable" href="structagent_1_1_stream_options.html#a07b8351422bf48753fd4a57a0135aa11">total_timeout_ms</a> = 600000;                     </div>
+<div class="line"><a id="l00074" name="l00074"></a><span class="lineno"><a class="line" href="structagent_1_1_stream_options.html#a2d59b6ebc01bbf0239e3727c6c3283af">   74</a></span>    <span class="keywordtype">int</span> <a class="code hl_variable" href="structagent_1_1_stream_options.html#a2d59b6ebc01bbf0239e3727c6c3283af">max_retries</a> = 2;                               </div>
+<div class="line"><a id="l00075" name="l00075"></a><span class="lineno"><a class="line" href="structagent_1_1_stream_options.html#a8de33d45bd4bc692ae6b1d0306bac57a">   75</a></span>    <span class="keywordtype">int</span> <a class="code hl_variable" href="structagent_1_1_stream_options.html#a8de33d45bd4bc692ae6b1d0306bac57a">max_retry_delay_ms</a> = 60000;                    </div>
+<div class="line"><a id="l00078" name="l00078"></a><span class="lineno"><a class="line" href="structagent_1_1_stream_options.html#a68633c682499072c5cb3b4281eb6b799">   78</a></span>    asio::cancellation_signal* <a class="code hl_variable" href="structagent_1_1_stream_options.html#a68633c682499072c5cb3b4281eb6b799">cancel</a> = <span class="keyword">nullptr</span>;</div>
+<div class="line"><a id="l00079" name="l00079"></a><span class="lineno">   79</span> </div>
+<div class="line"><a id="l00080" name="l00080"></a><span class="lineno">   80</span>    <span class="comment">// ── 原始响应捕获（可选，默认不存，零开销）──</span></div>
+<div class="line"><a id="l00082" name="l00082"></a><span class="lineno"><a class="line" href="structagent_1_1_stream_options.html#ad924b4ae61bea893096ccceb81ce31e7">   82</a></span>    <span class="keywordtype">bool</span> <a class="code hl_variable" href="structagent_1_1_stream_options.html#ad924b4ae61bea893096ccceb81ce31e7">capture_raw_response</a> = <span class="keyword">false</span>;</div>
+<div class="line"><a id="l00084" name="l00084"></a><span class="lineno"><a class="line" href="structagent_1_1_stream_options.html#a45b2150d870325eae31fb8f23c0228de">   84</a></span>    <span class="keywordtype">size_t</span> <a class="code hl_variable" href="structagent_1_1_stream_options.html#a45b2150d870325eae31fb8f23c0228de">max_raw_bytes</a> = 1 &lt;&lt; 20;</div>
+<div class="line"><a id="l00085" name="l00085"></a><span class="lineno">   85</span> </div>
+<div class="line"><a id="l00086" name="l00086"></a><span class="lineno">   86</span>    <span class="comment">// ── 非公约数：透传接口，用户自己决定 ──</span></div>
+<div class="line"><a id="l00089" name="l00089"></a><span class="lineno"><a class="line" href="structagent_1_1_stream_options.html#adfe187ffe1561eca099767e86833bf3b">   89</a></span>    nlohmann::json <a class="code hl_variable" href="structagent_1_1_stream_options.html#adfe187ffe1561eca099767e86833bf3b">extra</a>;</div>
+<div class="line"><a id="l00090" name="l00090"></a><span class="lineno">   90</span> </div>
+<div class="line"><a id="l00091" name="l00091"></a><span class="lineno">   91</span>    <span class="comment">// ── 请求体预置（Agent 的 before_payload 钩子落地）──</span></div>
+<div class="line"><a id="l00095" name="l00095"></a><span class="lineno"><a class="line" href="structagent_1_1_stream_options.html#afbc6a6f7e147b56fa61f5ccc85209006">   95</a></span>    std::optional&lt;nlohmann::json&gt; <a class="code hl_variable" href="structagent_1_1_stream_options.html#afbc6a6f7e147b56fa61f5ccc85209006">prebuilt_body</a>;</div>
+<div class="line"><a id="l00096" name="l00096"></a><span class="lineno">   96</span>};</div>
+</div>
+<div class="line"><a id="l00097" name="l00097"></a><span class="lineno">   97</span> </div>
+<div class="line"><a id="l00098" name="l00098"></a><span class="lineno">   98</span>}  <span class="comment">// namespace agent</span></div>
+<div class="ttc" id="astructagent_1_1_context_html"><div class="ttname"><a href="structagent_1_1_context.html">agent::Context</a></div><div class="ttdoc">一次 LLM 调用的完整输入。</div><div class="ttdef"><b>定义</b> <a href="#l00041">options.hpp:41</a></div></div>
+<div class="ttc" id="astructagent_1_1_context_html_a786531fc980d3e5eb4832ccbfaf73db7"><div class="ttname"><a href="structagent_1_1_context.html#a786531fc980d3e5eb4832ccbfaf73db7">agent::Context::system_prompt</a></div><div class="ttdeci">std::string system_prompt</div><div class="ttdoc">系统提示</div><div class="ttdef"><b>定义</b> <a href="#l00042">options.hpp:42</a></div></div>
+<div class="ttc" id="astructagent_1_1_context_html_a8aeb12abfe08e1765c5de78046d56bef"><div class="ttname"><a href="structagent_1_1_context.html#a8aeb12abfe08e1765c5de78046d56bef">agent::Context::tools</a></div><div class="ttdeci">std::vector&lt; std::string &gt; tools</div><div class="ttdoc">本次请求声明的工具名。工具定义（name/description/schema）统一由全局 Tools 注册表持有，引擎 build_params 时按名 resolve——Context 只存名字， ...</div><div class="ttdef"><b>定义</b> <a href="#l00047">options.hpp:47</a></div></div>
+<div class="ttc" id="astructagent_1_1_context_html_ae8e433227dc038a7339d594f731a0730"><div class="ttname"><a href="structagent_1_1_context.html#ae8e433227dc038a7339d594f731a0730">agent::Context::messages</a></div><div class="ttdeci">std::vector&lt; Message &gt; messages</div><div class="ttdoc">对话历史</div><div class="ttdef"><b>定义</b> <a href="#l00043">options.hpp:43</a></div></div>
+<div class="ttc" id="astructagent_1_1_endpoint_config_html"><div class="ttname"><a href="structagent_1_1_endpoint_config.html">agent::EndpointConfig</a></div><div class="ttdoc">厂商连接信息。不绑定 model（model 是请求参数）。</div><div class="ttdef"><b>定义</b> <a href="#l00027">options.hpp:27</a></div></div>
+<div class="ttc" id="astructagent_1_1_endpoint_config_html_a699d4e9386c89df20f3c68db88b1b903"><div class="ttname"><a href="structagent_1_1_endpoint_config.html#a699d4e9386c89df20f3c68db88b1b903">agent::EndpointConfig::base_url</a></div><div class="ttdeci">std::string base_url</div><div class="ttdoc">&quot;https://api.deepseek.com&quot;</div><div class="ttdef"><b>定义</b> <a href="#l00030">options.hpp:30</a></div></div>
+<div class="ttc" id="astructagent_1_1_endpoint_config_html_a900ab70aa35e9e6aa9b8dbc2389090fa"><div class="ttname"><a href="structagent_1_1_endpoint_config.html#a900ab70aa35e9e6aa9b8dbc2389090fa">agent::EndpointConfig::name</a></div><div class="ttdeci">std::string name</div><div class="ttdoc">&quot;deepseek&quot;</div><div class="ttdef"><b>定义</b> <a href="#l00028">options.hpp:28</a></div></div>
+<div class="ttc" id="astructagent_1_1_endpoint_config_html_aec4b9773cca874f38b1f3aedfac60d60"><div class="ttname"><a href="structagent_1_1_endpoint_config.html#aec4b9773cca874f38b1f3aedfac60d60">agent::EndpointConfig::default_headers</a></div><div class="ttdeci">std::vector&lt; std::pair&lt; std::string, std::string &gt; &gt; default_headers</div><div class="ttdoc">该厂商固定默认头：如 Anthropic 的 anthropic-version、 企业代理的 Organization/Project。StreamOptions....</div><div class="ttdef"><b>定义</b> <a href="#l00033">options.hpp:33</a></div></div>
+<div class="ttc" id="astructagent_1_1_endpoint_config_html_aee4a3dd926d9f987e02a9afd32090afd"><div class="ttname"><a href="structagent_1_1_endpoint_config.html#aee4a3dd926d9f987e02a9afd32090afd">agent::EndpointConfig::api_key</a></div><div class="ttdeci">std::string api_key</div><div class="ttdoc">API 密钥（sk-...）；可用 StreamOptions.api_key 按请求覆盖</div><div class="ttdef"><b>定义</b> <a href="#l00029">options.hpp:29</a></div></div>
+<div class="ttc" id="astructagent_1_1_stream_options_html"><div class="ttname"><a href="structagent_1_1_stream_options.html">agent::StreamOptions</a></div><div class="ttdoc">流式/非流式调用的采样、缓存、传输与透传配置。</div><div class="ttdef"><b>定义</b> <a href="#l00055">options.hpp:55</a></div></div>
+<div class="ttc" id="astructagent_1_1_stream_options_html_a07b8351422bf48753fd4a57a0135aa11"><div class="ttname"><a href="structagent_1_1_stream_options.html#a07b8351422bf48753fd4a57a0135aa11">agent::StreamOptions::total_timeout_ms</a></div><div class="ttdeci">int total_timeout_ms</div><div class="ttdoc">整体上限，兜底（0 = 不限）</div><div class="ttdef"><b>定义</b> <a href="#l00073">options.hpp:73</a></div></div>
+<div class="ttc" id="astructagent_1_1_stream_options_html_a21548c69b91de1c2d4f822f12331317f"><div class="ttname"><a href="structagent_1_1_stream_options.html#a21548c69b91de1c2d4f822f12331317f">agent::StreamOptions::max_tokens</a></div><div class="ttdeci">std::optional&lt; int &gt; max_tokens</div><div class="ttdoc">不传 → 用 Model.max_output_tokens</div><div class="ttdef"><b>定义</b> <a href="#l00058">options.hpp:58</a></div></div>
+<div class="ttc" id="astructagent_1_1_stream_options_html_a2d59b6ebc01bbf0239e3727c6c3283af"><div class="ttname"><a href="structagent_1_1_stream_options.html#a2d59b6ebc01bbf0239e3727c6c3283af">agent::StreamOptions::max_retries</a></div><div class="ttdeci">int max_retries</div><div class="ttdoc">HTTP 层重试（429/5xx）</div><div class="ttdef"><b>定义</b> <a href="#l00074">options.hpp:74</a></div></div>
+<div class="ttc" id="astructagent_1_1_stream_options_html_a45b2150d870325eae31fb8f23c0228de"><div class="ttname"><a href="structagent_1_1_stream_options.html#a45b2150d870325eae31fb8f23c0228de">agent::StreamOptions::max_raw_bytes</a></div><div class="ttdeci">size_t max_raw_bytes</div><div class="ttdoc">capture_raw_response 开启时的原始响应字节上限（默认 1MB），超出丢弃 raw。</div><div class="ttdef"><b>定义</b> <a href="#l00084">options.hpp:84</a></div></div>
+<div class="ttc" id="astructagent_1_1_stream_options_html_a59d71dfdea6d5592c55a3d20ca7e7a0d"><div class="ttname"><a href="structagent_1_1_stream_options.html#a59d71dfdea6d5592c55a3d20ca7e7a0d">agent::StreamOptions::headers</a></div><div class="ttdeci">std::vector&lt; std::pair&lt; std::string, std::string &gt; &gt; headers</div><div class="ttdoc">追加/覆盖请求头</div><div class="ttdef"><b>定义</b> <a href="#l00068">options.hpp:68</a></div></div>
+<div class="ttc" id="astructagent_1_1_stream_options_html_a5dc2b58b022275606498b80932ab54b4"><div class="ttname"><a href="structagent_1_1_stream_options.html#a5dc2b58b022275606498b80932ab54b4">agent::StreamOptions::suppress_headers</a></div><div class="ttdeci">std::vector&lt; std::string &gt; suppress_headers</div><div class="ttdoc">抑制默认头</div><div class="ttdef"><b>定义</b> <a href="#l00069">options.hpp:69</a></div></div>
+<div class="ttc" id="astructagent_1_1_stream_options_html_a68633c682499072c5cb3b4281eb6b799"><div class="ttname"><a href="structagent_1_1_stream_options.html#a68633c682499072c5cb3b4281eb6b799">agent::StreamOptions::cancel</a></div><div class="ttdeci">asio::cancellation_signal * cancel</div><div class="ttdoc">取消信号。生命周期约定：指针指向的 signal 必须在本次调用完全结束 （generator 析构 / awaitable 完成）之前保持有效，由调用方保证。</div><div class="ttdef"><b>定义</b> <a href="#l00078">options.hpp:78</a></div></div>
+<div class="ttc" id="astructagent_1_1_stream_options_html_a745424aa91e934a56c8c536abd64a448"><div class="ttname"><a href="structagent_1_1_stream_options.html#a745424aa91e934a56c8c536abd64a448">agent::StreamOptions::temperature</a></div><div class="ttdeci">std::optional&lt; double &gt; temperature</div><div class="ttdoc">不传 → 不上传</div><div class="ttdef"><b>定义</b> <a href="#l00057">options.hpp:57</a></div></div>
+<div class="ttc" id="astructagent_1_1_stream_options_html_a8bc3f4457834177096b2a32cb3148cf4"><div class="ttname"><a href="structagent_1_1_stream_options.html#a8bc3f4457834177096b2a32cb3148cf4">agent::StreamOptions::base_url</a></div><div class="ttdeci">std::optional&lt; std::string &gt; base_url</div><div class="ttdoc">覆盖 EndpointConfig.base_url</div><div class="ttdef"><b>定义</b> <a href="#l00067">options.hpp:67</a></div></div>
+<div class="ttc" id="astructagent_1_1_stream_options_html_a8de33d45bd4bc692ae6b1d0306bac57a"><div class="ttname"><a href="structagent_1_1_stream_options.html#a8de33d45bd4bc692ae6b1d0306bac57a">agent::StreamOptions::max_retry_delay_ms</a></div><div class="ttdeci">int max_retry_delay_ms</div><div class="ttdoc">Retry-After 超此值立即失败</div><div class="ttdef"><b>定义</b> <a href="#l00075">options.hpp:75</a></div></div>
+<div class="ttc" id="astructagent_1_1_stream_options_html_a95859d0f2b587420eb2df2f8fe0f03d8"><div class="ttname"><a href="structagent_1_1_stream_options.html#a95859d0f2b587420eb2df2f8fe0f03d8">agent::StreamOptions::reasoning</a></div><div class="ttdeci">std::optional&lt; ThinkingLevel &gt; reasoning</div><div class="ttdoc">统一思考等级 → 各引擎映射</div><div class="ttdef"><b>定义</b> <a href="#l00059">options.hpp:59</a></div></div>
+<div class="ttc" id="astructagent_1_1_stream_options_html_aa141a413e8e0aee12e9297670c7825f2"><div class="ttname"><a href="structagent_1_1_stream_options.html#aa141a413e8e0aee12e9297670c7825f2">agent::StreamOptions::idle_timeout_ms</a></div><div class="ttdeci">int idle_timeout_ms</div><div class="ttdoc">流式块间静默上限（0 = 不限）</div><div class="ttdef"><b>定义</b> <a href="#l00072">options.hpp:72</a></div></div>
+<div class="ttc" id="astructagent_1_1_stream_options_html_ab67ab744b60be52bbe331514f385d9dd"><div class="ttname"><a href="structagent_1_1_stream_options.html#ab67ab744b60be52bbe331514f385d9dd">agent::StreamOptions::connect_timeout_ms</a></div><div class="ttdeci">int connect_timeout_ms</div><div class="ttdoc">超时分层：单一整体超时会误杀合法长流（流式可跑数分钟）。</div><div class="ttdef"><b>定义</b> <a href="#l00071">options.hpp:71</a></div></div>
+<div class="ttc" id="astructagent_1_1_stream_options_html_abc42f732cc25171cfa165d341f69a70f"><div class="ttname"><a href="structagent_1_1_stream_options.html#abc42f732cc25171cfa165d341f69a70f">agent::StreamOptions::api_key</a></div><div class="ttdeci">std::optional&lt; std::string &gt; api_key</div><div class="ttdoc">覆盖 EndpointConfig.api_key</div><div class="ttdef"><b>定义</b> <a href="#l00066">options.hpp:66</a></div></div>
+<div class="ttc" id="astructagent_1_1_stream_options_html_ac0aa11daef39e07e809dcd79f93c7425"><div class="ttname"><a href="structagent_1_1_stream_options.html#ac0aa11daef39e07e809dcd79f93c7425">agent::StreamOptions::session_id</a></div><div class="ttdeci">std::optional&lt; std::string &gt; session_id</div><div class="ttdoc">会话关联，跨轮复用缓存</div><div class="ttdef"><b>定义</b> <a href="#l00063">options.hpp:63</a></div></div>
+<div class="ttc" id="astructagent_1_1_stream_options_html_ac1c0918fd9ab8558725914da903e9b02"><div class="ttname"><a href="structagent_1_1_stream_options.html#ac1c0918fd9ab8558725914da903e9b02">agent::StreamOptions::cache_retention</a></div><div class="ttdeci">std::optional&lt; CacheRetention &gt; cache_retention</div><div class="ttdoc">映射到各家缓存机制</div><div class="ttdef"><b>定义</b> <a href="#l00062">options.hpp:62</a></div></div>
+<div class="ttc" id="astructagent_1_1_stream_options_html_ad924b4ae61bea893096ccceb81ce31e7"><div class="ttname"><a href="structagent_1_1_stream_options.html#ad924b4ae61bea893096ccceb81ce31e7">agent::StreamOptions::capture_raw_response</a></div><div class="ttdeci">bool capture_raw_response</div><div class="ttdoc">true 时 ChatResponse.raw 填充上游原始响应。</div><div class="ttdef"><b>定义</b> <a href="#l00082">options.hpp:82</a></div></div>
+<div class="ttc" id="astructagent_1_1_stream_options_html_adfe187ffe1561eca099767e86833bf3b"><div class="ttname"><a href="structagent_1_1_stream_options.html#adfe187ffe1561eca099767e86833bf3b">agent::StreamOptions::extra</a></div><div class="ttdeci">nlohmann::json extra</div><div class="ttdoc">用户塞 store / metadata / provider 特有字段。 引擎不解释、不推断，原样并入请求体（provider 不认识的字段自行忽略或报错）。</div><div class="ttdef"><b>定义</b> <a href="#l00089">options.hpp:89</a></div></div>
+<div class="ttc" id="astructagent_1_1_stream_options_html_afbc6a6f7e147b56fa61f5ccc85209006"><div class="ttname"><a href="structagent_1_1_stream_options.html#afbc6a6f7e147b56fa61f5ccc85209006">agent::StreamOptions::prebuilt_body</a></div><div class="ttdeci">std::optional&lt; nlohmann::json &gt; prebuilt_body</div><div class="ttdoc">非空时引擎**跳过 build_params** 直接用这个 body 发请求。 用途：上层（Agent）先调 provider.build_params 拿到请求体 → 应用 before_paylo...</div><div class="ttdef"><b>定义</b> <a href="#l00095">options.hpp:95</a></div></div>
+</div><!-- fragment --></div><!-- contents -->
+</div><!-- doc-content -->
+</div><!-- container -->
+<!-- start footer part -->
+<div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
+  <ul>
+    <li class="navelem"><b>agent</b></li><li class="navelem"><b>llm</b></li><li class="navelem"><b>options.hpp</b></li>
+    <li class="footer">制作者 <a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.17.0 </li>
+  </ul>
+</div>
+</body>
+</html>

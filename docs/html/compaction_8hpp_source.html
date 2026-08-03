@@ -1,0 +1,428 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "https://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="zh">
+<head>
+<meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=11"/>
+<meta name="generator" content="Doxygen 1.17.0"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>agent: compaction.hpp 源文件</title>
+<link href="tabs.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="codefolding.js"></script>
+<script type="text/javascript" src="clipboard.js"></script>
+<link href="navtree.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="navtreedata.js"></script>
+<script type="text/javascript" src="navtree.js"></script>
+<script type="text/javascript" src="cookie.js"></script>
+<link href="search/search.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="search/searchdata.js"></script>
+<script type="text/javascript" src="search/search.js"></script>
+<script type="module">
+import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.esm.min.mjs';
+const theme = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'default';
+mermaid.initialize({ startOnLoad: true, theme: theme });
+</script>
+<link href="doxygen.css" rel="stylesheet" type="text/css" />
+</head>
+<body>
+<div id="top"><!-- do not remove this div, it is closed by doxygen! -->
+<div id="titlearea">
+<table cellspacing="0" cellpadding="0">
+ <tbody>
+ <tr id="projectrow">
+  <td id="projectalign">
+   <div id="projectname">agent<span id="projectnumber">&#160;experimental</span>
+   </div>
+   <div id="projectbrief">C++26 实验性 LLM / Agent 库</div>
+  </td>
+ </tr>
+ </tbody>
+</table>
+</div>
+<!-- end header part -->
+<!-- 制作者 Doxygen 1.17.0 -->
+<script type="text/javascript">
+let searchBox = new SearchBox("searchBox", "search/",'.html');
+</script>
+<script type="text/javascript">
+document.addEventListener('DOMContentLoaded', codefold.init);
+</script>
+<script type="text/javascript" src="menudata.js"></script>
+<script type="text/javascript" src="menu.js"></script>
+<script type="text/javascript">
+document.addEventListener('DOMContentLoaded', () => {
+  initMenu('',true);
+  init_search();
+});
+</script>
+<div id="main-nav-mobile">
+<div class="sm sm-dox"><input id="main-menu-state" type="checkbox"/>
+<label class="main-menu-btn" for="main-menu-state">
+<span class="main-menu-btn-icon"></span> Toggle main menu visibility</label>
+<span id="searchBoxPos1" style="position:absolute;right:8px;top:8px;height:36px;"></span>
+</div>
+</div><!-- main-nav-mobile -->
+<div id="main-nav">
+  <ul class="sm sm-dox" id="main-menu">
+    <li id="searchBoxPos2" style="float:right">
+        <div id="MSearchBox" class="MSearchBoxInactive">
+        <span class="left">
+          <span id="MSearchSelect" class="search-icon" onmouseover="return searchBox.OnSearchSelectShow()" onmouseout="return searchBox.OnSearchSelectHide()"><span class="search-icon-dropdown"></span></span>
+          <input type="text" id="MSearchField" value="" placeholder="搜索" accesskey="S"
+               onfocus="searchBox.OnSearchFieldFocus(true)" 
+               onblur="searchBox.OnSearchFieldFocus(false)" 
+               onkeyup="searchBox.OnSearchFieldChange(event)"/>
+          </span><span class="right">
+            <a id="MSearchClose" href="javascript:searchBox.CloseResultsWindow()"><div id="MSearchCloseImg" class="close-icon"></div></a>
+          </span>
+        </div>
+    </li>
+  </ul>
+</div><!-- main-nav -->
+</div><!-- top -->
+<div id="side-nav" class="ui-resizable side-nav-resizable">
+  <div id="nav-tree">
+    <div id="nav-tree-contents">
+      <div id="nav-sync" class="sync"></div>
+    </div>
+  </div>
+  <div id="splitbar" style="-moz-user-select:none;" 
+       class="ui-resizable-handle">
+  </div>
+</div>
+<script type="text/javascript">
+document.addEventListener('DOMContentLoaded',() => { initNavTree('compaction_8hpp_source.html','',''); });
+</script>
+<div id="container">
+<div id="doc-content">
+<!-- window showing the filter options -->
+<div id="MSearchSelectWindow"
+     onmouseover="return searchBox.OnSearchSelectShow()"
+     onmouseout="return searchBox.OnSearchSelectHide()"
+     onkeydown="return searchBox.OnSearchSelectKey(event)">
+</div>
+
+<!-- iframe showing the search results (closed by default) -->
+<div id="MSearchResultsWindow">
+<div id="MSearchResults">
+<div class="SRPage">
+<div id="SRIndex">
+<div id="SRResults"></div>
+<div class="SRStatus" id="Loading">载入中...</div>
+<div class="SRStatus" id="Searching">搜索中...</div>
+<div class="SRStatus" id="NoMatches">未找到</div>
+</div>
+</div>
+</div>
+</div>
+
+<div class="header">
+  <div class="headertitle"><div class="title">compaction.hpp</div></div>
+</div><!--header-->
+<div class="contents">
+<div class="fragment"><div class="line"><a id="l00001" name="l00001"></a><span class="lineno">    1</span><span class="preprocessor">#pragma once</span></div>
+<div class="line"><a id="l00002" name="l00002"></a><span class="lineno">    2</span> </div>
+<div class="line"><a id="l00003" name="l00003"></a><span class="lineno">    3</span><span class="comment">// 压缩默认实现的纯函数载体 + 摘要请求构造。</span></div>
+<div class="line"><a id="l00004" name="l00004"></a><span class="lineno">    4</span><span class="comment">//</span></div>
+<div class="line"><a id="l00005" name="l00005"></a><span class="lineno">    5</span><span class="comment">// DefaultBehaviors（agent.hpp）的 should_compact / compact 默认成员内部调用这些函数；</span></div>
+<div class="line"><a id="l00006" name="l00006"></a><span class="lineno">    6</span><span class="comment">// override 时可选复用。摘要请求构造是「前缀缓存」的关键（对齐 opencode）：</span></div>
+<div class="line"><a id="l00007" name="l00007"></a><span class="lineno">    7</span><span class="comment">//   - 摘要指令必须作**尾部 user 消息** append 进 messages，**绝不放进 system prompt**——</span></div>
+<div class="line"><a id="l00008" name="l00008"></a><span class="lineno">    8</span><span class="comment">//     system prompt 一旦变，prompt 前缀全变 → 缓存全废（pi 把摘要指令塞</span></div>
+<div class="line"><a id="l00009" name="l00009"></a><span class="lineno">    9</span><span class="comment">//     SUMMARIZATION_SYSTEM_PROMPT 是败笔）。</span></div>
+<div class="line"><a id="l00010" name="l00010"></a><span class="lineno">   10</span><span class="comment">//   - 摘要请求 StreamOptions：max_tokens = min(model.max_output_tokens, 4096)、</span></div>
+<div class="line"><a id="l00011" name="l00011"></a><span class="lineno">   11</span><span class="comment">//     thinking 关闭、temperature 0、Context.tools 留空——摘要响应出现 ToolCall</span></div>
+<div class="line"><a id="l00012" name="l00012"></a><span class="lineno">   12</span><span class="comment">//     → 压缩失败（CompactionFailed），不做任何工具处理。</span></div>
+<div class="line"><a id="l00013" name="l00013"></a><span class="lineno">   13</span><span class="comment">//</span></div>
+<div class="line"><a id="l00014" name="l00014"></a><span class="lineno">   14</span><span class="comment">// 已知简化（诚实记录，见 PLAN_3.md 五.5.4）：</span></div>
+<div class="line"><a id="l00015" name="l00015"></a><span class="lineno">   15</span><span class="comment">//   - find_cut_point 轮内切点是「整条消息」保留而非字符级切片：超预算单条整体保留</span></div>
+<div class="line"><a id="l00016" name="l00016"></a><span class="lineno">   16</span><span class="comment">//     （可能略超 keep_recent_tokens），避免切断 ToolCall/ToolResult 配对。</span></div>
+<div class="line"><a id="l00017" name="l00017"></a><span class="lineno">   17</span> </div>
+<div class="line"><a id="l00018" name="l00018"></a><span class="lineno">   18</span><span class="preprocessor">#include &lt;agent/core/result.hpp&gt;</span></div>
+<div class="line"><a id="l00019" name="l00019"></a><span class="lineno">   19</span><span class="preprocessor">#include &lt;agent/llm/content.hpp&gt;</span></div>
+<div class="line"><a id="l00020" name="l00020"></a><span class="lineno">   20</span><span class="preprocessor">#include &lt;agent/llm/model.hpp&gt;</span></div>
+<div class="line"><a id="l00021" name="l00021"></a><span class="lineno">   21</span><span class="preprocessor">#include &lt;agent/llm/options.hpp&gt;</span></div>
+<div class="line"><a id="l00022" name="l00022"></a><span class="lineno">   22</span><span class="preprocessor">#include &lt;agent/llm/types.hpp&gt;</span></div>
+<div class="line"><a id="l00023" name="l00023"></a><span class="lineno">   23</span> </div>
+<div class="line"><a id="l00024" name="l00024"></a><span class="lineno">   24</span><span class="preprocessor">#include &lt;algorithm&gt;</span></div>
+<div class="line"><a id="l00025" name="l00025"></a><span class="lineno">   25</span><span class="preprocessor">#include &lt;cstddef&gt;</span></div>
+<div class="line"><a id="l00026" name="l00026"></a><span class="lineno">   26</span><span class="preprocessor">#include &lt;optional&gt;</span></div>
+<div class="line"><a id="l00027" name="l00027"></a><span class="lineno">   27</span><span class="preprocessor">#include &lt;string&gt;</span></div>
+<div class="line"><a id="l00028" name="l00028"></a><span class="lineno">   28</span><span class="preprocessor">#include &lt;string_view&gt;</span></div>
+<div class="line"><a id="l00029" name="l00029"></a><span class="lineno">   29</span><span class="preprocessor">#include &lt;vector&gt;</span></div>
+<div class="line"><a id="l00030" name="l00030"></a><span class="lineno">   30</span> </div>
+<div class="line"><a id="l00031" name="l00031"></a><span class="lineno">   31</span><span class="keyword">namespace </span>agent {</div>
+<div class="line"><a id="l00032" name="l00032"></a><span class="lineno">   32</span></div>
+<div class="foldopen" id="foldopen00034" data-start="{" data-end="};">
+<div class="line"><a id="l00034" name="l00034"></a><span class="lineno"><a class="line" href="structagent_1_1_compaction_settings.html">   34</a></span><span class="keyword">struct </span><a class="code hl_struct" href="structagent_1_1_compaction_settings.html">CompactionSettings</a> {</div>
+<div class="line"><a id="l00035" name="l00035"></a><span class="lineno"><a class="line" href="structagent_1_1_compaction_settings.html#a8680cc45f3f028b324e14e54d91da71a">   35</a></span>    <span class="keywordtype">int</span> <a class="code hl_variable" href="structagent_1_1_compaction_settings.html#a8680cc45f3f028b324e14e54d91da71a">reserve_tokens</a> = 16384;       </div>
+<div class="line"><a id="l00036" name="l00036"></a><span class="lineno"><a class="line" href="structagent_1_1_compaction_settings.html#a18c86d2ad5202073115150a62d6ed266">   36</a></span>    <span class="keywordtype">int</span> <a class="code hl_variable" href="structagent_1_1_compaction_settings.html#a18c86d2ad5202073115150a62d6ed266">keep_recent_tokens</a> = 8000;    </div>
+<div class="line"><a id="l00037" name="l00037"></a><span class="lineno"><a class="line" href="structagent_1_1_compaction_settings.html#aebbf1e21021e5754921300821a2f80e1">   37</a></span>    <span class="keywordtype">int</span> <a class="code hl_variable" href="structagent_1_1_compaction_settings.html#aebbf1e21021e5754921300821a2f80e1">tail_turns</a> = 2;               </div>
+<div class="line"><a id="l00038" name="l00038"></a><span class="lineno">   38</span>};</div>
+</div>
+<div class="line"><a id="l00039" name="l00039"></a><span class="lineno">   39</span></div>
+<div class="line"><a id="l00041" name="l00041"></a><span class="lineno">   41</span><span class="keyword">inline</span> <span class="keyword">constexpr</span> std::string_view kCompactionSummaryPrefix = <span class="stringliteral">&quot;[Conversation Summary]\n&quot;</span>;</div>
+<div class="line"><a id="l00042" name="l00042"></a><span class="lineno">   42</span></div>
+<div class="line"><a id="l00044" name="l00044"></a><span class="lineno">   44</span><span class="keywordtype">bool</span> is_compaction_summary(<a class="code hl_class" href="classagent_1_1_message.html">Message</a> <span class="keyword">const</span>&amp; message);</div>
+<div class="line"><a id="l00045" name="l00045"></a><span class="lineno">   45</span></div>
+<div class="line"><a id="l00047" name="l00047"></a><span class="lineno">   47</span>std::string extract_summary_text(<a class="code hl_class" href="classagent_1_1_message.html">Message</a> <span class="keyword">const</span>&amp; message);</div>
+<div class="line"><a id="l00048" name="l00048"></a><span class="lineno">   48</span></div>
+<div class="line"><a id="l00050" name="l00050"></a><span class="lineno">   50</span><span class="keywordtype">int</span> estimate_tokens_default(<a class="code hl_class" href="classagent_1_1_message.html">Message</a> <span class="keyword">const</span>&amp; message);</div>
+<div class="line"><a id="l00051" name="l00051"></a><span class="lineno">   51</span></div>
+<div class="line"><a id="l00055" name="l00055"></a><span class="lineno">   55</span><span class="keywordtype">int</span> estimate_context_tokens(std::vector&lt;Message&gt; <span class="keyword">const</span>&amp; messages);</div>
+<div class="line"><a id="l00056" name="l00056"></a><span class="lineno">   56</span></div>
+<div class="line"><a id="l00058" name="l00058"></a><span class="lineno">   58</span><span class="keywordtype">bool</span> should_compact(<span class="keywordtype">int</span> context_tokens, <span class="keywordtype">int</span> context_window, <a class="code hl_struct" href="structagent_1_1_compaction_settings.html">CompactionSettings</a> <span class="keyword">const</span>&amp; settings);</div>
+<div class="line"><a id="l00059" name="l00059"></a><span class="lineno">   59</span></div>
+<div class="line"><a id="l00066" name="l00066"></a><span class="lineno">   66</span>std::size_t find_cut_point(std::vector&lt;Message&gt; <span class="keyword">const</span>&amp; messages, <a class="code hl_struct" href="structagent_1_1_compaction_settings.html">CompactionSettings</a> <span class="keyword">const</span>&amp; settings);</div>
+<div class="line"><a id="l00067" name="l00067"></a><span class="lineno">   67</span></div>
+<div class="line"><a id="l00069" name="l00069"></a><span class="lineno">   69</span>std::string build_summary_instruction(std::string_view previous_summary);</div>
+<div class="line"><a id="l00070" name="l00070"></a><span class="lineno">   70</span></div>
+<div class="foldopen" id="foldopen00072" data-start="{" data-end="};">
+<div class="line"><a id="l00072" name="l00072"></a><span class="lineno"><a class="line" href="structagent_1_1_summary_request.html">   72</a></span><span class="keyword">struct </span><a class="code hl_struct" href="structagent_1_1_summary_request.html">SummaryRequest</a> {</div>
+<div class="line"><a id="l00073" name="l00073"></a><span class="lineno"><a class="line" href="structagent_1_1_summary_request.html#aa31d38d634422578a47c943e61019a59">   73</a></span>    <a class="code hl_struct" href="structagent_1_1_context.html">Context</a> <a class="code hl_variable" href="structagent_1_1_summary_request.html#aa31d38d634422578a47c943e61019a59">ctx</a>;            </div>
+<div class="line"><a id="l00074" name="l00074"></a><span class="lineno"><a class="line" href="structagent_1_1_summary_request.html#ab1c0b6db12405bf99c83c0e23b92679a">   74</a></span>    <a class="code hl_struct" href="structagent_1_1_stream_options.html">StreamOptions</a> <a class="code hl_variable" href="structagent_1_1_summary_request.html#ab1c0b6db12405bf99c83c0e23b92679a">opts</a>;     </div>
+<div class="line"><a id="l00075" name="l00075"></a><span class="lineno"><a class="line" href="structagent_1_1_summary_request.html#aac1a19d68ec2ca9de0f989c05687fabf">   75</a></span>    std::size_t <a class="code hl_variable" href="structagent_1_1_summary_request.html#aac1a19d68ec2ca9de0f989c05687fabf">cut</a> = 0;    </div>
+<div class="line"><a id="l00076" name="l00076"></a><span class="lineno">   76</span>};</div>
+</div>
+<div class="line"><a id="l00077" name="l00077"></a><span class="lineno">   77</span>std::optional&lt;SummaryRequest&gt; build_summary_request(</div>
+<div class="line"><a id="l00078" name="l00078"></a><span class="lineno">   78</span>    std::vector&lt;Message&gt; <span class="keyword">const</span>&amp; messages, <a class="code hl_struct" href="structagent_1_1_model_view.html">ModelView</a> <span class="keyword">const</span>&amp; model,</div>
+<div class="line"><a id="l00079" name="l00079"></a><span class="lineno">   79</span>    <a class="code hl_struct" href="structagent_1_1_compaction_settings.html">CompactionSettings</a> <span class="keyword">const</span>&amp; settings, std::string_view system_prompt,</div>
+<div class="line"><a id="l00080" name="l00080"></a><span class="lineno">   80</span>    std::string_view previous_summary);</div>
+<div class="line"><a id="l00081" name="l00081"></a><span class="lineno">   81</span></div>
+<div class="line"><a id="l00083" name="l00083"></a><span class="lineno">   83</span>Result&lt;std::string&gt; validate_summary_response(<a class="code hl_struct" href="structagent_1_1_chat_response.html">ChatResponse</a> <span class="keyword">const</span>&amp; response);</div>
+<div class="line"><a id="l00084" name="l00084"></a><span class="lineno">   84</span></div>
+<div class="line"><a id="l00086" name="l00086"></a><span class="lineno">   86</span>std::vector&lt;Message&gt; apply_summary(std::vector&lt;Message&gt; <span class="keyword">const</span>&amp; messages, std::size_t cut,</div>
+<div class="line"><a id="l00087" name="l00087"></a><span class="lineno">   87</span>                                   std::string <span class="keyword">const</span>&amp; summary);</div>
+<div class="line"><a id="l00088" name="l00088"></a><span class="lineno">   88</span> </div>
+<div class="line"><a id="l00089" name="l00089"></a><span class="lineno">   89</span><span class="comment">// ───────────────────── 实现 ─────────────────────</span></div>
+<div class="line"><a id="l00090" name="l00090"></a><span class="lineno">   90</span> </div>
+<div class="line"><a id="l00091" name="l00091"></a><span class="lineno">   91</span><span class="keyword">inline</span> <span class="keywordtype">bool</span> is_compaction_summary(<a class="code hl_class" href="classagent_1_1_message.html">Message</a> <span class="keyword">const</span>&amp; message)</div>
+<div class="line"><a id="l00092" name="l00092"></a><span class="lineno">   92</span>{</div>
+<div class="line"><a id="l00093" name="l00093"></a><span class="lineno">   93</span>    <span class="keywordflow">if</span> (message.<a class="code hl_variable" href="classagent_1_1_message.html#a0f99f9ca9b7223c06d61b042d6a8d8f6">role</a> != Role::User)</div>
+<div class="line"><a id="l00094" name="l00094"></a><span class="lineno">   94</span>        <span class="keywordflow">return</span> <span class="keyword">false</span>;</div>
+<div class="line"><a id="l00095" name="l00095"></a><span class="lineno">   95</span>    <span class="keywordflow">for</span> (<span class="keyword">auto</span> <span class="keyword">const</span>&amp; block : message.<a class="code hl_variable" href="classagent_1_1_message.html#a560141e5a31b5a81e05f7cce735a9623">content</a>)</div>
+<div class="line"><a id="l00096" name="l00096"></a><span class="lineno">   96</span>        <span class="keywordflow">if</span> (<span class="keyword">auto</span> text = std::get_if&lt;Text&gt;(&amp;block))</div>
+<div class="line"><a id="l00097" name="l00097"></a><span class="lineno">   97</span>            <span class="keywordflow">return</span> text-&gt;text.starts_with(kCompactionSummaryPrefix);</div>
+<div class="line"><a id="l00098" name="l00098"></a><span class="lineno">   98</span>    <span class="keywordflow">return</span> <span class="keyword">false</span>;</div>
+<div class="line"><a id="l00099" name="l00099"></a><span class="lineno">   99</span>}</div>
+<div class="line"><a id="l00100" name="l00100"></a><span class="lineno">  100</span> </div>
+<div class="line"><a id="l00101" name="l00101"></a><span class="lineno">  101</span><span class="keyword">inline</span> std::string extract_summary_text(Message <span class="keyword">const</span>&amp; message)</div>
+<div class="line"><a id="l00102" name="l00102"></a><span class="lineno">  102</span>{</div>
+<div class="line"><a id="l00103" name="l00103"></a><span class="lineno">  103</span>    <span class="keywordflow">if</span> (message.role != Role::User)</div>
+<div class="line"><a id="l00104" name="l00104"></a><span class="lineno">  104</span>        <span class="keywordflow">return</span> {};</div>
+<div class="line"><a id="l00105" name="l00105"></a><span class="lineno">  105</span>    <span class="keywordflow">for</span> (<span class="keyword">auto</span> <span class="keyword">const</span>&amp; block : message.content)</div>
+<div class="line"><a id="l00106" name="l00106"></a><span class="lineno">  106</span>        <span class="keywordflow">if</span> (<span class="keyword">auto</span> text = std::get_if&lt;Text&gt;(&amp;block))</div>
+<div class="line"><a id="l00107" name="l00107"></a><span class="lineno">  107</span>            <span class="keywordflow">if</span> (text-&gt;text.starts_with(kCompactionSummaryPrefix))</div>
+<div class="line"><a id="l00108" name="l00108"></a><span class="lineno">  108</span>                <span class="keywordflow">return</span> text-&gt;text.substr(kCompactionSummaryPrefix.size());</div>
+<div class="line"><a id="l00109" name="l00109"></a><span class="lineno">  109</span>    <span class="keywordflow">return</span> {};</div>
+<div class="line"><a id="l00110" name="l00110"></a><span class="lineno">  110</span>}</div>
+<div class="line"><a id="l00111" name="l00111"></a><span class="lineno">  111</span> </div>
+<div class="line"><a id="l00112" name="l00112"></a><span class="lineno">  112</span><span class="keyword">inline</span> <span class="keywordtype">int</span> estimate_tokens_default(<a class="code hl_class" href="classagent_1_1_message.html">Message</a> <span class="keyword">const</span>&amp; message)</div>
+<div class="line"><a id="l00113" name="l00113"></a><span class="lineno">  113</span>{</div>
+<div class="line"><a id="l00114" name="l00114"></a><span class="lineno">  114</span>    <span class="keywordtype">int</span> tokens = 0;</div>
+<div class="line"><a id="l00115" name="l00115"></a><span class="lineno">  115</span>    <span class="keywordflow">for</span> (<span class="keyword">auto</span> <span class="keyword">const</span>&amp; block : message.content) {</div>
+<div class="line"><a id="l00116" name="l00116"></a><span class="lineno">  116</span>        tokens += std::visit([](<span class="keyword">auto</span> <span class="keyword">const</span>&amp; b) -&gt; <span class="keywordtype">int</span> {</div>
+<div class="line"><a id="l00117" name="l00117"></a><span class="lineno">  117</span>            <span class="keyword">using </span>T = std::decay_t&lt;<span class="keyword">decltype</span>(b)&gt;;</div>
+<div class="line"><a id="l00118" name="l00118"></a><span class="lineno">  118</span>            <span class="keywordflow">if</span> <span class="keyword">constexpr</span> (std::is_same_v&lt;T, Text&gt;)</div>
+<div class="line"><a id="l00119" name="l00119"></a><span class="lineno">  119</span>                <span class="keywordflow">return</span> <span class="keyword">static_cast&lt;</span><span class="keywordtype">int</span><span class="keyword">&gt;</span>(b.text.size() / 4);</div>
+<div class="line"><a id="l00120" name="l00120"></a><span class="lineno">  120</span>            <span class="keywordflow">else</span> <span class="keywordflow">if</span> <span class="keyword">constexpr</span> (std::is_same_v&lt;T, Thinking&gt;)</div>
+<div class="line"><a id="l00121" name="l00121"></a><span class="lineno">  121</span>                <span class="keywordflow">return</span> <span class="keyword">static_cast&lt;</span><span class="keywordtype">int</span><span class="keyword">&gt;</span>(b.text.size() / 4);</div>
+<div class="line"><a id="l00122" name="l00122"></a><span class="lineno">  122</span>            <span class="keywordflow">else</span> <span class="keywordflow">if</span> <span class="keyword">constexpr</span> (std::is_same_v&lt;T, Image&gt;)</div>
+<div class="line"><a id="l00123" name="l00123"></a><span class="lineno">  123</span>                <span class="keywordflow">return</span> 4800;</div>
+<div class="line"><a id="l00124" name="l00124"></a><span class="lineno">  124</span>            <span class="keywordflow">else</span> <span class="keywordflow">if</span> <span class="keyword">constexpr</span> (std::is_same_v&lt;T, ToolCall&gt;) {</div>
+<div class="line"><a id="l00125" name="l00125"></a><span class="lineno">  125</span>                <span class="keywordtype">int</span> n = <span class="keyword">static_cast&lt;</span><span class="keywordtype">int</span><span class="keyword">&gt;</span>(b.name.size() / 4);</div>
+<div class="line"><a id="l00126" name="l00126"></a><span class="lineno">  126</span>                std::string <span class="keyword">const</span>&amp; args = b.arguments.is_string()</div>
+<div class="line"><a id="l00127" name="l00127"></a><span class="lineno">  127</span>                    ? b.arguments.template get_ref&lt;std::string const&amp;&gt;()</div>
+<div class="line"><a id="l00128" name="l00128"></a><span class="lineno">  128</span>                    : b.arguments.dump();</div>
+<div class="line"><a id="l00129" name="l00129"></a><span class="lineno">  129</span>                <span class="keywordflow">return</span> n + <span class="keyword">static_cast&lt;</span><span class="keywordtype">int</span><span class="keyword">&gt;</span>(args.size() / 4);</div>
+<div class="line"><a id="l00130" name="l00130"></a><span class="lineno">  130</span>            }</div>
+<div class="line"><a id="l00131" name="l00131"></a><span class="lineno">  131</span>            <span class="keywordflow">else</span> <span class="keywordflow">if</span> <span class="keyword">constexpr</span> (std::is_same_v&lt;T, ToolResult&gt;)</div>
+<div class="line"><a id="l00132" name="l00132"></a><span class="lineno">  132</span>                <span class="keywordflow">return</span> <span class="keyword">static_cast&lt;</span><span class="keywordtype">int</span><span class="keyword">&gt;</span>((b.output.size() + 8) / 4);</div>
+<div class="line"><a id="l00133" name="l00133"></a><span class="lineno">  133</span>            <span class="keywordflow">else</span></div>
+<div class="line"><a id="l00134" name="l00134"></a><span class="lineno">  134</span>                <span class="keywordflow">return</span> 0;</div>
+<div class="line"><a id="l00135" name="l00135"></a><span class="lineno">  135</span>        }, block);</div>
+<div class="line"><a id="l00136" name="l00136"></a><span class="lineno">  136</span>    }</div>
+<div class="line"><a id="l00137" name="l00137"></a><span class="lineno">  137</span>    <span class="keywordflow">return</span> tokens;</div>
+<div class="line"><a id="l00138" name="l00138"></a><span class="lineno">  138</span>}</div>
+<div class="line"><a id="l00139" name="l00139"></a><span class="lineno">  139</span> </div>
+<div class="line"><a id="l00140" name="l00140"></a><span class="lineno">  140</span><span class="keyword">inline</span> <span class="keywordtype">int</span> estimate_context_tokens(std::vector&lt;Message&gt; <span class="keyword">const</span>&amp; messages)</div>
+<div class="line"><a id="l00141" name="l00141"></a><span class="lineno">  141</span>{</div>
+<div class="line"><a id="l00142" name="l00142"></a><span class="lineno">  142</span>    <span class="comment">// 找最近一条带真实 token 计数的 assistant 消息（usage 锚点）：</span></div>
+<div class="line"><a id="l00143" name="l00143"></a><span class="lineno">  143</span>    <span class="comment">// 锚点 = 该请求的真实 input+output（含此前全部上下文），其后消息逐条估算。</span></div>
+<div class="line"><a id="l00144" name="l00144"></a><span class="lineno">  144</span>    std::optional&lt;int&gt; anchor;</div>
+<div class="line"><a id="l00145" name="l00145"></a><span class="lineno">  145</span>    std::size_t anchor_tail = 0;</div>
+<div class="line"><a id="l00146" name="l00146"></a><span class="lineno">  146</span>    <span class="keywordflow">for</span> (std::size_t i = 0; i &lt; messages.size(); ++i) {</div>
+<div class="line"><a id="l00147" name="l00147"></a><span class="lineno">  147</span>        <a class="code hl_class" href="classagent_1_1_message.html">Message</a> <span class="keyword">const</span>&amp; m = messages[i];</div>
+<div class="line"><a id="l00148" name="l00148"></a><span class="lineno">  148</span>        <span class="keywordflow">if</span> (m.role == Role::Assistant &amp;&amp; m.input_tokens() &amp;&amp; m.output_tokens()) {</div>
+<div class="line"><a id="l00149" name="l00149"></a><span class="lineno">  149</span>            anchor = <span class="keyword">static_cast&lt;</span><span class="keywordtype">int</span><span class="keyword">&gt;</span>(*m.input_tokens() + *m.output_tokens());</div>
+<div class="line"><a id="l00150" name="l00150"></a><span class="lineno">  150</span>            anchor_tail = i + 1;</div>
+<div class="line"><a id="l00151" name="l00151"></a><span class="lineno">  151</span>        }</div>
+<div class="line"><a id="l00152" name="l00152"></a><span class="lineno">  152</span>    }</div>
+<div class="line"><a id="l00153" name="l00153"></a><span class="lineno">  153</span>    <span class="keywordtype">int</span> total = anchor.value_or(0);</div>
+<div class="line"><a id="l00154" name="l00154"></a><span class="lineno">  154</span>    <span class="keywordflow">for</span> (std::size_t i = anchor_tail; i &lt; messages.size(); ++i)</div>
+<div class="line"><a id="l00155" name="l00155"></a><span class="lineno">  155</span>        total += estimate_tokens_default(messages[i]);</div>
+<div class="line"><a id="l00156" name="l00156"></a><span class="lineno">  156</span>    <span class="keywordflow">return</span> total;   <span class="comment">// 无锚点 → 全量估算（anchor_tail = 0，total 从 0 累加）</span></div>
+<div class="line"><a id="l00157" name="l00157"></a><span class="lineno">  157</span>}</div>
+<div class="line"><a id="l00158" name="l00158"></a><span class="lineno">  158</span> </div>
+<div class="line"><a id="l00159" name="l00159"></a><span class="lineno">  159</span><span class="keyword">inline</span> <span class="keywordtype">bool</span> should_compact(<span class="keywordtype">int</span> context_tokens, <span class="keywordtype">int</span> context_window, <a class="code hl_struct" href="structagent_1_1_compaction_settings.html">CompactionSettings</a> <span class="keyword">const</span>&amp; settings)</div>
+<div class="line"><a id="l00160" name="l00160"></a><span class="lineno">  160</span>{</div>
+<div class="line"><a id="l00161" name="l00161"></a><span class="lineno">  161</span>    <span class="keywordflow">return</span> context_tokens &gt; context_window - settings.reserve_tokens;</div>
+<div class="line"><a id="l00162" name="l00162"></a><span class="lineno">  162</span>}</div>
+<div class="line"><a id="l00163" name="l00163"></a><span class="lineno">  163</span> </div>
+<div class="line"><a id="l00164" name="l00164"></a><span class="lineno">  164</span><span class="keyword">inline</span> std::size_t find_cut_point(std::vector&lt;Message&gt; <span class="keyword">const</span>&amp; messages, <a class="code hl_struct" href="structagent_1_1_compaction_settings.html">CompactionSettings</a> <span class="keyword">const</span>&amp; settings)</div>
+<div class="line"><a id="l00165" name="l00165"></a><span class="lineno">  165</span>{</div>
+<div class="line"><a id="l00166" name="l00166"></a><span class="lineno">  166</span>    <span class="keywordflow">if</span> (messages.empty())</div>
+<div class="line"><a id="l00167" name="l00167"></a><span class="lineno">  167</span>        <span class="keywordflow">return</span> 0;</div>
+<div class="line"><a id="l00168" name="l00168"></a><span class="lineno">  168</span> </div>
+<div class="line"><a id="l00169" name="l00169"></a><span class="lineno">  169</span>    <span class="comment">// 1) 切 turn：每个 User 消息 = turn 起点</span></div>
+<div class="line"><a id="l00170" name="l00170"></a><span class="lineno">  170</span>    <span class="keyword">struct </span>Turn {</div>
+<div class="line"><a id="l00171" name="l00171"></a><span class="lineno">  171</span>        std::size_t begin;</div>
+<div class="line"><a id="l00172" name="l00172"></a><span class="lineno">  172</span>        std::size_t end;</div>
+<div class="line"><a id="l00173" name="l00173"></a><span class="lineno">  173</span>        <span class="keywordtype">int</span> tokens;</div>
+<div class="line"><a id="l00174" name="l00174"></a><span class="lineno">  174</span>    };</div>
+<div class="line"><a id="l00175" name="l00175"></a><span class="lineno">  175</span>    std::vector&lt;Turn&gt; turns;</div>
+<div class="line"><a id="l00176" name="l00176"></a><span class="lineno">  176</span>    std::size_t i = 0;</div>
+<div class="line"><a id="l00177" name="l00177"></a><span class="lineno">  177</span>    <span class="keywordflow">while</span> (i &lt; messages.size()) {</div>
+<div class="line"><a id="l00178" name="l00178"></a><span class="lineno">  178</span>        <span class="keywordflow">if</span> (messages[i].role != Role::User) {</div>
+<div class="line"><a id="l00179" name="l00179"></a><span class="lineno">  179</span>            ++i;</div>
+<div class="line"><a id="l00180" name="l00180"></a><span class="lineno">  180</span>            <span class="keywordflow">continue</span>;</div>
+<div class="line"><a id="l00181" name="l00181"></a><span class="lineno">  181</span>        }</div>
+<div class="line"><a id="l00182" name="l00182"></a><span class="lineno">  182</span>        std::size_t begin = i;</div>
+<div class="line"><a id="l00183" name="l00183"></a><span class="lineno">  183</span>        ++i;</div>
+<div class="line"><a id="l00184" name="l00184"></a><span class="lineno">  184</span>        <span class="keywordflow">while</span> (i &lt; messages.size() &amp;&amp; messages[i].role != Role::User)</div>
+<div class="line"><a id="l00185" name="l00185"></a><span class="lineno">  185</span>            ++i;</div>
+<div class="line"><a id="l00186" name="l00186"></a><span class="lineno">  186</span>        <span class="keywordtype">int</span> tokens = 0;</div>
+<div class="line"><a id="l00187" name="l00187"></a><span class="lineno">  187</span>        <span class="keywordflow">for</span> (std::size_t k = begin; k &lt; i; ++k)</div>
+<div class="line"><a id="l00188" name="l00188"></a><span class="lineno">  188</span>            tokens += estimate_tokens_default(messages[k]);</div>
+<div class="line"><a id="l00189" name="l00189"></a><span class="lineno">  189</span>        turns.push_back({ begin, i, tokens });</div>
+<div class="line"><a id="l00190" name="l00190"></a><span class="lineno">  190</span>    }</div>
+<div class="line"><a id="l00191" name="l00191"></a><span class="lineno">  191</span>    <span class="keywordflow">if</span> (turns.empty())</div>
+<div class="line"><a id="l00192" name="l00192"></a><span class="lineno">  192</span>        <span class="keywordflow">return</span> 0;   <span class="comment">// 无 user 消息 → 不压</span></div>
+<div class="line"><a id="l00193" name="l00193"></a><span class="lineno">  193</span> </div>
+<div class="line"><a id="l00194" name="l00194"></a><span class="lineno">  194</span>    <span class="comment">// 2) 候选保留区 = 最后 tail_turns 个 turn</span></div>
+<div class="line"><a id="l00195" name="l00195"></a><span class="lineno">  195</span>    std::size_t tail = settings.tail_turns &gt; 0 ? <span class="keyword">static_cast&lt;</span>std::size_t<span class="keyword">&gt;</span>(settings.tail_turns) : 1;</div>
+<div class="line"><a id="l00196" name="l00196"></a><span class="lineno">  196</span>    std::size_t first_candidate = turns.size() &gt; tail ? turns.size() - tail : 0;</div>
+<div class="line"><a id="l00197" name="l00197"></a><span class="lineno">  197</span> </div>
+<div class="line"><a id="l00198" name="l00198"></a><span class="lineno">  198</span>    <span class="comment">// 3) 从后往前累加 turn token：&lt;= keep_recent_tokens 整轮保留，否则轮内切</span></div>
+<div class="line"><a id="l00199" name="l00199"></a><span class="lineno">  199</span>    std::size_t cut = turns[first_candidate].begin;   <span class="comment">// 兜底：整个候选区保留</span></div>
+<div class="line"><a id="l00200" name="l00200"></a><span class="lineno">  200</span>    <span class="keywordtype">int</span> budget = settings.keep_recent_tokens;</div>
+<div class="line"><a id="l00201" name="l00201"></a><span class="lineno">  201</span>    <span class="keywordflow">for</span> (std::size_t ti = turns.size(); ti &gt; first_candidate; --ti) {</div>
+<div class="line"><a id="l00202" name="l00202"></a><span class="lineno">  202</span>        Turn <span class="keyword">const</span>&amp; turn = turns[ti - 1];</div>
+<div class="line"><a id="l00203" name="l00203"></a><span class="lineno">  203</span>        <span class="keywordflow">if</span> (turn.tokens &lt;= budget) {</div>
+<div class="line"><a id="l00204" name="l00204"></a><span class="lineno">  204</span>            cut = turn.begin;</div>
+<div class="line"><a id="l00205" name="l00205"></a><span class="lineno">  205</span>            budget -= turn.tokens;</div>
+<div class="line"><a id="l00206" name="l00206"></a><span class="lineno">  206</span>            <span class="keywordflow">continue</span>;</div>
+<div class="line"><a id="l00207" name="l00207"></a><span class="lineno">  207</span>        }</div>
+<div class="line"><a id="l00208" name="l00208"></a><span class="lineno">  208</span>        <span class="comment">// 该 turn 超出剩余预算 → 轮内从后往前保留消息；超预算单条整体保留</span></div>
+<div class="line"><a id="l00209" name="l00209"></a><span class="lineno">  209</span>        std::size_t keep_from = turn.end;</div>
+<div class="line"><a id="l00210" name="l00210"></a><span class="lineno">  210</span>        <span class="keywordtype">int</span> remain = budget;</div>
+<div class="line"><a id="l00211" name="l00211"></a><span class="lineno">  211</span>        <span class="keywordflow">for</span> (std::size_t k = turn.end; k &gt; turn.begin; --k) {</div>
+<div class="line"><a id="l00212" name="l00212"></a><span class="lineno">  212</span>            <span class="keywordtype">int</span> message_tokens = estimate_tokens_default(messages[k - 1]);</div>
+<div class="line"><a id="l00213" name="l00213"></a><span class="lineno">  213</span>            <span class="keywordflow">if</span> (message_tokens &gt; remain) {</div>
+<div class="line"><a id="l00214" name="l00214"></a><span class="lineno">  214</span>                keep_from = (remain &gt; 0) ? (k - 1) : k;   <span class="comment">// 有预算 → 该条整体保留；无预算 → 整条进摘要</span></div>
+<div class="line"><a id="l00215" name="l00215"></a><span class="lineno">  215</span>                <span class="keywordflow">break</span>;</div>
+<div class="line"><a id="l00216" name="l00216"></a><span class="lineno">  216</span>            }</div>
+<div class="line"><a id="l00217" name="l00217"></a><span class="lineno">  217</span>            remain -= message_tokens;</div>
+<div class="line"><a id="l00218" name="l00218"></a><span class="lineno">  218</span>            keep_from = k - 1;</div>
+<div class="line"><a id="l00219" name="l00219"></a><span class="lineno">  219</span>        }</div>
+<div class="line"><a id="l00220" name="l00220"></a><span class="lineno">  220</span>        cut = keep_from;</div>
+<div class="line"><a id="l00221" name="l00221"></a><span class="lineno">  221</span>        <span class="keywordflow">break</span>;</div>
+<div class="line"><a id="l00222" name="l00222"></a><span class="lineno">  222</span>    }</div>
+<div class="line"><a id="l00223" name="l00223"></a><span class="lineno">  223</span>    <span class="keywordflow">return</span> cut;</div>
+<div class="line"><a id="l00224" name="l00224"></a><span class="lineno">  224</span>}</div>
+<div class="line"><a id="l00225" name="l00225"></a><span class="lineno">  225</span> </div>
+<div class="line"><a id="l00226" name="l00226"></a><span class="lineno">  226</span><span class="keyword">inline</span> std::string build_summary_instruction(std::string_view previous_summary)</div>
+<div class="line"><a id="l00227" name="l00227"></a><span class="lineno">  227</span>{</div>
+<div class="line"><a id="l00228" name="l00228"></a><span class="lineno">  228</span>    std::string instruction =</div>
+<div class="line"><a id="l00229" name="l00229"></a><span class="lineno">  229</span>        <span class="stringliteral">&quot;Please compress the conversation above into a concise summary, preserving:\n&quot;</span></div>
+<div class="line"><a id="l00230" name="l00230"></a><span class="lineno">  230</span>        <span class="stringliteral">&quot;- The user&#39;s goals and completed items\n&quot;</span></div>
+<div class="line"><a id="l00231" name="l00231"></a><span class="lineno">  231</span>        <span class="stringliteral">&quot;- Key decisions and conclusions\n&quot;</span></div>
+<div class="line"><a id="l00232" name="l00232"></a><span class="lineno">  232</span>        <span class="stringliteral">&quot;- Pending / unfinished items\n&quot;</span></div>
+<div class="line"><a id="l00233" name="l00233"></a><span class="lineno">  233</span>        <span class="stringliteral">&quot;- Important facts and context\n&quot;</span>;</div>
+<div class="line"><a id="l00234" name="l00234"></a><span class="lineno">  234</span>    <span class="keywordflow">if</span> (!previous_summary.empty()) {</div>
+<div class="line"><a id="l00235" name="l00235"></a><span class="lineno">  235</span>        instruction += <span class="stringliteral">&quot;\nThis is the previous summary; merge and update it on top of it &quot;</span></div>
+<div class="line"><a id="l00236" name="l00236"></a><span class="lineno">  236</span>                       <span class="stringliteral">&quot;(do not repeat already-covered content):\n&quot;</span>;</div>
+<div class="line"><a id="l00237" name="l00237"></a><span class="lineno">  237</span>        instruction += previous_summary;</div>
+<div class="line"><a id="l00238" name="l00238"></a><span class="lineno">  238</span>        instruction += <span class="stringliteral">&quot;\n&quot;</span>;</div>
+<div class="line"><a id="l00239" name="l00239"></a><span class="lineno">  239</span>    }</div>
+<div class="line"><a id="l00240" name="l00240"></a><span class="lineno">  240</span>    <span class="keywordflow">return</span> instruction;</div>
+<div class="line"><a id="l00241" name="l00241"></a><span class="lineno">  241</span>}</div>
+<div class="line"><a id="l00242" name="l00242"></a><span class="lineno">  242</span> </div>
+<div class="line"><a id="l00243" name="l00243"></a><span class="lineno">  243</span><span class="keyword">inline</span> std::optional&lt;SummaryRequest&gt; build_summary_request(</div>
+<div class="line"><a id="l00244" name="l00244"></a><span class="lineno">  244</span>    std::vector&lt;Message&gt; <span class="keyword">const</span>&amp; messages, <a class="code hl_struct" href="structagent_1_1_model_view.html">ModelView</a> <span class="keyword">const</span>&amp; model,</div>
+<div class="line"><a id="l00245" name="l00245"></a><span class="lineno">  245</span>    <a class="code hl_struct" href="structagent_1_1_compaction_settings.html">CompactionSettings</a> <span class="keyword">const</span>&amp; settings, std::string_view system_prompt,</div>
+<div class="line"><a id="l00246" name="l00246"></a><span class="lineno">  246</span>    std::string_view previous_summary)</div>
+<div class="line"><a id="l00247" name="l00247"></a><span class="lineno">  247</span>{</div>
+<div class="line"><a id="l00248" name="l00248"></a><span class="lineno">  248</span>    <span class="keywordflow">if</span> (!agent::should_compact(estimate_context_tokens(messages), model.context_window, settings))</div>
+<div class="line"><a id="l00249" name="l00249"></a><span class="lineno">  249</span>        <span class="keywordflow">return</span> std::nullopt;</div>
+<div class="line"><a id="l00250" name="l00250"></a><span class="lineno">  250</span>    std::size_t cut = find_cut_point(messages, settings);</div>
+<div class="line"><a id="l00251" name="l00251"></a><span class="lineno">  251</span>    <span class="keywordflow">if</span> (cut == 0 || cut &gt;= messages.size())</div>
+<div class="line"><a id="l00252" name="l00252"></a><span class="lineno">  252</span>        <span class="keywordflow">return</span> std::nullopt;   <span class="comment">// 无可压（全对话都在保留预算内）或无保留内容</span></div>
+<div class="line"><a id="l00253" name="l00253"></a><span class="lineno">  253</span> </div>
+<div class="line"><a id="l00254" name="l00254"></a><span class="lineno">  254</span>    <a class="code hl_struct" href="structagent_1_1_summary_request.html">SummaryRequest</a> request;</div>
+<div class="line"><a id="l00255" name="l00255"></a><span class="lineno">  255</span>    request.<a class="code hl_variable" href="structagent_1_1_summary_request.html#aac1a19d68ec2ca9de0f989c05687fabf">cut</a> = cut;</div>
+<div class="line"><a id="l00256" name="l00256"></a><span class="lineno">  256</span>    request.ctx.system_prompt = std::string(system_prompt);   <span class="comment">// system 不变</span></div>
+<div class="line"><a id="l00257" name="l00257"></a><span class="lineno">  257</span>    request.ctx.messages.assign(messages.begin(), messages.begin() + <span class="keyword">static_cast&lt;</span>std::ptrdiff_t<span class="keyword">&gt;</span>(cut));</div>
+<div class="line"><a id="l00258" name="l00258"></a><span class="lineno">  258</span>    request.ctx.messages.push_back(</div>
+<div class="line"><a id="l00259" name="l00259"></a><span class="lineno">  259</span>        <a class="code hl_class" href="classagent_1_1_message.html">Message</a>{ Role::User, { <a class="code hl_struct" href="structagent_1_1_text.html">Text</a>{ build_summary_instruction(previous_summary) } } });</div>
+<div class="line"><a id="l00260" name="l00260"></a><span class="lineno">  260</span>    <span class="comment">// ctx.tools 默认空 = 留空</span></div>
+<div class="line"><a id="l00261" name="l00261"></a><span class="lineno">  261</span>    <span class="keywordtype">int</span> max_out = model.max_output_tokens &gt; 0 ? model.max_output_tokens : 4096;</div>
+<div class="line"><a id="l00262" name="l00262"></a><span class="lineno">  262</span>    request.opts.max_tokens = std::min(max_out, 4096);</div>
+<div class="line"><a id="l00263" name="l00263"></a><span class="lineno">  263</span>    request.opts.reasoning = ThinkingLevel::Off;</div>
+<div class="line"><a id="l00264" name="l00264"></a><span class="lineno">  264</span>    request.opts.temperature = 0;</div>
+<div class="line"><a id="l00265" name="l00265"></a><span class="lineno">  265</span>    <span class="keywordflow">return</span> request;</div>
+<div class="line"><a id="l00266" name="l00266"></a><span class="lineno">  266</span>}</div>
+<div class="line"><a id="l00267" name="l00267"></a><span class="lineno">  267</span> </div>
+<div class="line"><a id="l00268" name="l00268"></a><span class="lineno">  268</span><span class="keyword">inline</span> Result&lt;std::string&gt; validate_summary_response(<a class="code hl_struct" href="structagent_1_1_chat_response.html">ChatResponse</a> <span class="keyword">const</span>&amp; response)</div>
+<div class="line"><a id="l00269" name="l00269"></a><span class="lineno">  269</span>{</div>
+<div class="line"><a id="l00270" name="l00270"></a><span class="lineno">  270</span>    <span class="keywordflow">for</span> (<span class="keyword">auto</span> <span class="keyword">const</span>&amp; block : response.content)</div>
+<div class="line"><a id="l00271" name="l00271"></a><span class="lineno">  271</span>        <span class="keywordflow">if</span> (std::get_if&lt;ToolCall&gt;(&amp;block))</div>
+<div class="line"><a id="l00272" name="l00272"></a><span class="lineno">  272</span>            <span class="keywordflow">return</span> std::unexpected(<a class="code hl_struct" href="structagent_1_1_error.html">Error</a>{ Errc::CompactionFailed, <span class="stringliteral">&quot;压缩摘要响应出现工具调用&quot;</span> });</div>
+<div class="line"><a id="l00273" name="l00273"></a><span class="lineno">  273</span>    std::string summary;</div>
+<div class="line"><a id="l00274" name="l00274"></a><span class="lineno">  274</span>    <span class="keywordflow">for</span> (<span class="keyword">auto</span> <span class="keyword">const</span>&amp; block : response.content)</div>
+<div class="line"><a id="l00275" name="l00275"></a><span class="lineno">  275</span>        <span class="keywordflow">if</span> (<span class="keyword">auto</span> text = std::get_if&lt;Text&gt;(&amp;block))</div>
+<div class="line"><a id="l00276" name="l00276"></a><span class="lineno">  276</span>            summary += text-&gt;text;</div>
+<div class="line"><a id="l00277" name="l00277"></a><span class="lineno">  277</span>    <span class="keywordflow">if</span> (summary.empty())</div>
+<div class="line"><a id="l00278" name="l00278"></a><span class="lineno">  278</span>        <span class="keywordflow">return</span> std::unexpected(<a class="code hl_struct" href="structagent_1_1_error.html">Error</a>{ Errc::CompactionFailed, <span class="stringliteral">&quot;压缩摘要为空&quot;</span> });</div>
+<div class="line"><a id="l00279" name="l00279"></a><span class="lineno">  279</span>    <span class="keywordflow">return</span> summary;</div>
+<div class="line"><a id="l00280" name="l00280"></a><span class="lineno">  280</span>}</div>
+<div class="line"><a id="l00281" name="l00281"></a><span class="lineno">  281</span> </div>
+<div class="line"><a id="l00282" name="l00282"></a><span class="lineno">  282</span><span class="keyword">inline</span> std::vector&lt;Message&gt; apply_summary(std::vector&lt;Message&gt; <span class="keyword">const</span>&amp; messages, std::size_t cut,</div>
+<div class="line"><a id="l00283" name="l00283"></a><span class="lineno">  283</span>                                          std::string <span class="keyword">const</span>&amp; summary)</div>
+<div class="line"><a id="l00284" name="l00284"></a><span class="lineno">  284</span>{</div>
+<div class="line"><a id="l00285" name="l00285"></a><span class="lineno">  285</span>    std::vector&lt;Message&gt; result;</div>
+<div class="line"><a id="l00286" name="l00286"></a><span class="lineno">  286</span>    result.reserve(1 + (messages.size() - cut));</div>
+<div class="line"><a id="l00287" name="l00287"></a><span class="lineno">  287</span>    result.push_back(</div>
+<div class="line"><a id="l00288" name="l00288"></a><span class="lineno">  288</span>        <a class="code hl_class" href="classagent_1_1_message.html">Message</a>{ Role::User, { <a class="code hl_struct" href="structagent_1_1_text.html">Text</a>{ std::string(kCompactionSummaryPrefix) + summary } } });</div>
+<div class="line"><a id="l00289" name="l00289"></a><span class="lineno">  289</span>    result.insert(result.end(), messages.begin() + <span class="keyword">static_cast&lt;</span>std::ptrdiff_t<span class="keyword">&gt;</span>(cut), messages.end());</div>
+<div class="line"><a id="l00290" name="l00290"></a><span class="lineno">  290</span>    <span class="keywordflow">return</span> result;</div>
+<div class="line"><a id="l00291" name="l00291"></a><span class="lineno">  291</span>}</div>
+<div class="line"><a id="l00292" name="l00292"></a><span class="lineno">  292</span> </div>
+<div class="line"><a id="l00293" name="l00293"></a><span class="lineno">  293</span>}  <span class="comment">// namespace agent</span></div>
+<div class="ttc" id="aclassagent_1_1_message_html"><div class="ttname"><a href="classagent_1_1_message.html">agent::Message</a></div><div class="ttdoc">一条消息，包含角色和内容块数组</div><div class="ttdef"><b>定义</b> <a href="content_8hpp_source.html#l00106">content.hpp:106</a></div></div>
+<div class="ttc" id="aclassagent_1_1_message_html_a0f99f9ca9b7223c06d61b042d6a8d8f6"><div class="ttname"><a href="classagent_1_1_message.html#a0f99f9ca9b7223c06d61b042d6a8d8f6">agent::Message::role</a></div><div class="ttdeci">Role role</div><div class="ttdoc">消息角色：User / Assistant / ToolResult</div><div class="ttdef"><b>定义</b> <a href="content_8hpp_source.html#l00109">content.hpp:109</a></div></div>
+<div class="ttc" id="aclassagent_1_1_message_html_a560141e5a31b5a81e05f7cce735a9623"><div class="ttname"><a href="classagent_1_1_message.html#a560141e5a31b5a81e05f7cce735a9623">agent::Message::content</a></div><div class="ttdeci">std::vector&lt; ContentBlock &gt; content</div><div class="ttdoc">消息的内容块列表</div><div class="ttdef"><b>定义</b> <a href="content_8hpp_source.html#l00178">content.hpp:178</a></div></div>
+<div class="ttc" id="astructagent_1_1_chat_response_html"><div class="ttname"><a href="structagent_1_1_chat_response.html">agent::ChatResponse</a></div><div class="ttdoc">一次完整（非流式或流式收尾）的模型响应。</div><div class="ttdef"><b>定义</b> <a href="types_8hpp_source.html#l00097">types.hpp:97</a></div></div>
+<div class="ttc" id="astructagent_1_1_compaction_settings_html"><div class="ttname"><a href="structagent_1_1_compaction_settings.html">agent::CompactionSettings</a></div><div class="ttdoc">压缩策略阈值。</div><div class="ttdef"><b>定义</b> <a href="#l00034">compaction.hpp:34</a></div></div>
+<div class="ttc" id="astructagent_1_1_compaction_settings_html_a18c86d2ad5202073115150a62d6ed266"><div class="ttname"><a href="structagent_1_1_compaction_settings.html#a18c86d2ad5202073115150a62d6ed266">agent::CompactionSettings::keep_recent_tokens</a></div><div class="ttdeci">int keep_recent_tokens</div><div class="ttdoc">保留尾部 token 预算（对齐 opencode keep.tokens）</div><div class="ttdef"><b>定义</b> <a href="#l00036">compaction.hpp:36</a></div></div>
+<div class="ttc" id="astructagent_1_1_compaction_settings_html_a8680cc45f3f028b324e14e54d91da71a"><div class="ttname"><a href="structagent_1_1_compaction_settings.html#a8680cc45f3f028b324e14e54d91da71a">agent::CompactionSettings::reserve_tokens</a></div><div class="ttdeci">int reserve_tokens</div><div class="ttdoc">触发阈值余量：estimate &gt; context_window - reserve 才压</div><div class="ttdef"><b>定义</b> <a href="#l00035">compaction.hpp:35</a></div></div>
+<div class="ttc" id="astructagent_1_1_compaction_settings_html_aebbf1e21021e5754921300821a2f80e1"><div class="ttname"><a href="structagent_1_1_compaction_settings.html#aebbf1e21021e5754921300821a2f80e1">agent::CompactionSettings::tail_turns</a></div><div class="ttdeci">int tail_turns</div><div class="ttdoc">保留尾部轮数（对齐 opencode tail_turns）</div><div class="ttdef"><b>定义</b> <a href="#l00037">compaction.hpp:37</a></div></div>
+<div class="ttc" id="astructagent_1_1_context_html"><div class="ttname"><a href="structagent_1_1_context.html">agent::Context</a></div><div class="ttdoc">一次 LLM 调用的完整输入。</div><div class="ttdef"><b>定义</b> <a href="options_8hpp_source.html#l00041">options.hpp:41</a></div></div>
+<div class="ttc" id="astructagent_1_1_error_html"><div class="ttname"><a href="structagent_1_1_error.html">agent::Error</a></div><div class="ttdoc">错误信息</div><div class="ttdef"><b>定义</b> <a href="result_8hpp_source.html#l00043">result.hpp:43</a></div></div>
+<div class="ttc" id="astructagent_1_1_model_view_html"><div class="ttname"><a href="structagent_1_1_model_view.html">agent::ModelView</a></div><div class="ttdoc">统一模型视图：引擎/调用方唯一消费类型。 string_view 指向底层存储（静态 → 全局字面量；动态 → ModelRegistry 的 deque 元素， 全局存储、地址稳定、进程生命周期），返...</div><div class="ttdef"><b>定义</b> <a href="model_8hpp_source.html#l00089">model.hpp:89</a></div></div>
+<div class="ttc" id="astructagent_1_1_stream_options_html"><div class="ttname"><a href="structagent_1_1_stream_options.html">agent::StreamOptions</a></div><div class="ttdoc">流式/非流式调用的采样、缓存、传输与透传配置。</div><div class="ttdef"><b>定义</b> <a href="options_8hpp_source.html#l00055">options.hpp:55</a></div></div>
+<div class="ttc" id="astructagent_1_1_summary_request_html"><div class="ttname"><a href="structagent_1_1_summary_request.html">agent::SummaryRequest</a></div><div class="ttdoc">摘要请求构造（纯函数）。返回 nullopt = 未触发（估算未超限 / 无可压内容 / 切点在起点）。</div><div class="ttdef"><b>定义</b> <a href="#l00072">compaction.hpp:72</a></div></div>
+<div class="ttc" id="astructagent_1_1_summary_request_html_aa31d38d634422578a47c943e61019a59"><div class="ttname"><a href="structagent_1_1_summary_request.html#aa31d38d634422578a47c943e61019a59">agent::SummaryRequest::ctx</a></div><div class="ttdeci">Context ctx</div><div class="ttdoc">system 不变、messages = [摘要段] + [尾部 user 指令]、tools 留空</div><div class="ttdef"><b>定义</b> <a href="#l00073">compaction.hpp:73</a></div></div>
+<div class="ttc" id="astructagent_1_1_summary_request_html_aac1a19d68ec2ca9de0f989c05687fabf"><div class="ttname"><a href="structagent_1_1_summary_request.html#aac1a19d68ec2ca9de0f989c05687fabf">agent::SummaryRequest::cut</a></div><div class="ttdeci">std::size_t cut</div><div class="ttdoc">保留段起点（摘要段 = [0, cut)）</div><div class="ttdef"><b>定义</b> <a href="#l00075">compaction.hpp:75</a></div></div>
+<div class="ttc" id="astructagent_1_1_summary_request_html_ab1c0b6db12405bf99c83c0e23b92679a"><div class="ttname"><a href="structagent_1_1_summary_request.html#ab1c0b6db12405bf99c83c0e23b92679a">agent::SummaryRequest::opts</a></div><div class="ttdeci">StreamOptions opts</div><div class="ttdoc">max_tokens 钳制 / thinking 关 / temperature 0</div><div class="ttdef"><b>定义</b> <a href="#l00074">compaction.hpp:74</a></div></div>
+<div class="ttc" id="astructagent_1_1_text_html"><div class="ttname"><a href="structagent_1_1_text.html">agent::Text</a></div><div class="ttdoc">文本内容块</div><div class="ttdef"><b>定义</b> <a href="content_8hpp_source.html#l00017">content.hpp:17</a></div></div>
+</div><!-- fragment --></div><!-- contents -->
+</div><!-- doc-content -->
+</div><!-- container -->
+<!-- start footer part -->
+<div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
+  <ul>
+    <li class="navelem"><b>agent</b></li><li class="navelem"><b>agent</b></li><li class="navelem"><b>compaction.hpp</b></li>
+    <li class="footer">制作者 <a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.17.0 </li>
+  </ul>
+</div>
+</body>
+</html>

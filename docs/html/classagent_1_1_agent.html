@@ -1,0 +1,1296 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "https://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="zh">
+<head>
+<meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=11"/>
+<meta name="generator" content="Doxygen 1.17.0"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>agent: agent::Agent&lt; Provider, Behaviors &gt; 模板类 参考</title>
+<link href="tabs.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="codefolding.js"></script>
+<script type="text/javascript" src="clipboard.js"></script>
+<link href="navtree.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="navtreedata.js"></script>
+<script type="text/javascript" src="navtree.js"></script>
+<script type="text/javascript" src="cookie.js"></script>
+<link href="search/search.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="search/searchdata.js"></script>
+<script type="text/javascript" src="search/search.js"></script>
+<script type="module">
+import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.esm.min.mjs';
+const theme = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'default';
+mermaid.initialize({ startOnLoad: true, theme: theme });
+</script>
+<link href="doxygen.css" rel="stylesheet" type="text/css" />
+</head>
+<body>
+<div id="top"><!-- do not remove this div, it is closed by doxygen! -->
+<div id="titlearea">
+<table cellspacing="0" cellpadding="0">
+ <tbody>
+ <tr id="projectrow">
+  <td id="projectalign">
+   <div id="projectname">agent<span id="projectnumber">&#160;experimental</span>
+   </div>
+   <div id="projectbrief">C++26 实验性 LLM / Agent 库</div>
+  </td>
+ </tr>
+ </tbody>
+</table>
+</div>
+<!-- end header part -->
+<!-- 制作者 Doxygen 1.17.0 -->
+<script type="text/javascript">
+let searchBox = new SearchBox("searchBox", "search/",'.html');
+</script>
+<script type="text/javascript">
+document.addEventListener('DOMContentLoaded', codefold.init);
+</script>
+<script type="text/javascript" src="menudata.js"></script>
+<script type="text/javascript" src="menu.js"></script>
+<script type="text/javascript">
+document.addEventListener('DOMContentLoaded', () => {
+  initMenu('',true);
+  init_search();
+});
+</script>
+<div id="main-nav-mobile">
+<div class="sm sm-dox"><input id="main-menu-state" type="checkbox"/>
+<label class="main-menu-btn" for="main-menu-state">
+<span class="main-menu-btn-icon"></span> Toggle main menu visibility</label>
+<span id="searchBoxPos1" style="position:absolute;right:8px;top:8px;height:36px;"></span>
+</div>
+</div><!-- main-nav-mobile -->
+<div id="main-nav">
+  <ul class="sm sm-dox" id="main-menu">
+    <li id="searchBoxPos2" style="float:right">
+        <div id="MSearchBox" class="MSearchBoxInactive">
+        <span class="left">
+          <span id="MSearchSelect" class="search-icon" onmouseover="return searchBox.OnSearchSelectShow()" onmouseout="return searchBox.OnSearchSelectHide()"><span class="search-icon-dropdown"></span></span>
+          <input type="text" id="MSearchField" value="" placeholder="搜索" accesskey="S"
+               onfocus="searchBox.OnSearchFieldFocus(true)" 
+               onblur="searchBox.OnSearchFieldFocus(false)" 
+               onkeyup="searchBox.OnSearchFieldChange(event)"/>
+          </span><span class="right">
+            <a id="MSearchClose" href="javascript:searchBox.CloseResultsWindow()"><div id="MSearchCloseImg" class="close-icon"></div></a>
+          </span>
+        </div>
+    </li>
+  </ul>
+</div><!-- main-nav -->
+</div><!-- top -->
+<div id="side-nav" class="ui-resizable side-nav-resizable">
+  <div id="nav-tree">
+    <div id="nav-tree-contents">
+      <div id="nav-sync" class="sync"></div>
+    </div>
+  </div>
+  <div id="splitbar" style="-moz-user-select:none;" 
+       class="ui-resizable-handle">
+  </div>
+</div>
+<script type="text/javascript">
+document.addEventListener('DOMContentLoaded',() => { initNavTree('classagent_1_1_agent.html','','classagent_1_1_agent-members'); });
+</script>
+<div id="container">
+<div id="doc-content">
+<!-- window showing the filter options -->
+<div id="MSearchSelectWindow"
+     onmouseover="return searchBox.OnSearchSelectShow()"
+     onmouseout="return searchBox.OnSearchSelectHide()"
+     onkeydown="return searchBox.OnSearchSelectKey(event)">
+</div>
+
+<!-- iframe showing the search results (closed by default) -->
+<div id="MSearchResultsWindow">
+<div id="MSearchResults">
+<div class="SRPage">
+<div id="SRIndex">
+<div id="SRResults"></div>
+<div class="SRStatus" id="Loading">载入中...</div>
+<div class="SRStatus" id="Searching">搜索中...</div>
+<div class="SRStatus" id="NoMatches">未找到</div>
+</div>
+</div>
+</div>
+</div>
+
+<div class="header">
+  <div class="headertitle"><div class="title">agent::Agent&lt; Provider, Behaviors &gt; 模板类 参考</div></div>
+</div><!--header-->
+<div class="contents">
+
+<p>高层 Agent：多轮对话 + 工具调用的驱动核心。  
+ <a href="#details">更多...</a></p>
+
+<p><code>#include &lt;<a class="el" href="agent_2agent_8hpp_source.html">agent.hpp</a>&gt;</code></p>
+<table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 id="header-pub-methods" class="groupheader"><a id="pub-methods" name="pub-methods"></a>
+Public 成员函数</h2></td></tr>
+<tr class="memitem:a4bdf697b77bdd1e89c9cbb5b36ac5d37" id="r_a4bdf697b77bdd1e89c9cbb5b36ac5d37"><td class="memItemLeft">&#160;</td><td class="memItemRight"><a class="el" href="#a4bdf697b77bdd1e89c9cbb5b36ac5d37">Agent</a> (<a class="el" href="structagent_1_1_endpoint_config.html">EndpointConfig</a> config, <a class="el" href="structagent_1_1_model_view.html">ModelView</a> model, Behaviors behaviors={}, std::string system_prompt={})</td></tr>
+<tr class="memdesc:a4bdf697b77bdd1e89c9cbb5b36ac5d37"><td class="mdescLeft">&#160;</td><td class="mdescRight">构造：连接配置 + 模型 + 行为（钩子 + 压缩策略一体）+ 系统提示。 默认不开放任何工具——模型看不到也不会执行任何工具，须 set_tools 显式指定 （广告子集 + 执行门控双重生效，未开放的调用会被拒绝回传）。  <br /></td></tr>
+<tr class="memitem:aa42208dae009bc4e22a9f1959d1ff007" id="r_aa42208dae009bc4e22a9f1959d1ff007"><td class="memItemLeft"><a id="aa42208dae009bc4e22a9f1959d1ff007" name="aa42208dae009bc4e22a9f1959d1ff007"></a>
+&#160;</td><td class="memItemRight"><b>Agent</b> (Agent const &amp;)=delete</td></tr>
+<tr class="memdesc:aa42208dae009bc4e22a9f1959d1ff007"><td class="mdescLeft">&#160;</td><td class="mdescRight">不可拷贝 / 不可移动：async 协程引用内部 provider_ / behaviors_， <a class="el" href="classagent_1_1_agent.html" title="高层 Agent：多轮对话 + 工具调用的驱动核心。">Agent</a> 生命周期必须覆盖调用期间（co_spawn 前先确保 agent 存活）。 <br /></td></tr>
+<tr class="memitem:abeb353dce3382183e2876df48f698d2a" id="r_abeb353dce3382183e2876df48f698d2a"><td class="memItemLeft"><a id="abeb353dce3382183e2876df48f698d2a" name="abeb353dce3382183e2876df48f698d2a"></a>
+<a class="el" href="#a4bdf697b77bdd1e89c9cbb5b36ac5d37">Agent</a> &amp;&#160;</td><td class="memItemRight"><b>operator=</b> (<a class="el" href="#a4bdf697b77bdd1e89c9cbb5b36ac5d37">Agent</a> const &amp;)=delete</td></tr>
+<tr class="memitem:ac17a03328181ec1cf02b82cb74b30863" id="r_ac17a03328181ec1cf02b82cb74b30863"><td class="memItemLeft"><a id="ac17a03328181ec1cf02b82cb74b30863" name="ac17a03328181ec1cf02b82cb74b30863"></a>
+&#160;</td><td class="memItemRight"><b>Agent</b> (Agent &amp;&amp;)=delete</td></tr>
+<tr class="memitem:aea699ef67f3625cb5c02899fad155e33" id="r_aea699ef67f3625cb5c02899fad155e33"><td class="memItemLeft"><a id="aea699ef67f3625cb5c02899fad155e33" name="aea699ef67f3625cb5c02899fad155e33"></a>
+<a class="el" href="#a4bdf697b77bdd1e89c9cbb5b36ac5d37">Agent</a> &amp;&#160;</td><td class="memItemRight"><b>operator=</b> (<a class="el" href="#a4bdf697b77bdd1e89c9cbb5b36ac5d37">Agent</a> &amp;&amp;)=delete</td></tr>
+<tr class="memitem:aa29060c7ac760d908a707690329f72d6" id="r_aa29060c7ac760d908a707690329f72d6"><td class="memItemLeft">std::generator&lt; <a class="el" href="classagent_1_1_agent_event.html">AgentEvent</a> &gt;&#160;</td><td class="memItemRight"><a class="el" href="#aa29060c7ac760d908a707690329f72d6">run</a> (std::vector&lt; <a class="el" href="classagent_1_1_message.html">Message</a> &gt; user_messages, <a class="el" href="structagent_1_1_stream_options.html">StreamOptions</a> const &amp;opts={})</td></tr>
+<tr class="memdesc:aa29060c7ac760d908a707690329f72d6"><td class="mdescLeft">&#160;</td><td class="mdescRight">同步 run（= prompt）：返回事件 generator，for 循环消费；不遍历 = 不执行。 提前 break → generator 析构 → SyncStreamBridge 析构触发取消（见文件头 ⚠️）。  <br /></td></tr>
+<tr class="memitem:a5cc47546205219191e8f36008b1909bf" id="r_a5cc47546205219191e8f36008b1909bf"><td class="memItemLeft">asio::awaitable&lt; void &gt;&#160;</td><td class="memItemRight"><a class="el" href="#a5cc47546205219191e8f36008b1909bf">run_async</a> (std::vector&lt; <a class="el" href="classagent_1_1_message.html">Message</a> &gt; user_messages, <a class="el" href="classagent_1_1_async_stream.html">AsyncStream</a>&lt; <a class="el" href="classagent_1_1_agent_event.html">AgentEvent</a> &gt; sink, <a class="el" href="structagent_1_1_stream_options.html">StreamOptions</a> const &amp;opts={})</td></tr>
+<tr class="memdesc:a5cc47546205219191e8f36008b1909bf"><td class="mdescLeft">&#160;</td><td class="mdescRight">异步 run：事件推到调用方提供的 sink（共享通道可拷贝）。  <br /></td></tr>
+<tr class="memitem:a2335e23e53cf450455f60b2317d6c4b9" id="r_a2335e23e53cf450455f60b2317d6c4b9"><td class="memItemLeft">std::generator&lt; <a class="el" href="classagent_1_1_agent_event.html">AgentEvent</a> &gt;&#160;</td><td class="memItemRight"><a class="el" href="#a2335e23e53cf450455f60b2317d6c4b9">continue_run</a> (<a class="el" href="structagent_1_1_stream_options.html">StreamOptions</a> const &amp;opts={})</td></tr>
+<tr class="memdesc:a2335e23e53cf450455f60b2317d6c4b9"><td class="mdescLeft">&#160;</td><td class="mdescRight">续跑（最后一条消息须是 user 或 toolResult）。  <br /></td></tr>
+<tr class="memitem:a3e14ec193b053d3e8621143b236827cc" id="r_a3e14ec193b053d3e8621143b236827cc"><td class="memItemLeft">asio::awaitable&lt; void &gt;&#160;</td><td class="memItemRight"><a class="el" href="#a3e14ec193b053d3e8621143b236827cc">continue_async</a> (<a class="el" href="classagent_1_1_async_stream.html">AsyncStream</a>&lt; <a class="el" href="classagent_1_1_agent_event.html">AgentEvent</a> &gt; sink, <a class="el" href="structagent_1_1_stream_options.html">StreamOptions</a> const &amp;opts={})</td></tr>
+<tr class="memdesc:a3e14ec193b053d3e8621143b236827cc"><td class="mdescLeft">&#160;</td><td class="mdescRight">续跑（异步）。  <br /></td></tr>
+<tr class="memitem:a009c58b0e6ec6c1ab337df916005c242" id="r_a009c58b0e6ec6c1ab337df916005c242"><td class="memItemLeft">void&#160;</td><td class="memItemRight"><a class="el" href="#a009c58b0e6ec6c1ab337df916005c242">steer</a> (<a class="el" href="classagent_1_1_message.html">Message</a> message)</td></tr>
+<tr class="memdesc:a009c58b0e6ec6c1ab337df916005c242"><td class="mdescLeft">&#160;</td><td class="mdescRight">插队：本轮 assistant 答完就注入（干预下一轮）。  <br /></td></tr>
+<tr class="memitem:a68ba8c64d33061492cc9c8920ad42ac2" id="r_a68ba8c64d33061492cc9c8920ad42ac2"><td class="memItemLeft">void&#160;</td><td class="memItemRight"><a class="el" href="#a68ba8c64d33061492cc9c8920ad42ac2">follow_up</a> (<a class="el" href="classagent_1_1_message.html">Message</a> message)</td></tr>
+<tr class="memdesc:a68ba8c64d33061492cc9c8920ad42ac2"><td class="mdescLeft">&#160;</td><td class="mdescRight">排队：agent 本来要停时才注入（等干完再追加）。  <br /></td></tr>
+<tr class="memitem:a09317ca545f4f3443a6ba27598acc7c5" id="r_a09317ca545f4f3443a6ba27598acc7c5"><td class="memItemLeft">void&#160;</td><td class="memItemRight"><a class="el" href="#a09317ca545f4f3443a6ba27598acc7c5">clear_queues</a> ()</td></tr>
+<tr class="memdesc:a09317ca545f4f3443a6ba27598acc7c5"><td class="mdescLeft">&#160;</td><td class="mdescRight">清空 steer + follow_up 两条队列（未注入的消息丢弃）。  <br /></td></tr>
+<tr class="memitem:af97c65ad3c87b2318864f8859745cfbc" id="r_af97c65ad3c87b2318864f8859745cfbc"><td class="memItemLeft">bool&#160;</td><td class="memItemRight"><a class="el" href="#af97c65ad3c87b2318864f8859745cfbc">has_queued_messages</a> () const</td></tr>
+<tr class="memdesc:af97c65ad3c87b2318864f8859745cfbc"><td class="mdescLeft">&#160;</td><td class="mdescRight">任一条队列还有未注入的消息？  <br /></td></tr>
+<tr class="memitem:ac88dd6a587588971cac279d72a4fb194" id="r_ac88dd6a587588971cac279d72a4fb194"><td class="memItemLeft">void&#160;</td><td class="memItemRight"><a class="el" href="#ac88dd6a587588971cac279d72a4fb194">set_steering_mode</a> (QueueMode mode)</td></tr>
+<tr class="memdesc:ac88dd6a587588971cac279d72a4fb194"><td class="mdescLeft">&#160;</td><td class="mdescRight">设置插话队列的工作模式（steer 对已有运行中的 run 注入，Mode::Asap 立即打断）。  <br /></td></tr>
+<tr class="memitem:a17a96080d7207660b2f588cd6069b346" id="r_a17a96080d7207660b2f588cd6069b346"><td class="memItemLeft">void&#160;</td><td class="memItemRight"><a class="el" href="#a17a96080d7207660b2f588cd6069b346">set_follow_up_mode</a> (QueueMode mode)</td></tr>
+<tr class="memdesc:a17a96080d7207660b2f588cd6069b346"><td class="mdescLeft">&#160;</td><td class="mdescRight">设置追加队列的工作模式（follow_up 在 run 空闲时注入）。  <br /></td></tr>
+<tr class="memitem:a3951ca04daf21f7f667cef5ed2623455" id="r_a3951ca04daf21f7f667cef5ed2623455"><td class="memItemLeft">std::vector&lt; <a class="el" href="classagent_1_1_message.html">Message</a> &gt; const &amp;&#160;</td><td class="memItemRight"><a class="el" href="#a3951ca04daf21f7f667cef5ed2623455">messages</a> () const</td></tr>
+<tr class="memdesc:a3951ca04daf21f7f667cef5ed2623455"><td class="mdescLeft">&#160;</td><td class="mdescRight">当前对话（压缩会丢弃旧段；要旧上下文请在压缩前自行读取）。  <br /></td></tr>
+<tr class="memitem:a6ccd92ebbd440e31121efe8bef42d8cb" id="r_a6ccd92ebbd440e31121efe8bef42d8cb"><td class="memItemLeft">std::string const &amp;&#160;</td><td class="memItemRight"><a class="el" href="#a6ccd92ebbd440e31121efe8bef42d8cb">system_prompt</a> () const</td></tr>
+<tr class="memdesc:a6ccd92ebbd440e31121efe8bef42d8cb"><td class="mdescLeft">&#160;</td><td class="mdescRight">当前系统提示。  <br /></td></tr>
+<tr class="memitem:a76844b58317d023ff93f7fbd7da90b24" id="r_a76844b58317d023ff93f7fbd7da90b24"><td class="memItemLeft"><a class="el" href="structagent_1_1_model_view.html">ModelView</a>&#160;</td><td class="memItemRight"><a class="el" href="#a76844b58317d023ff93f7fbd7da90b24">model</a> () const</td></tr>
+<tr class="memdesc:a76844b58317d023ff93f7fbd7da90b24"><td class="mdescLeft">&#160;</td><td class="mdescRight">当前模型（prepare_next_turn / set_model 换过之后从这取）。  <br /></td></tr>
+<tr class="memitem:ab2f7341c9d538d1d246c93f85c170ed9" id="r_ab2f7341c9d538d1d246c93f85c170ed9"><td class="memItemLeft">void&#160;</td><td class="memItemRight"><a class="el" href="#ab2f7341c9d538d1d246c93f85c170ed9">set_model</a> (<a class="el" href="structagent_1_1_model_view.html">ModelView</a> model)</td></tr>
+<tr class="memdesc:ab2f7341c9d538d1d246c93f85c170ed9"><td class="mdescLeft">&#160;</td><td class="mdescRight">换模型（下一轮生效；模型表 <a class="el" href="structagent_1_1_model_view.html" title="统一模型视图：引擎/调用方唯一消费类型。 string_view 指向底层存储（静态 → 全局字面量；动态 → ModelRegistry 的 deque 元素， 全局存储、地址稳定、进程生命周期），返...">ModelView</a> 长期有效）。  <br /></td></tr>
+<tr class="memitem:aa9caaa8e2c764abd917a2fc6e9ed88e9" id="r_aa9caaa8e2c764abd917a2fc6e9ed88e9"><td class="memItemLeft">void&#160;</td><td class="memItemRight"><a class="el" href="#aa9caaa8e2c764abd917a2fc6e9ed88e9">set_reasoning</a> (ThinkingLevel level)</td></tr>
+<tr class="memdesc:aa9caaa8e2c764abd917a2fc6e9ed88e9"><td class="mdescLeft">&#160;</td><td class="mdescRight">换思考档（下一轮生效）。  <br /></td></tr>
+<tr class="memitem:a6df18dead74cf29cbadb7d6e46dfdaa2" id="r_a6df18dead74cf29cbadb7d6e46dfdaa2"><td class="memItemLeft">bool&#160;</td><td class="memItemRight"><a class="el" href="#a6df18dead74cf29cbadb7d6e46dfdaa2">is_streaming</a> () const</td></tr>
+<tr class="memdesc:a6df18dead74cf29cbadb7d6e46dfdaa2"><td class="mdescLeft">&#160;</td><td class="mdescRight">当前是否在 run（async 调用期间）。  <br /></td></tr>
+<tr class="memitem:ac0aa5c088a6c851e6f35756c46d9b704" id="r_ac0aa5c088a6c851e6f35756c46d9b704"><td class="memItemLeft">std::vector&lt; std::string &gt;&#160;</td><td class="memItemRight"><a class="el" href="#ac0aa5c088a6c851e6f35756c46d9b704">pending_tools</a> () const</td></tr>
+<tr class="memdesc:ac0aa5c088a6c851e6f35756c46d9b704"><td class="mdescLeft">&#160;</td><td class="mdescRight">正在执行的工具 id（外部/UI 查询）。  <br /></td></tr>
+<tr class="memitem:a41a827dc7b17713d41deeb4696f7c035" id="r_a41a827dc7b17713d41deeb4696f7c035"><td class="memItemLeft">std::optional&lt; <a class="el" href="structagent_1_1_error.html">Error</a> &gt;&#160;</td><td class="memItemRight"><a class="el" href="#a41a827dc7b17713d41deeb4696f7c035">last_error</a> () const</td></tr>
+<tr class="memdesc:a41a827dc7b17713d41deeb4696f7c035"><td class="mdescLeft">&#160;</td><td class="mdescRight">最近失败/中止错误（无则 nullopt）。  <br /></td></tr>
+<tr class="memitem:aa67ee35b386c85d9b351446aa4e18040" id="r_aa67ee35b386c85d9b351446aa4e18040"><td class="memItemLeft">void&#160;</td><td class="memItemRight"><a class="el" href="#aa67ee35b386c85d9b351446aa4e18040">set_tools</a> (std::vector&lt; std::string &gt; tools)</td></tr>
+<tr class="memdesc:aa67ee35b386c85d9b351446aa4e18040"><td class="mdescLeft">&#160;</td><td class="mdescRight">传给模型的工具子集（**默认空 = 不开放任何工具**；指定后广告 + 执行门控同时生效， 未开放的工具调用会被拒绝回传给模型）。  <br /></td></tr>
+<tr class="memitem:aedeb4542dc6e1e7ea35aa5acfa9b4877" id="r_aedeb4542dc6e1e7ea35aa5acfa9b4877"><td class="memItemLeft">std::vector&lt; std::string &gt; const &amp;&#160;</td><td class="memItemRight"><a class="el" href="#aedeb4542dc6e1e7ea35aa5acfa9b4877">tools</a> () const</td></tr>
+<tr class="memdesc:aedeb4542dc6e1e7ea35aa5acfa9b4877"><td class="mdescLeft">&#160;</td><td class="mdescRight">当前传给模型的工具子集（默认空 = 不开放任何工具）。  <br /></td></tr>
+<tr class="memitem:a66a2613589d787606f2da2a91bc0ac09" id="r_a66a2613589d787606f2da2a91bc0ac09"><td class="memItemLeft">void&#160;</td><td class="memItemRight"><a class="el" href="#a66a2613589d787606f2da2a91bc0ac09">abort</a> ()</td></tr>
+<tr class="memdesc:a66a2613589d787606f2da2a91bc0ac09"><td class="mdescLeft">&#160;</td><td class="mdescRight">取消当前 run（AgentError 带 Errc::Aborted）。可重置：下次 run 清标志 + 重建取消信号。  <br /></td></tr>
+<tr class="memitem:afacefe95ff80e33d8b761cc11656e307" id="r_afacefe95ff80e33d8b761cc11656e307"><td class="memItemLeft">asio::awaitable&lt; void &gt;&#160;</td><td class="memItemRight"><a class="el" href="#afacefe95ff80e33d8b761cc11656e307">wait_for_idle</a> ()</td></tr>
+<tr class="memdesc:afacefe95ff80e33d8b761cc11656e307"><td class="mdescLeft">&#160;</td><td class="mdescRight">等当前 run 彻底结束。  <br /></td></tr>
+<tr class="memitem:ac23c245e50d7a3e3bfbee1a7e49729b2" id="r_ac23c245e50d7a3e3bfbee1a7e49729b2"><td class="memItemLeft">void&#160;</td><td class="memItemRight"><a class="el" href="#ac23c245e50d7a3e3bfbee1a7e49729b2">reset</a> ()</td></tr>
+<tr class="memdesc:ac23c245e50d7a3e3bfbee1a7e49729b2"><td class="mdescLeft">&#160;</td><td class="mdescRight">清空对话 + 队列 + 状态。  <br /></td></tr>
+<tr class="memitem:a168427e0d10715961b8dd3104732ff92" id="r_a168427e0d10715961b8dd3104732ff92"><td class="memItemLeft">void&#160;</td><td class="memItemRight"><a class="el" href="#a168427e0d10715961b8dd3104732ff92">set_tool_execution_mode</a> (ToolExecutionMode mode)</td></tr>
+<tr class="memdesc:a168427e0d10715961b8dd3104732ff92"><td class="mdescLeft">&#160;</td><td class="mdescRight">设置工具执行模式（全执行 / 全拒绝 / 按工具自带 mode）。对尚未开始的本轮生效。  <br /></td></tr>
+<tr class="memitem:af21eb796908ce84d2d2e717ec3076431" id="r_af21eb796908ce84d2d2e717ec3076431"><td class="memItemLeft">bool&#160;</td><td class="memItemRight"><a class="el" href="#af21eb796908ce84d2d2e717ec3076431">should_compact</a> () const</td></tr>
+<tr class="memdesc:af21eb796908ce84d2d2e717ec3076431"><td class="mdescLeft">&#160;</td><td class="mdescRight">判断：该不该压（外部决定主动时机，无参）。  <br /></td></tr>
+<tr class="memitem:a800f41438fd23eea4725fd45d856874f" id="r_a800f41438fd23eea4725fd45d856874f"><td class="memItemLeft">Result&lt; bool &gt;&#160;</td><td class="memItemRight"><a class="el" href="#a800f41438fd23eea4725fd45d856874f">compact</a> ()</td></tr>
+<tr class="memdesc:a800f41438fd23eea4725fd45d856874f"><td class="mdescLeft">&#160;</td><td class="mdescRight">执行压缩（同步，摘要走 provider.complete）。 true = 成功且 messages_ 已替换（旧段丢弃）；false = 没压（未触发）； <a class="el" href="structagent_1_1_error.html" title="错误信息">Error</a> = 压缩失败（含原因）。  <br /></td></tr>
+<tr class="memitem:a90bee07a23b0843e7293c7ace73b2886" id="r_a90bee07a23b0843e7293c7ace73b2886"><td class="memItemLeft">asio::awaitable&lt; Result&lt; bool &gt; &gt;&#160;</td><td class="memItemRight"><a class="el" href="#a90bee07a23b0843e7293c7ace73b2886">compact_async</a> ()</td></tr>
+<tr class="memdesc:a90bee07a23b0843e7293c7ace73b2886"><td class="mdescLeft">&#160;</td><td class="mdescRight">执行压缩（异步，摘要走 provider.complete_async）。  <br /></td></tr>
+<tr class="memitem:a05534d4aa8ea7eb057ad964efbb41002" id="r_a05534d4aa8ea7eb057ad964efbb41002"><td class="memItemLeft"><a class="el" href="structagent_1_1_usage.html">Usage</a>&#160;</td><td class="memItemRight"><a class="el" href="#a05534d4aa8ea7eb057ad964efbb41002">context_usage</a> () const</td></tr>
+<tr class="memdesc:a05534d4aa8ea7eb057ad964efbb41002"><td class="mdescLeft">&#160;</td><td class="mdescRight">当前上下文完整用量（真实锚点 + 估算补尾，cost 已算）。  <br /></td></tr>
+<tr class="memitem:a88d1181f3f829e3a5e70613a31d87096" id="r_a88d1181f3f829e3a5e70613a31d87096"><td class="memItemLeft">std::optional&lt; <a class="el" href="structagent_1_1_usage.html">Usage</a> &gt;&#160;</td><td class="memItemRight"><a class="el" href="#a88d1181f3f829e3a5e70613a31d87096">last_usage</a> () const</td></tr>
+<tr class="memdesc:a88d1181f3f829e3a5e70613a31d87096"><td class="mdescLeft">&#160;</td><td class="mdescRight">最近一次真实 usage（模型返回，cost 已算；无则 nullopt）。  <br /></td></tr>
+<tr class="memitem:a5f379b8b24ad805758653f4cc507caeb" id="r_a5f379b8b24ad805758653f4cc507caeb"><td class="memItemLeft">double&#160;</td><td class="memItemRight"><a class="el" href="#a5f379b8b24ad805758653f4cc507caeb">context_cost</a> () const</td></tr>
+<tr class="memdesc:a5f379b8b24ad805758653f4cc507caeb"><td class="mdescLeft">&#160;</td><td class="mdescRight">累计花费（美元）。  <br /></td></tr>
+<tr class="memitem:afc30a52525e1016a7d3024ee07d24634" id="r_afc30a52525e1016a7d3024ee07d24634"><td class="memItemLeft">int&#160;</td><td class="memItemRight"><a class="el" href="#afc30a52525e1016a7d3024ee07d24634">context_tokens</a> () const</td></tr>
+<tr class="memdesc:afc30a52525e1016a7d3024ee07d24634"><td class="mdescLeft">&#160;</td><td class="mdescRight">= <a class="el" href="#a05534d4aa8ea7eb057ad964efbb41002" title="当前上下文完整用量（真实锚点 + 估算补尾，cost 已算）。">context_usage()</a>.total_tokens。  <br /></td></tr>
+<tr class="memitem:afc9ed4b6438f53701d542ff0afa8b5e0" id="r_afc9ed4b6438f53701d542ff0afa8b5e0"><td class="memItemLeft">std::string_view&#160;</td><td class="memItemRight"><a class="el" href="#afc9ed4b6438f53701d542ff0afa8b5e0">previous_summary</a> () const</td></tr>
+<tr class="memdesc:afc9ed4b6438f53701d542ff0afa8b5e0"><td class="mdescLeft">&#160;</td><td class="mdescRight">上次摘要文本（增量更新用）。  <br /></td></tr>
+</table>
+<a name="details" id="details"></a><h2 id="header-details" class="groupheader">详细描述</h2>
+<div class="textblock"><div class="compoundTemplParams">template&lt;typename Provider, typename Behaviors = DefaultBehaviors&gt;<br />
+class agent::Agent&lt; Provider, Behaviors &gt;</div><p>高层 Agent：多轮对话 + 工具调用的驱动核心。 </p>
+<p>职责：双层循环（内层对话、外层工具）、行为钩子（DefaultBehaviors，含压缩）、 steer/follow_up 插话、异步 abort、成本核算。持具体 Provider 类型（编译期绑定， 零虚函数）。默认不开放任何工具，须 set_tools 显式授权。</p>
+<dl class="tparams"><dt>模板参数</dt><dd>
+  <table class="tparams">
+    <tr><td class="paramname">Provider</td><td>具体 LLM Provider 类型（如 AgnesProvider / OpenAIProvider）。 </td></tr>
+    <tr><td class="paramname">Behaviors</td><td>行为集合，提供钩子 + 压缩策略，默认 DefaultBehaviors。 </td></tr>
+  </table>
+  </dd>
+</dl>
+
+<p class="definition">在文件 <a class="el" href="agent_2agent_8hpp_source.html">agent/agent.hpp</a> 第 <a class="el" href="agent_2agent_8hpp_source.html#l00175">175</a> 行定义.</p>
+</div><a name="doc-constructors" id="doc-constructors"></a><h2 id="header-doc-constructors" class="groupheader">构造及析构函数说明</h2>
+<a id="a4bdf697b77bdd1e89c9cbb5b36ac5d37" name="a4bdf697b77bdd1e89c9cbb5b36ac5d37"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a4bdf697b77bdd1e89c9cbb5b36ac5d37">&#9670;&#160;</a></span>Agent()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename Provider, typename Behaviors = DefaultBehaviors&gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classagent_1_1_agent.html">agent::Agent</a>&lt; Provider, Behaviors &gt;::Agent </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="structagent_1_1_endpoint_config.html">EndpointConfig</a></td>          <td class="paramname"><span class="paramname"><em>config</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="structagent_1_1_model_view.html">ModelView</a></td>          <td class="paramname"><span class="paramname"><em>model</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">Behaviors</td>          <td class="paramname"><span class="paramname"><em>behaviors</em></span><span class="paramdefsep"> = </span><span class="paramdefval">{}</span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">std::string</td>          <td class="paramname"><span class="paramname"><em>system_prompt</em></span><span class="paramdefsep"> = </span><span class="paramdefval">{}</span>&#160;)</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel inline">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>构造：连接配置 + 模型 + 行为（钩子 + 压缩策略一体）+ 系统提示。 默认不开放任何工具——模型看不到也不会执行任何工具，须 set_tools 显式指定 （广告子集 + 执行门控双重生效，未开放的调用会被拒绝回传）。 </p>
+
+<p class="definition">在文件 <a class="el" href="agent_2agent_8hpp_source.html">agent/agent.hpp</a> 第 <a class="el" href="agent_2agent_8hpp_source.html#l00180">180</a> 行定义.</p>
+
+</div>
+</div>
+<a name="doc-func-members" id="doc-func-members"></a><h2 id="header-doc-func-members" class="groupheader">成员函数说明</h2>
+<a id="a66a2613589d787606f2da2a91bc0ac09" name="a66a2613589d787606f2da2a91bc0ac09"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a66a2613589d787606f2da2a91bc0ac09">&#9670;&#160;</a></span>abort()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename Provider, typename Behaviors = DefaultBehaviors&gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void <a class="el" href="classagent_1_1_agent.html">agent::Agent</a>&lt; Provider, Behaviors &gt;::abort </td>
+          <td>(</td>
+          <td class="paramname"><span class="paramname"><em></em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel inline">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>取消当前 run（AgentError 带 Errc::Aborted）。可重置：下次 run 清标志 + 重建取消信号。 </p>
+
+<p class="definition">在文件 <a class="el" href="agent_2agent_8hpp_source.html">agent/agent.hpp</a> 第 <a class="el" href="agent_2agent_8hpp_source.html#l00298">298</a> 行定义.</p>
+
+</div>
+</div>
+<a id="a09317ca545f4f3443a6ba27598acc7c5" name="a09317ca545f4f3443a6ba27598acc7c5"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a09317ca545f4f3443a6ba27598acc7c5">&#9670;&#160;</a></span>clear_queues()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename Provider, typename Behaviors = DefaultBehaviors&gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void <a class="el" href="classagent_1_1_agent.html">agent::Agent</a>&lt; Provider, Behaviors &gt;::clear_queues </td>
+          <td>(</td>
+          <td class="paramname"><span class="paramname"><em></em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel inline">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>清空 steer + follow_up 两条队列（未注入的消息丢弃）。 </p>
+
+<p class="definition">在文件 <a class="el" href="agent_2agent_8hpp_source.html">agent/agent.hpp</a> 第 <a class="el" href="agent_2agent_8hpp_source.html#l00256">256</a> 行定义.</p>
+
+</div>
+</div>
+<a id="a800f41438fd23eea4725fd45d856874f" name="a800f41438fd23eea4725fd45d856874f"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a800f41438fd23eea4725fd45d856874f">&#9670;&#160;</a></span>compact()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename Provider, typename Behaviors = DefaultBehaviors&gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">Result&lt; bool &gt; <a class="el" href="classagent_1_1_agent.html">agent::Agent</a>&lt; Provider, Behaviors &gt;::compact </td>
+          <td>(</td>
+          <td class="paramname"><span class="paramname"><em></em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel inline">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>执行压缩（同步，摘要走 provider.complete）。 true = 成功且 messages_ 已替换（旧段丢弃）；false = 没压（未触发）； <a class="el" href="structagent_1_1_error.html" title="错误信息">Error</a> = 压缩失败（含原因）。 </p>
+
+<p class="definition">在文件 <a class="el" href="agent_2agent_8hpp_source.html">agent/agent.hpp</a> 第 <a class="el" href="agent_2agent_8hpp_source.html#l00337">337</a> 行定义.</p>
+
+</div>
+</div>
+<a id="a90bee07a23b0843e7293c7ace73b2886" name="a90bee07a23b0843e7293c7ace73b2886"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a90bee07a23b0843e7293c7ace73b2886">&#9670;&#160;</a></span>compact_async()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename Provider, typename Behaviors = DefaultBehaviors&gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">asio::awaitable&lt; Result&lt; bool &gt; &gt; <a class="el" href="classagent_1_1_agent.html">agent::Agent</a>&lt; Provider, Behaviors &gt;::compact_async </td>
+          <td>(</td>
+          <td class="paramname"><span class="paramname"><em></em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel inline">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>执行压缩（异步，摘要走 provider.complete_async）。 </p>
+
+<p class="definition">在文件 <a class="el" href="agent_2agent_8hpp_source.html">agent/agent.hpp</a> 第 <a class="el" href="agent_2agent_8hpp_source.html#l00350">350</a> 行定义.</p>
+
+</div>
+</div>
+<a id="a5f379b8b24ad805758653f4cc507caeb" name="a5f379b8b24ad805758653f4cc507caeb"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a5f379b8b24ad805758653f4cc507caeb">&#9670;&#160;</a></span>context_cost()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename Provider, typename Behaviors = DefaultBehaviors&gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">double <a class="el" href="classagent_1_1_agent.html">agent::Agent</a>&lt; Provider, Behaviors &gt;::context_cost </td>
+          <td>(</td>
+          <td class="paramname"><span class="paramname"><em></em></span></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel inline">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>累计花费（美元）。 </p>
+
+<p class="definition">在文件 <a class="el" href="agent_2agent_8hpp_source.html">agent/agent.hpp</a> 第 <a class="el" href="agent_2agent_8hpp_source.html#l00390">390</a> 行定义.</p>
+
+</div>
+</div>
+<a id="afc30a52525e1016a7d3024ee07d24634" name="afc30a52525e1016a7d3024ee07d24634"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#afc30a52525e1016a7d3024ee07d24634">&#9670;&#160;</a></span>context_tokens()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename Provider, typename Behaviors = DefaultBehaviors&gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">int <a class="el" href="classagent_1_1_agent.html">agent::Agent</a>&lt; Provider, Behaviors &gt;::context_tokens </td>
+          <td>(</td>
+          <td class="paramname"><span class="paramname"><em></em></span></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel inline">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>= <a class="el" href="#a05534d4aa8ea7eb057ad964efbb41002" title="当前上下文完整用量（真实锚点 + 估算补尾，cost 已算）。">context_usage()</a>.total_tokens。 </p>
+
+<p class="definition">在文件 <a class="el" href="agent_2agent_8hpp_source.html">agent/agent.hpp</a> 第 <a class="el" href="agent_2agent_8hpp_source.html#l00392">392</a> 行定义.</p>
+
+</div>
+</div>
+<a id="a05534d4aa8ea7eb057ad964efbb41002" name="a05534d4aa8ea7eb057ad964efbb41002"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a05534d4aa8ea7eb057ad964efbb41002">&#9670;&#160;</a></span>context_usage()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename Provider, typename Behaviors = DefaultBehaviors&gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="structagent_1_1_usage.html">Usage</a> <a class="el" href="classagent_1_1_agent.html">agent::Agent</a>&lt; Provider, Behaviors &gt;::context_usage </td>
+          <td>(</td>
+          <td class="paramname"><span class="paramname"><em></em></span></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel inline">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>当前上下文完整用量（真实锚点 + 估算补尾，cost 已算）。 </p>
+
+<p class="definition">在文件 <a class="el" href="agent_2agent_8hpp_source.html">agent/agent.hpp</a> 第 <a class="el" href="agent_2agent_8hpp_source.html#l00373">373</a> 行定义.</p>
+
+</div>
+</div>
+<a id="a3e14ec193b053d3e8621143b236827cc" name="a3e14ec193b053d3e8621143b236827cc"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a3e14ec193b053d3e8621143b236827cc">&#9670;&#160;</a></span>continue_async()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename Provider, typename Behaviors = DefaultBehaviors&gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">asio::awaitable&lt; void &gt; <a class="el" href="classagent_1_1_agent.html">agent::Agent</a>&lt; Provider, Behaviors &gt;::continue_async </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="classagent_1_1_async_stream.html">AsyncStream</a>&lt; <a class="el" href="classagent_1_1_agent_event.html">AgentEvent</a> &gt;</td>          <td class="paramname"><span class="paramname"><em>sink</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="structagent_1_1_stream_options.html">StreamOptions</a> const &amp;</td>          <td class="paramname"><span class="paramname"><em>opts</em></span><span class="paramdefsep"> = </span><span class="paramdefval">{}</span>&#160;)</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel inline">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>续跑（异步）。 </p>
+
+<p class="definition">在文件 <a class="el" href="agent_2agent_8hpp_source.html">agent/agent.hpp</a> 第 <a class="el" href="agent_2agent_8hpp_source.html#l00236">236</a> 行定义.</p>
+
+</div>
+</div>
+<a id="a2335e23e53cf450455f60b2317d6c4b9" name="a2335e23e53cf450455f60b2317d6c4b9"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a2335e23e53cf450455f60b2317d6c4b9">&#9670;&#160;</a></span>continue_run()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename Provider, typename Behaviors = DefaultBehaviors&gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::generator&lt; <a class="el" href="classagent_1_1_agent_event.html">AgentEvent</a> &gt; <a class="el" href="classagent_1_1_agent.html">agent::Agent</a>&lt; Provider, Behaviors &gt;::continue_run </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="structagent_1_1_stream_options.html">StreamOptions</a> const &amp;</td>          <td class="paramname"><span class="paramname"><em>opts</em></span><span class="paramdefsep"> = </span><span class="paramdefval">{}</span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel inline">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>续跑（最后一条消息须是 user 或 toolResult）。 </p>
+
+<p class="definition">在文件 <a class="el" href="agent_2agent_8hpp_source.html">agent/agent.hpp</a> 第 <a class="el" href="agent_2agent_8hpp_source.html#l00230">230</a> 行定义.</p>
+
+</div>
+</div>
+<a id="a68ba8c64d33061492cc9c8920ad42ac2" name="a68ba8c64d33061492cc9c8920ad42ac2"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a68ba8c64d33061492cc9c8920ad42ac2">&#9670;&#160;</a></span>follow_up()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename Provider, typename Behaviors = DefaultBehaviors&gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void <a class="el" href="classagent_1_1_agent.html">agent::Agent</a>&lt; Provider, Behaviors &gt;::follow_up </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="classagent_1_1_message.html">Message</a></td>          <td class="paramname"><span class="paramname"><em>message</em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel inline">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>排队：agent 本来要停时才注入（等干完再追加）。 </p>
+
+<p class="definition">在文件 <a class="el" href="agent_2agent_8hpp_source.html">agent/agent.hpp</a> 第 <a class="el" href="agent_2agent_8hpp_source.html#l00250">250</a> 行定义.</p>
+
+</div>
+</div>
+<a id="af97c65ad3c87b2318864f8859745cfbc" name="af97c65ad3c87b2318864f8859745cfbc"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#af97c65ad3c87b2318864f8859745cfbc">&#9670;&#160;</a></span>has_queued_messages()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename Provider, typename Behaviors = DefaultBehaviors&gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool <a class="el" href="classagent_1_1_agent.html">agent::Agent</a>&lt; Provider, Behaviors &gt;::has_queued_messages </td>
+          <td>(</td>
+          <td class="paramname"><span class="paramname"><em></em></span></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel inline">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>任一条队列还有未注入的消息？ </p>
+
+<p class="definition">在文件 <a class="el" href="agent_2agent_8hpp_source.html">agent/agent.hpp</a> 第 <a class="el" href="agent_2agent_8hpp_source.html#l00263">263</a> 行定义.</p>
+
+</div>
+</div>
+<a id="a6df18dead74cf29cbadb7d6e46dfdaa2" name="a6df18dead74cf29cbadb7d6e46dfdaa2"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a6df18dead74cf29cbadb7d6e46dfdaa2">&#9670;&#160;</a></span>is_streaming()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename Provider, typename Behaviors = DefaultBehaviors&gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool <a class="el" href="classagent_1_1_agent.html">agent::Agent</a>&lt; Provider, Behaviors &gt;::is_streaming </td>
+          <td>(</td>
+          <td class="paramname"><span class="paramname"><em></em></span></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel inline">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>当前是否在 run（async 调用期间）。 </p>
+
+<p class="definition">在文件 <a class="el" href="agent_2agent_8hpp_source.html">agent/agent.hpp</a> 第 <a class="el" href="agent_2agent_8hpp_source.html#l00285">285</a> 行定义.</p>
+
+</div>
+</div>
+<a id="a41a827dc7b17713d41deeb4696f7c035" name="a41a827dc7b17713d41deeb4696f7c035"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a41a827dc7b17713d41deeb4696f7c035">&#9670;&#160;</a></span>last_error()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename Provider, typename Behaviors = DefaultBehaviors&gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::optional&lt; <a class="el" href="structagent_1_1_error.html">Error</a> &gt; <a class="el" href="classagent_1_1_agent.html">agent::Agent</a>&lt; Provider, Behaviors &gt;::last_error </td>
+          <td>(</td>
+          <td class="paramname"><span class="paramname"><em></em></span></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel inline">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>最近失败/中止错误（无则 nullopt）。 </p>
+
+<p class="definition">在文件 <a class="el" href="agent_2agent_8hpp_source.html">agent/agent.hpp</a> 第 <a class="el" href="agent_2agent_8hpp_source.html#l00289">289</a> 行定义.</p>
+
+</div>
+</div>
+<a id="a88d1181f3f829e3a5e70613a31d87096" name="a88d1181f3f829e3a5e70613a31d87096"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a88d1181f3f829e3a5e70613a31d87096">&#9670;&#160;</a></span>last_usage()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename Provider, typename Behaviors = DefaultBehaviors&gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::optional&lt; <a class="el" href="structagent_1_1_usage.html">Usage</a> &gt; <a class="el" href="classagent_1_1_agent.html">agent::Agent</a>&lt; Provider, Behaviors &gt;::last_usage </td>
+          <td>(</td>
+          <td class="paramname"><span class="paramname"><em></em></span></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel inline">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>最近一次真实 usage（模型返回，cost 已算；无则 nullopt）。 </p>
+
+<p class="definition">在文件 <a class="el" href="agent_2agent_8hpp_source.html">agent/agent.hpp</a> 第 <a class="el" href="agent_2agent_8hpp_source.html#l00388">388</a> 行定义.</p>
+
+</div>
+</div>
+<a id="a3951ca04daf21f7f667cef5ed2623455" name="a3951ca04daf21f7f667cef5ed2623455"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a3951ca04daf21f7f667cef5ed2623455">&#9670;&#160;</a></span>messages()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename Provider, typename Behaviors = DefaultBehaviors&gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::vector&lt; <a class="el" href="classagent_1_1_message.html">Message</a> &gt; const  &amp; <a class="el" href="classagent_1_1_agent.html">agent::Agent</a>&lt; Provider, Behaviors &gt;::messages </td>
+          <td>(</td>
+          <td class="paramname"><span class="paramname"><em></em></span></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel inline">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>当前对话（压缩会丢弃旧段；要旧上下文请在压缩前自行读取）。 </p>
+
+<p class="definition">在文件 <a class="el" href="agent_2agent_8hpp_source.html">agent/agent.hpp</a> 第 <a class="el" href="agent_2agent_8hpp_source.html#l00275">275</a> 行定义.</p>
+
+</div>
+</div>
+<a id="a76844b58317d023ff93f7fbd7da90b24" name="a76844b58317d023ff93f7fbd7da90b24"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a76844b58317d023ff93f7fbd7da90b24">&#9670;&#160;</a></span>model()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename Provider, typename Behaviors = DefaultBehaviors&gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="structagent_1_1_model_view.html">ModelView</a> <a class="el" href="classagent_1_1_agent.html">agent::Agent</a>&lt; Provider, Behaviors &gt;::model </td>
+          <td>(</td>
+          <td class="paramname"><span class="paramname"><em></em></span></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel inline">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>当前模型（prepare_next_turn / set_model 换过之后从这取）。 </p>
+
+<p class="definition">在文件 <a class="el" href="agent_2agent_8hpp_source.html">agent/agent.hpp</a> 第 <a class="el" href="agent_2agent_8hpp_source.html#l00279">279</a> 行定义.</p>
+
+</div>
+</div>
+<a id="ac0aa5c088a6c851e6f35756c46d9b704" name="ac0aa5c088a6c851e6f35756c46d9b704"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ac0aa5c088a6c851e6f35756c46d9b704">&#9670;&#160;</a></span>pending_tools()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename Provider, typename Behaviors = DefaultBehaviors&gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::vector&lt; std::string &gt; <a class="el" href="classagent_1_1_agent.html">agent::Agent</a>&lt; Provider, Behaviors &gt;::pending_tools </td>
+          <td>(</td>
+          <td class="paramname"><span class="paramname"><em></em></span></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel inline">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>正在执行的工具 id（外部/UI 查询）。 </p>
+
+<p class="definition">在文件 <a class="el" href="agent_2agent_8hpp_source.html">agent/agent.hpp</a> 第 <a class="el" href="agent_2agent_8hpp_source.html#l00287">287</a> 行定义.</p>
+
+</div>
+</div>
+<a id="afc9ed4b6438f53701d542ff0afa8b5e0" name="afc9ed4b6438f53701d542ff0afa8b5e0"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#afc9ed4b6438f53701d542ff0afa8b5e0">&#9670;&#160;</a></span>previous_summary()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename Provider, typename Behaviors = DefaultBehaviors&gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::string_view <a class="el" href="classagent_1_1_agent.html">agent::Agent</a>&lt; Provider, Behaviors &gt;::previous_summary </td>
+          <td>(</td>
+          <td class="paramname"><span class="paramname"><em></em></span></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel inline">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>上次摘要文本（增量更新用）。 </p>
+
+<p class="definition">在文件 <a class="el" href="agent_2agent_8hpp_source.html">agent/agent.hpp</a> 第 <a class="el" href="agent_2agent_8hpp_source.html#l00394">394</a> 行定义.</p>
+
+</div>
+</div>
+<a id="ac23c245e50d7a3e3bfbee1a7e49729b2" name="ac23c245e50d7a3e3bfbee1a7e49729b2"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ac23c245e50d7a3e3bfbee1a7e49729b2">&#9670;&#160;</a></span>reset()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename Provider, typename Behaviors = DefaultBehaviors&gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void <a class="el" href="classagent_1_1_agent.html">agent::Agent</a>&lt; Provider, Behaviors &gt;::reset </td>
+          <td>(</td>
+          <td class="paramname"><span class="paramname"><em></em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel inline">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>清空对话 + 队列 + 状态。 </p>
+
+<p class="definition">在文件 <a class="el" href="agent_2agent_8hpp_source.html">agent/agent.hpp</a> 第 <a class="el" href="agent_2agent_8hpp_source.html#l00315">315</a> 行定义.</p>
+
+</div>
+</div>
+<a id="aa29060c7ac760d908a707690329f72d6" name="aa29060c7ac760d908a707690329f72d6"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aa29060c7ac760d908a707690329f72d6">&#9670;&#160;</a></span>run()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename Provider, typename Behaviors = DefaultBehaviors&gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::generator&lt; <a class="el" href="classagent_1_1_agent_event.html">AgentEvent</a> &gt; <a class="el" href="classagent_1_1_agent.html">agent::Agent</a>&lt; Provider, Behaviors &gt;::run </td>
+          <td>(</td>
+          <td class="paramtype">std::vector&lt; <a class="el" href="classagent_1_1_message.html">Message</a> &gt;</td>          <td class="paramname"><span class="paramname"><em>user_messages</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="structagent_1_1_stream_options.html">StreamOptions</a> const &amp;</td>          <td class="paramname"><span class="paramname"><em>opts</em></span><span class="paramdefsep"> = </span><span class="paramdefval">{}</span>&#160;)</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel inline">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>同步 run（= prompt）：返回事件 generator，for 循环消费；不遍历 = 不执行。 提前 break → generator 析构 → SyncStreamBridge 析构触发取消（见文件头 ⚠️）。 </p>
+
+<p class="definition">在文件 <a class="el" href="agent_2agent_8hpp_source.html">agent/agent.hpp</a> 第 <a class="el" href="agent_2agent_8hpp_source.html#l00200">200</a> 行定义.</p>
+
+</div>
+</div>
+<a id="a5cc47546205219191e8f36008b1909bf" name="a5cc47546205219191e8f36008b1909bf"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a5cc47546205219191e8f36008b1909bf">&#9670;&#160;</a></span>run_async()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename Provider, typename Behaviors = DefaultBehaviors&gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">asio::awaitable&lt; void &gt; <a class="el" href="classagent_1_1_agent.html">agent::Agent</a>&lt; Provider, Behaviors &gt;::run_async </td>
+          <td>(</td>
+          <td class="paramtype">std::vector&lt; <a class="el" href="classagent_1_1_message.html">Message</a> &gt;</td>          <td class="paramname"><span class="paramname"><em>user_messages</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="classagent_1_1_async_stream.html">AsyncStream</a>&lt; <a class="el" href="classagent_1_1_agent_event.html">AgentEvent</a> &gt;</td>          <td class="paramname"><span class="paramname"><em>sink</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="structagent_1_1_stream_options.html">StreamOptions</a> const &amp;</td>          <td class="paramname"><span class="paramname"><em>opts</em></span><span class="paramdefsep"> = </span><span class="paramdefval">{}</span>&#160;)</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel inline">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>异步 run：事件推到调用方提供的 sink（共享通道可拷贝）。 </p>
+
+<p class="definition">在文件 <a class="el" href="agent_2agent_8hpp_source.html">agent/agent.hpp</a> 第 <a class="el" href="agent_2agent_8hpp_source.html#l00216">216</a> 行定义.</p>
+
+</div>
+</div>
+<a id="a17a96080d7207660b2f588cd6069b346" name="a17a96080d7207660b2f588cd6069b346"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a17a96080d7207660b2f588cd6069b346">&#9670;&#160;</a></span>set_follow_up_mode()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename Provider, typename Behaviors = DefaultBehaviors&gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void <a class="el" href="classagent_1_1_agent.html">agent::Agent</a>&lt; Provider, Behaviors &gt;::set_follow_up_mode </td>
+          <td>(</td>
+          <td class="paramtype">QueueMode</td>          <td class="paramname"><span class="paramname"><em>mode</em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel inline">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>设置追加队列的工作模式（follow_up 在 run 空闲时注入）。 </p>
+
+<p class="definition">在文件 <a class="el" href="agent_2agent_8hpp_source.html">agent/agent.hpp</a> 第 <a class="el" href="agent_2agent_8hpp_source.html#l00271">271</a> 行定义.</p>
+
+</div>
+</div>
+<a id="ab2f7341c9d538d1d246c93f85c170ed9" name="ab2f7341c9d538d1d246c93f85c170ed9"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ab2f7341c9d538d1d246c93f85c170ed9">&#9670;&#160;</a></span>set_model()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename Provider, typename Behaviors = DefaultBehaviors&gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void <a class="el" href="classagent_1_1_agent.html">agent::Agent</a>&lt; Provider, Behaviors &gt;::set_model </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="structagent_1_1_model_view.html">ModelView</a></td>          <td class="paramname"><span class="paramname"><em>model</em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel inline">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>换模型（下一轮生效；模型表 <a class="el" href="structagent_1_1_model_view.html" title="统一模型视图：引擎/调用方唯一消费类型。 string_view 指向底层存储（静态 → 全局字面量；动态 → ModelRegistry 的 deque 元素， 全局存储、地址稳定、进程生命周期），返...">ModelView</a> 长期有效）。 </p>
+
+<p class="definition">在文件 <a class="el" href="agent_2agent_8hpp_source.html">agent/agent.hpp</a> 第 <a class="el" href="agent_2agent_8hpp_source.html#l00281">281</a> 行定义.</p>
+
+</div>
+</div>
+<a id="aa9caaa8e2c764abd917a2fc6e9ed88e9" name="aa9caaa8e2c764abd917a2fc6e9ed88e9"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aa9caaa8e2c764abd917a2fc6e9ed88e9">&#9670;&#160;</a></span>set_reasoning()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename Provider, typename Behaviors = DefaultBehaviors&gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void <a class="el" href="classagent_1_1_agent.html">agent::Agent</a>&lt; Provider, Behaviors &gt;::set_reasoning </td>
+          <td>(</td>
+          <td class="paramtype">ThinkingLevel</td>          <td class="paramname"><span class="paramname"><em>level</em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel inline">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>换思考档（下一轮生效）。 </p>
+
+<p class="definition">在文件 <a class="el" href="agent_2agent_8hpp_source.html">agent/agent.hpp</a> 第 <a class="el" href="agent_2agent_8hpp_source.html#l00283">283</a> 行定义.</p>
+
+</div>
+</div>
+<a id="ac88dd6a587588971cac279d72a4fb194" name="ac88dd6a587588971cac279d72a4fb194"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ac88dd6a587588971cac279d72a4fb194">&#9670;&#160;</a></span>set_steering_mode()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename Provider, typename Behaviors = DefaultBehaviors&gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void <a class="el" href="classagent_1_1_agent.html">agent::Agent</a>&lt; Provider, Behaviors &gt;::set_steering_mode </td>
+          <td>(</td>
+          <td class="paramtype">QueueMode</td>          <td class="paramname"><span class="paramname"><em>mode</em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel inline">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>设置插话队列的工作模式（steer 对已有运行中的 run 注入，Mode::Asap 立即打断）。 </p>
+
+<p class="definition">在文件 <a class="el" href="agent_2agent_8hpp_source.html">agent/agent.hpp</a> 第 <a class="el" href="agent_2agent_8hpp_source.html#l00269">269</a> 行定义.</p>
+
+</div>
+</div>
+<a id="a168427e0d10715961b8dd3104732ff92" name="a168427e0d10715961b8dd3104732ff92"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a168427e0d10715961b8dd3104732ff92">&#9670;&#160;</a></span>set_tool_execution_mode()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename Provider, typename Behaviors = DefaultBehaviors&gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void <a class="el" href="classagent_1_1_agent.html">agent::Agent</a>&lt; Provider, Behaviors &gt;::set_tool_execution_mode </td>
+          <td>(</td>
+          <td class="paramtype">ToolExecutionMode</td>          <td class="paramname"><span class="paramname"><em>mode</em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel inline">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>设置工具执行模式（全执行 / 全拒绝 / 按工具自带 mode）。对尚未开始的本轮生效。 </p>
+
+<p class="definition">在文件 <a class="el" href="agent_2agent_8hpp_source.html">agent/agent.hpp</a> 第 <a class="el" href="agent_2agent_8hpp_source.html#l00329">329</a> 行定义.</p>
+
+</div>
+</div>
+<a id="aa67ee35b386c85d9b351446aa4e18040" name="aa67ee35b386c85d9b351446aa4e18040"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aa67ee35b386c85d9b351446aa4e18040">&#9670;&#160;</a></span>set_tools()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename Provider, typename Behaviors = DefaultBehaviors&gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void <a class="el" href="classagent_1_1_agent.html">agent::Agent</a>&lt; Provider, Behaviors &gt;::set_tools </td>
+          <td>(</td>
+          <td class="paramtype">std::vector&lt; std::string &gt;</td>          <td class="paramname"><span class="paramname"><em>tools</em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel inline">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>传给模型的工具子集（**默认空 = 不开放任何工具**；指定后广告 + 执行门控同时生效， 未开放的工具调用会被拒绝回传给模型）。 </p>
+
+<p class="definition">在文件 <a class="el" href="agent_2agent_8hpp_source.html">agent/agent.hpp</a> 第 <a class="el" href="agent_2agent_8hpp_source.html#l00292">292</a> 行定义.</p>
+
+</div>
+</div>
+<a id="af21eb796908ce84d2d2e717ec3076431" name="af21eb796908ce84d2d2e717ec3076431"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#af21eb796908ce84d2d2e717ec3076431">&#9670;&#160;</a></span>should_compact()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename Provider, typename Behaviors = DefaultBehaviors&gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool <a class="el" href="classagent_1_1_agent.html">agent::Agent</a>&lt; Provider, Behaviors &gt;::should_compact </td>
+          <td>(</td>
+          <td class="paramname"><span class="paramname"><em></em></span></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel inline">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>判断：该不该压（外部决定主动时机，无参）。 </p>
+
+<p class="definition">在文件 <a class="el" href="agent_2agent_8hpp_source.html">agent/agent.hpp</a> 第 <a class="el" href="agent_2agent_8hpp_source.html#l00333">333</a> 行定义.</p>
+
+</div>
+</div>
+<a id="a009c58b0e6ec6c1ab337df916005c242" name="a009c58b0e6ec6c1ab337df916005c242"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a009c58b0e6ec6c1ab337df916005c242">&#9670;&#160;</a></span>steer()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename Provider, typename Behaviors = DefaultBehaviors&gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void <a class="el" href="classagent_1_1_agent.html">agent::Agent</a>&lt; Provider, Behaviors &gt;::steer </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="classagent_1_1_message.html">Message</a></td>          <td class="paramname"><span class="paramname"><em>message</em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel inline">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>插队：本轮 assistant 答完就注入（干预下一轮）。 </p>
+
+<p class="definition">在文件 <a class="el" href="agent_2agent_8hpp_source.html">agent/agent.hpp</a> 第 <a class="el" href="agent_2agent_8hpp_source.html#l00244">244</a> 行定义.</p>
+
+</div>
+</div>
+<a id="a6ccd92ebbd440e31121efe8bef42d8cb" name="a6ccd92ebbd440e31121efe8bef42d8cb"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a6ccd92ebbd440e31121efe8bef42d8cb">&#9670;&#160;</a></span>system_prompt()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename Provider, typename Behaviors = DefaultBehaviors&gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::string const  &amp; <a class="el" href="classagent_1_1_agent.html">agent::Agent</a>&lt; Provider, Behaviors &gt;::system_prompt </td>
+          <td>(</td>
+          <td class="paramname"><span class="paramname"><em></em></span></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel inline">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>当前系统提示。 </p>
+
+<p class="definition">在文件 <a class="el" href="agent_2agent_8hpp_source.html">agent/agent.hpp</a> 第 <a class="el" href="agent_2agent_8hpp_source.html#l00277">277</a> 行定义.</p>
+
+</div>
+</div>
+<a id="aedeb4542dc6e1e7ea35aa5acfa9b4877" name="aedeb4542dc6e1e7ea35aa5acfa9b4877"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aedeb4542dc6e1e7ea35aa5acfa9b4877">&#9670;&#160;</a></span>tools()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename Provider, typename Behaviors = DefaultBehaviors&gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::vector&lt; std::string &gt; const  &amp; <a class="el" href="classagent_1_1_agent.html">agent::Agent</a>&lt; Provider, Behaviors &gt;::tools </td>
+          <td>(</td>
+          <td class="paramname"><span class="paramname"><em></em></span></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel inline">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>当前传给模型的工具子集（默认空 = 不开放任何工具）。 </p>
+
+<p class="definition">在文件 <a class="el" href="agent_2agent_8hpp_source.html">agent/agent.hpp</a> 第 <a class="el" href="agent_2agent_8hpp_source.html#l00294">294</a> 行定义.</p>
+
+</div>
+</div>
+<a id="afacefe95ff80e33d8b761cc11656e307" name="afacefe95ff80e33d8b761cc11656e307"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#afacefe95ff80e33d8b761cc11656e307">&#9670;&#160;</a></span>wait_for_idle()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename Provider, typename Behaviors = DefaultBehaviors&gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">asio::awaitable&lt; void &gt; <a class="el" href="classagent_1_1_agent.html">agent::Agent</a>&lt; Provider, Behaviors &gt;::wait_for_idle </td>
+          <td>(</td>
+          <td class="paramname"><span class="paramname"><em></em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel inline">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>等当前 run 彻底结束。 </p>
+
+<p class="definition">在文件 <a class="el" href="agent_2agent_8hpp_source.html">agent/agent.hpp</a> 第 <a class="el" href="agent_2agent_8hpp_source.html#l00305">305</a> 行定义.</p>
+
+</div>
+</div>
+<hr/>该类的文档由以下文件生成:<ul>
+<li><a class="el" href="agent_2agent_8hpp_source.html">agent/agent.hpp</a></li>
+</ul>
+</div><!-- contents -->
+</div><!-- doc-content -->
+<div id="page-nav" class="page-nav-panel">
+<div id="page-nav-resize-handle"></div>
+<div id="page-nav-tree">
+<div id="page-nav-contents">
+</div><!-- page-nav-contents -->
+</div><!-- page-nav-tree -->
+</div><!-- page-nav -->
+</div><!-- container -->
+<!-- start footer part -->
+<div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
+  <ul>
+    <li class="navelem"><b>agent</b></li><li class="navelem"><a href="classagent_1_1_agent.html">Agent</a></li>
+    <li class="footer">制作者 <a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.17.0 </li>
+  </ul>
+</div>
+</body>
+</html>

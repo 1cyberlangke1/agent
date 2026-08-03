@@ -1,0 +1,538 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "https://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="zh">
+<head>
+<meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=11"/>
+<meta name="generator" content="Doxygen 1.17.0"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>agent: agent::StreamOptions结构体 参考</title>
+<link href="tabs.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="codefolding.js"></script>
+<script type="text/javascript" src="clipboard.js"></script>
+<link href="navtree.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="navtreedata.js"></script>
+<script type="text/javascript" src="navtree.js"></script>
+<script type="text/javascript" src="cookie.js"></script>
+<link href="search/search.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="search/searchdata.js"></script>
+<script type="text/javascript" src="search/search.js"></script>
+<script type="module">
+import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.esm.min.mjs';
+const theme = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'default';
+mermaid.initialize({ startOnLoad: true, theme: theme });
+</script>
+<link href="doxygen.css" rel="stylesheet" type="text/css" />
+</head>
+<body>
+<div id="top"><!-- do not remove this div, it is closed by doxygen! -->
+<div id="titlearea">
+<table cellspacing="0" cellpadding="0">
+ <tbody>
+ <tr id="projectrow">
+  <td id="projectalign">
+   <div id="projectname">agent<span id="projectnumber">&#160;experimental</span>
+   </div>
+   <div id="projectbrief">C++26 实验性 LLM / Agent 库</div>
+  </td>
+ </tr>
+ </tbody>
+</table>
+</div>
+<!-- end header part -->
+<!-- 制作者 Doxygen 1.17.0 -->
+<script type="text/javascript">
+let searchBox = new SearchBox("searchBox", "search/",'.html');
+</script>
+<script type="text/javascript">
+document.addEventListener('DOMContentLoaded', codefold.init);
+</script>
+<script type="text/javascript" src="menudata.js"></script>
+<script type="text/javascript" src="menu.js"></script>
+<script type="text/javascript">
+document.addEventListener('DOMContentLoaded', () => {
+  initMenu('',true);
+  init_search();
+});
+</script>
+<div id="main-nav-mobile">
+<div class="sm sm-dox"><input id="main-menu-state" type="checkbox"/>
+<label class="main-menu-btn" for="main-menu-state">
+<span class="main-menu-btn-icon"></span> Toggle main menu visibility</label>
+<span id="searchBoxPos1" style="position:absolute;right:8px;top:8px;height:36px;"></span>
+</div>
+</div><!-- main-nav-mobile -->
+<div id="main-nav">
+  <ul class="sm sm-dox" id="main-menu">
+    <li id="searchBoxPos2" style="float:right">
+        <div id="MSearchBox" class="MSearchBoxInactive">
+        <span class="left">
+          <span id="MSearchSelect" class="search-icon" onmouseover="return searchBox.OnSearchSelectShow()" onmouseout="return searchBox.OnSearchSelectHide()"><span class="search-icon-dropdown"></span></span>
+          <input type="text" id="MSearchField" value="" placeholder="搜索" accesskey="S"
+               onfocus="searchBox.OnSearchFieldFocus(true)" 
+               onblur="searchBox.OnSearchFieldFocus(false)" 
+               onkeyup="searchBox.OnSearchFieldChange(event)"/>
+          </span><span class="right">
+            <a id="MSearchClose" href="javascript:searchBox.CloseResultsWindow()"><div id="MSearchCloseImg" class="close-icon"></div></a>
+          </span>
+        </div>
+    </li>
+  </ul>
+</div><!-- main-nav -->
+</div><!-- top -->
+<div id="side-nav" class="ui-resizable side-nav-resizable">
+  <div id="nav-tree">
+    <div id="nav-tree-contents">
+      <div id="nav-sync" class="sync"></div>
+    </div>
+  </div>
+  <div id="splitbar" style="-moz-user-select:none;" 
+       class="ui-resizable-handle">
+  </div>
+</div>
+<script type="text/javascript">
+document.addEventListener('DOMContentLoaded',() => { initNavTree('structagent_1_1_stream_options.html','','structagent_1_1_stream_options-members'); });
+</script>
+<div id="container">
+<div id="doc-content">
+<!-- window showing the filter options -->
+<div id="MSearchSelectWindow"
+     onmouseover="return searchBox.OnSearchSelectShow()"
+     onmouseout="return searchBox.OnSearchSelectHide()"
+     onkeydown="return searchBox.OnSearchSelectKey(event)">
+</div>
+
+<!-- iframe showing the search results (closed by default) -->
+<div id="MSearchResultsWindow">
+<div id="MSearchResults">
+<div class="SRPage">
+<div id="SRIndex">
+<div id="SRResults"></div>
+<div class="SRStatus" id="Loading">载入中...</div>
+<div class="SRStatus" id="Searching">搜索中...</div>
+<div class="SRStatus" id="NoMatches">未找到</div>
+</div>
+</div>
+</div>
+</div>
+
+<div class="header">
+  <div class="headertitle"><div class="title">agent::StreamOptions结构体 参考</div></div>
+</div><!--header-->
+<div class="contents">
+
+<p>流式/非流式调用的采样、缓存、传输与透传配置。  
+ <a href="#details">更多...</a></p>
+
+<p><code>#include &lt;<a class="el" href="options_8hpp_source.html">options.hpp</a>&gt;</code></p>
+<table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 id="header-pub-attribs" class="groupheader"><a id="pub-attribs" name="pub-attribs"></a>
+Public 属性</h2></td></tr>
+<tr class="memitem:a745424aa91e934a56c8c536abd64a448" id="r_a745424aa91e934a56c8c536abd64a448"><td class="memItemLeft">std::optional&lt; double &gt;&#160;</td><td class="memItemRight"><a class="el" href="#a745424aa91e934a56c8c536abd64a448">temperature</a></td></tr>
+<tr class="memdesc:a745424aa91e934a56c8c536abd64a448"><td class="mdescLeft">&#160;</td><td class="mdescRight">不传 → 不上传  <br /></td></tr>
+<tr class="memitem:a21548c69b91de1c2d4f822f12331317f" id="r_a21548c69b91de1c2d4f822f12331317f"><td class="memItemLeft">std::optional&lt; int &gt;&#160;</td><td class="memItemRight"><a class="el" href="#a21548c69b91de1c2d4f822f12331317f">max_tokens</a></td></tr>
+<tr class="memdesc:a21548c69b91de1c2d4f822f12331317f"><td class="mdescLeft">&#160;</td><td class="mdescRight">不传 → 用 Model.max_output_tokens  <br /></td></tr>
+<tr class="memitem:a95859d0f2b587420eb2df2f8fe0f03d8" id="r_a95859d0f2b587420eb2df2f8fe0f03d8"><td class="memItemLeft">std::optional&lt; ThinkingLevel &gt;&#160;</td><td class="memItemRight"><a class="el" href="#a95859d0f2b587420eb2df2f8fe0f03d8">reasoning</a></td></tr>
+<tr class="memdesc:a95859d0f2b587420eb2df2f8fe0f03d8"><td class="mdescLeft">&#160;</td><td class="mdescRight">统一思考等级 → 各引擎映射  <br /></td></tr>
+<tr class="memitem:ac1c0918fd9ab8558725914da903e9b02" id="r_ac1c0918fd9ab8558725914da903e9b02"><td class="memItemLeft">std::optional&lt; CacheRetention &gt;&#160;</td><td class="memItemRight"><a class="el" href="#ac1c0918fd9ab8558725914da903e9b02">cache_retention</a></td></tr>
+<tr class="memdesc:ac1c0918fd9ab8558725914da903e9b02"><td class="mdescLeft">&#160;</td><td class="mdescRight">映射到各家缓存机制  <br /></td></tr>
+<tr class="memitem:ac0aa11daef39e07e809dcd79f93c7425" id="r_ac0aa11daef39e07e809dcd79f93c7425"><td class="memItemLeft">std::optional&lt; std::string &gt;&#160;</td><td class="memItemRight"><a class="el" href="#ac0aa11daef39e07e809dcd79f93c7425">session_id</a></td></tr>
+<tr class="memdesc:ac0aa11daef39e07e809dcd79f93c7425"><td class="mdescLeft">&#160;</td><td class="mdescRight">会话关联，跨轮复用缓存  <br /></td></tr>
+<tr class="memitem:abc42f732cc25171cfa165d341f69a70f" id="r_abc42f732cc25171cfa165d341f69a70f"><td class="memItemLeft">std::optional&lt; std::string &gt;&#160;</td><td class="memItemRight"><a class="el" href="#abc42f732cc25171cfa165d341f69a70f">api_key</a></td></tr>
+<tr class="memdesc:abc42f732cc25171cfa165d341f69a70f"><td class="mdescLeft">&#160;</td><td class="mdescRight">覆盖 <a class="el" href="structagent_1_1_endpoint_config.html#aee4a3dd926d9f987e02a9afd32090afd" title="API 密钥（sk-...）；可用 StreamOptions.api_key 按请求覆盖">EndpointConfig.api_key</a>  <br /></td></tr>
+<tr class="memitem:a8bc3f4457834177096b2a32cb3148cf4" id="r_a8bc3f4457834177096b2a32cb3148cf4"><td class="memItemLeft">std::optional&lt; std::string &gt;&#160;</td><td class="memItemRight"><a class="el" href="#a8bc3f4457834177096b2a32cb3148cf4">base_url</a></td></tr>
+<tr class="memdesc:a8bc3f4457834177096b2a32cb3148cf4"><td class="mdescLeft">&#160;</td><td class="mdescRight">覆盖 <a class="el" href="structagent_1_1_endpoint_config.html#a699d4e9386c89df20f3c68db88b1b903" title="&quot;https://api.deepseek.com&quot;">EndpointConfig.base_url</a>  <br /></td></tr>
+<tr class="memitem:a59d71dfdea6d5592c55a3d20ca7e7a0d" id="r_a59d71dfdea6d5592c55a3d20ca7e7a0d"><td class="memItemLeft">std::vector&lt; std::pair&lt; std::string, std::string &gt; &gt;&#160;</td><td class="memItemRight"><a class="el" href="#a59d71dfdea6d5592c55a3d20ca7e7a0d">headers</a></td></tr>
+<tr class="memdesc:a59d71dfdea6d5592c55a3d20ca7e7a0d"><td class="mdescLeft">&#160;</td><td class="mdescRight">追加/覆盖请求头  <br /></td></tr>
+<tr class="memitem:a5dc2b58b022275606498b80932ab54b4" id="r_a5dc2b58b022275606498b80932ab54b4"><td class="memItemLeft">std::vector&lt; std::string &gt;&#160;</td><td class="memItemRight"><a class="el" href="#a5dc2b58b022275606498b80932ab54b4">suppress_headers</a></td></tr>
+<tr class="memdesc:a5dc2b58b022275606498b80932ab54b4"><td class="mdescLeft">&#160;</td><td class="mdescRight">抑制默认头  <br /></td></tr>
+<tr class="memitem:ab67ab744b60be52bbe331514f385d9dd" id="r_ab67ab744b60be52bbe331514f385d9dd"><td class="memItemLeft">int&#160;</td><td class="memItemRight"><a class="el" href="#ab67ab744b60be52bbe331514f385d9dd">connect_timeout_ms</a> = 30000</td></tr>
+<tr class="memdesc:ab67ab744b60be52bbe331514f385d9dd"><td class="mdescLeft">&#160;</td><td class="mdescRight">超时分层：单一整体超时会误杀合法长流（流式可跑数分钟）。  <br /></td></tr>
+<tr class="memitem:aa141a413e8e0aee12e9297670c7825f2" id="r_aa141a413e8e0aee12e9297670c7825f2"><td class="memItemLeft">int&#160;</td><td class="memItemRight"><a class="el" href="#aa141a413e8e0aee12e9297670c7825f2">idle_timeout_ms</a> = 120000</td></tr>
+<tr class="memdesc:aa141a413e8e0aee12e9297670c7825f2"><td class="mdescLeft">&#160;</td><td class="mdescRight">流式块间静默上限（0 = 不限）  <br /></td></tr>
+<tr class="memitem:a07b8351422bf48753fd4a57a0135aa11" id="r_a07b8351422bf48753fd4a57a0135aa11"><td class="memItemLeft">int&#160;</td><td class="memItemRight"><a class="el" href="#a07b8351422bf48753fd4a57a0135aa11">total_timeout_ms</a> = 600000</td></tr>
+<tr class="memdesc:a07b8351422bf48753fd4a57a0135aa11"><td class="mdescLeft">&#160;</td><td class="mdescRight">整体上限，兜底（0 = 不限）  <br /></td></tr>
+<tr class="memitem:a2d59b6ebc01bbf0239e3727c6c3283af" id="r_a2d59b6ebc01bbf0239e3727c6c3283af"><td class="memItemLeft">int&#160;</td><td class="memItemRight"><a class="el" href="#a2d59b6ebc01bbf0239e3727c6c3283af">max_retries</a> = 2</td></tr>
+<tr class="memdesc:a2d59b6ebc01bbf0239e3727c6c3283af"><td class="mdescLeft">&#160;</td><td class="mdescRight">HTTP 层重试（429/5xx）  <br /></td></tr>
+<tr class="memitem:a8de33d45bd4bc692ae6b1d0306bac57a" id="r_a8de33d45bd4bc692ae6b1d0306bac57a"><td class="memItemLeft">int&#160;</td><td class="memItemRight"><a class="el" href="#a8de33d45bd4bc692ae6b1d0306bac57a">max_retry_delay_ms</a> = 60000</td></tr>
+<tr class="memdesc:a8de33d45bd4bc692ae6b1d0306bac57a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Retry-After 超此值立即失败  <br /></td></tr>
+<tr class="memitem:a68633c682499072c5cb3b4281eb6b799" id="r_a68633c682499072c5cb3b4281eb6b799"><td class="memItemLeft">asio::cancellation_signal *&#160;</td><td class="memItemRight"><a class="el" href="#a68633c682499072c5cb3b4281eb6b799">cancel</a> = nullptr</td></tr>
+<tr class="memdesc:a68633c682499072c5cb3b4281eb6b799"><td class="mdescLeft">&#160;</td><td class="mdescRight">取消信号。生命周期约定：指针指向的 signal 必须在本次调用完全结束 （generator 析构 / awaitable 完成）之前保持有效，由调用方保证。  <br /></td></tr>
+<tr class="memitem:ad924b4ae61bea893096ccceb81ce31e7" id="r_ad924b4ae61bea893096ccceb81ce31e7"><td class="memItemLeft">bool&#160;</td><td class="memItemRight"><a class="el" href="#ad924b4ae61bea893096ccceb81ce31e7">capture_raw_response</a> = false</td></tr>
+<tr class="memdesc:ad924b4ae61bea893096ccceb81ce31e7"><td class="mdescLeft">&#160;</td><td class="mdescRight">true 时 <a class="el" href="structagent_1_1_chat_response.html#a7f575c526bc2b2927d71293526cf34c9" title="原始上游响应 JSON。仅 StreamOptions::capture_raw_response 开启时填充 （流式 = 最终累积的原始对象；非流式 = 完整 body），否则为空对象。">ChatResponse.raw</a> 填充上游原始响应。  <br /></td></tr>
+<tr class="memitem:a45b2150d870325eae31fb8f23c0228de" id="r_a45b2150d870325eae31fb8f23c0228de"><td class="memItemLeft">size_t&#160;</td><td class="memItemRight"><a class="el" href="#a45b2150d870325eae31fb8f23c0228de">max_raw_bytes</a> = 1 &lt;&lt; 20</td></tr>
+<tr class="memdesc:a45b2150d870325eae31fb8f23c0228de"><td class="mdescLeft">&#160;</td><td class="mdescRight">capture_raw_response 开启时的原始响应字节上限（默认 1MB），超出丢弃 raw。  <br /></td></tr>
+<tr class="memitem:adfe187ffe1561eca099767e86833bf3b" id="r_adfe187ffe1561eca099767e86833bf3b"><td class="memItemLeft">nlohmann::json&#160;</td><td class="memItemRight"><a class="el" href="#adfe187ffe1561eca099767e86833bf3b">extra</a></td></tr>
+<tr class="memdesc:adfe187ffe1561eca099767e86833bf3b"><td class="mdescLeft">&#160;</td><td class="mdescRight">用户塞 store / metadata / provider 特有字段。 引擎不解释、不推断，原样并入请求体（provider 不认识的字段自行忽略或报错）。  <br /></td></tr>
+<tr class="memitem:afbc6a6f7e147b56fa61f5ccc85209006" id="r_afbc6a6f7e147b56fa61f5ccc85209006"><td class="memItemLeft">std::optional&lt; nlohmann::json &gt;&#160;</td><td class="memItemRight"><a class="el" href="#afbc6a6f7e147b56fa61f5ccc85209006">prebuilt_body</a></td></tr>
+<tr class="memdesc:afbc6a6f7e147b56fa61f5ccc85209006"><td class="mdescLeft">&#160;</td><td class="mdescRight">非空时引擎**跳过 build_params** 直接用这个 body 发请求。 用途：上层（Agent）先调 provider.build_params 拿到请求体 → 应用 before_payload 改写 → 塞回来，实现「每次请求前改 body」。普通调用方不需要。  <br /></td></tr>
+</table>
+<a name="details" id="details"></a><h2 id="header-details" class="groupheader">详细描述</h2>
+<div class="textblock"><p>流式/非流式调用的采样、缓存、传输与透传配置。 </p>
+
+<p class="definition">在文件 <a class="el" href="options_8hpp_source.html">options.hpp</a> 第 <a class="el" href="options_8hpp_source.html#l00055">55</a> 行定义.</p>
+</div><a name="doc-variable-members" id="doc-variable-members"></a><h2 id="header-doc-variable-members" class="groupheader">类成员变量说明</h2>
+<a id="abc42f732cc25171cfa165d341f69a70f" name="abc42f732cc25171cfa165d341f69a70f"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#abc42f732cc25171cfa165d341f69a70f">&#9670;&#160;</a></span>api_key</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::optional&lt;std::string&gt; agent::StreamOptions::api_key</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>覆盖 <a class="el" href="structagent_1_1_endpoint_config.html#aee4a3dd926d9f987e02a9afd32090afd" title="API 密钥（sk-...）；可用 StreamOptions.api_key 按请求覆盖">EndpointConfig.api_key</a> </p>
+
+<p class="definition">在文件 <a class="el" href="options_8hpp_source.html">options.hpp</a> 第 <a class="el" href="options_8hpp_source.html#l00066">66</a> 行定义.</p>
+
+</div>
+</div>
+<a id="a8bc3f4457834177096b2a32cb3148cf4" name="a8bc3f4457834177096b2a32cb3148cf4"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a8bc3f4457834177096b2a32cb3148cf4">&#9670;&#160;</a></span>base_url</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::optional&lt;std::string&gt; agent::StreamOptions::base_url</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>覆盖 <a class="el" href="structagent_1_1_endpoint_config.html#a699d4e9386c89df20f3c68db88b1b903" title="&quot;https://api.deepseek.com&quot;">EndpointConfig.base_url</a> </p>
+
+<p class="definition">在文件 <a class="el" href="options_8hpp_source.html">options.hpp</a> 第 <a class="el" href="options_8hpp_source.html#l00067">67</a> 行定义.</p>
+
+</div>
+</div>
+<a id="ac1c0918fd9ab8558725914da903e9b02" name="ac1c0918fd9ab8558725914da903e9b02"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ac1c0918fd9ab8558725914da903e9b02">&#9670;&#160;</a></span>cache_retention</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::optional&lt;CacheRetention&gt; agent::StreamOptions::cache_retention</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>映射到各家缓存机制 </p>
+
+<p class="definition">在文件 <a class="el" href="options_8hpp_source.html">options.hpp</a> 第 <a class="el" href="options_8hpp_source.html#l00062">62</a> 行定义.</p>
+
+</div>
+</div>
+<a id="a68633c682499072c5cb3b4281eb6b799" name="a68633c682499072c5cb3b4281eb6b799"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a68633c682499072c5cb3b4281eb6b799">&#9670;&#160;</a></span>cancel</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">asio::cancellation_signal* agent::StreamOptions::cancel = nullptr</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>取消信号。生命周期约定：指针指向的 signal 必须在本次调用完全结束 （generator 析构 / awaitable 完成）之前保持有效，由调用方保证。 </p>
+
+<p class="definition">在文件 <a class="el" href="options_8hpp_source.html">options.hpp</a> 第 <a class="el" href="options_8hpp_source.html#l00078">78</a> 行定义.</p>
+
+</div>
+</div>
+<a id="ad924b4ae61bea893096ccceb81ce31e7" name="ad924b4ae61bea893096ccceb81ce31e7"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ad924b4ae61bea893096ccceb81ce31e7">&#9670;&#160;</a></span>capture_raw_response</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool agent::StreamOptions::capture_raw_response = false</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>true 时 <a class="el" href="structagent_1_1_chat_response.html#a7f575c526bc2b2927d71293526cf34c9" title="原始上游响应 JSON。仅 StreamOptions::capture_raw_response 开启时填充 （流式 = 最终累积的原始对象；非流式 = 完整 body），否则为空对象。">ChatResponse.raw</a> 填充上游原始响应。 </p>
+
+<p class="definition">在文件 <a class="el" href="options_8hpp_source.html">options.hpp</a> 第 <a class="el" href="options_8hpp_source.html#l00082">82</a> 行定义.</p>
+
+</div>
+</div>
+<a id="ab67ab744b60be52bbe331514f385d9dd" name="ab67ab744b60be52bbe331514f385d9dd"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ab67ab744b60be52bbe331514f385d9dd">&#9670;&#160;</a></span>connect_timeout_ms</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">int agent::StreamOptions::connect_timeout_ms = 30000</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>超时分层：单一整体超时会误杀合法长流（流式可跑数分钟）。 </p>
+<p>连接建立 + 收到首字节 </p>
+
+<p class="definition">在文件 <a class="el" href="options_8hpp_source.html">options.hpp</a> 第 <a class="el" href="options_8hpp_source.html#l00071">71</a> 行定义.</p>
+
+</div>
+</div>
+<a id="adfe187ffe1561eca099767e86833bf3b" name="adfe187ffe1561eca099767e86833bf3b"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#adfe187ffe1561eca099767e86833bf3b">&#9670;&#160;</a></span>extra</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">nlohmann::json agent::StreamOptions::extra</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>用户塞 store / metadata / provider 特有字段。 引擎不解释、不推断，原样并入请求体（provider 不认识的字段自行忽略或报错）。 </p>
+
+<p class="definition">在文件 <a class="el" href="options_8hpp_source.html">options.hpp</a> 第 <a class="el" href="options_8hpp_source.html#l00089">89</a> 行定义.</p>
+
+</div>
+</div>
+<a id="a59d71dfdea6d5592c55a3d20ca7e7a0d" name="a59d71dfdea6d5592c55a3d20ca7e7a0d"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a59d71dfdea6d5592c55a3d20ca7e7a0d">&#9670;&#160;</a></span>headers</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::vector&lt;std::pair&lt;std::string, std::string&gt; &gt; agent::StreamOptions::headers</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>追加/覆盖请求头 </p>
+
+<p class="definition">在文件 <a class="el" href="options_8hpp_source.html">options.hpp</a> 第 <a class="el" href="options_8hpp_source.html#l00068">68</a> 行定义.</p>
+
+</div>
+</div>
+<a id="aa141a413e8e0aee12e9297670c7825f2" name="aa141a413e8e0aee12e9297670c7825f2"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aa141a413e8e0aee12e9297670c7825f2">&#9670;&#160;</a></span>idle_timeout_ms</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">int agent::StreamOptions::idle_timeout_ms = 120000</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>流式块间静默上限（0 = 不限） </p>
+
+<p class="definition">在文件 <a class="el" href="options_8hpp_source.html">options.hpp</a> 第 <a class="el" href="options_8hpp_source.html#l00072">72</a> 行定义.</p>
+
+</div>
+</div>
+<a id="a45b2150d870325eae31fb8f23c0228de" name="a45b2150d870325eae31fb8f23c0228de"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a45b2150d870325eae31fb8f23c0228de">&#9670;&#160;</a></span>max_raw_bytes</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">size_t agent::StreamOptions::max_raw_bytes = 1 &lt;&lt; 20</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>capture_raw_response 开启时的原始响应字节上限（默认 1MB），超出丢弃 raw。 </p>
+
+<p class="definition">在文件 <a class="el" href="options_8hpp_source.html">options.hpp</a> 第 <a class="el" href="options_8hpp_source.html#l00084">84</a> 行定义.</p>
+
+</div>
+</div>
+<a id="a2d59b6ebc01bbf0239e3727c6c3283af" name="a2d59b6ebc01bbf0239e3727c6c3283af"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a2d59b6ebc01bbf0239e3727c6c3283af">&#9670;&#160;</a></span>max_retries</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">int agent::StreamOptions::max_retries = 2</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>HTTP 层重试（429/5xx） </p>
+
+<p class="definition">在文件 <a class="el" href="options_8hpp_source.html">options.hpp</a> 第 <a class="el" href="options_8hpp_source.html#l00074">74</a> 行定义.</p>
+
+</div>
+</div>
+<a id="a8de33d45bd4bc692ae6b1d0306bac57a" name="a8de33d45bd4bc692ae6b1d0306bac57a"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a8de33d45bd4bc692ae6b1d0306bac57a">&#9670;&#160;</a></span>max_retry_delay_ms</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">int agent::StreamOptions::max_retry_delay_ms = 60000</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Retry-After 超此值立即失败 </p>
+
+<p class="definition">在文件 <a class="el" href="options_8hpp_source.html">options.hpp</a> 第 <a class="el" href="options_8hpp_source.html#l00075">75</a> 行定义.</p>
+
+</div>
+</div>
+<a id="a21548c69b91de1c2d4f822f12331317f" name="a21548c69b91de1c2d4f822f12331317f"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a21548c69b91de1c2d4f822f12331317f">&#9670;&#160;</a></span>max_tokens</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::optional&lt;int&gt; agent::StreamOptions::max_tokens</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>不传 → 用 Model.max_output_tokens </p>
+
+<p class="definition">在文件 <a class="el" href="options_8hpp_source.html">options.hpp</a> 第 <a class="el" href="options_8hpp_source.html#l00058">58</a> 行定义.</p>
+
+</div>
+</div>
+<a id="afbc6a6f7e147b56fa61f5ccc85209006" name="afbc6a6f7e147b56fa61f5ccc85209006"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#afbc6a6f7e147b56fa61f5ccc85209006">&#9670;&#160;</a></span>prebuilt_body</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::optional&lt;nlohmann::json&gt; agent::StreamOptions::prebuilt_body</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>非空时引擎**跳过 build_params** 直接用这个 body 发请求。 用途：上层（Agent）先调 provider.build_params 拿到请求体 → 应用 before_payload 改写 → 塞回来，实现「每次请求前改 body」。普通调用方不需要。 </p>
+
+<p class="definition">在文件 <a class="el" href="options_8hpp_source.html">options.hpp</a> 第 <a class="el" href="options_8hpp_source.html#l00095">95</a> 行定义.</p>
+
+</div>
+</div>
+<a id="a95859d0f2b587420eb2df2f8fe0f03d8" name="a95859d0f2b587420eb2df2f8fe0f03d8"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a95859d0f2b587420eb2df2f8fe0f03d8">&#9670;&#160;</a></span>reasoning</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::optional&lt;ThinkingLevel&gt; agent::StreamOptions::reasoning</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>统一思考等级 → 各引擎映射 </p>
+
+<p class="definition">在文件 <a class="el" href="options_8hpp_source.html">options.hpp</a> 第 <a class="el" href="options_8hpp_source.html#l00059">59</a> 行定义.</p>
+
+</div>
+</div>
+<a id="ac0aa11daef39e07e809dcd79f93c7425" name="ac0aa11daef39e07e809dcd79f93c7425"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ac0aa11daef39e07e809dcd79f93c7425">&#9670;&#160;</a></span>session_id</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::optional&lt;std::string&gt; agent::StreamOptions::session_id</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>会话关联，跨轮复用缓存 </p>
+
+<p class="definition">在文件 <a class="el" href="options_8hpp_source.html">options.hpp</a> 第 <a class="el" href="options_8hpp_source.html#l00063">63</a> 行定义.</p>
+
+</div>
+</div>
+<a id="a5dc2b58b022275606498b80932ab54b4" name="a5dc2b58b022275606498b80932ab54b4"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a5dc2b58b022275606498b80932ab54b4">&#9670;&#160;</a></span>suppress_headers</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::vector&lt;std::string&gt; agent::StreamOptions::suppress_headers</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>抑制默认头 </p>
+
+<p class="definition">在文件 <a class="el" href="options_8hpp_source.html">options.hpp</a> 第 <a class="el" href="options_8hpp_source.html#l00069">69</a> 行定义.</p>
+
+</div>
+</div>
+<a id="a745424aa91e934a56c8c536abd64a448" name="a745424aa91e934a56c8c536abd64a448"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a745424aa91e934a56c8c536abd64a448">&#9670;&#160;</a></span>temperature</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::optional&lt;double&gt; agent::StreamOptions::temperature</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>不传 → 不上传 </p>
+
+<p class="definition">在文件 <a class="el" href="options_8hpp_source.html">options.hpp</a> 第 <a class="el" href="options_8hpp_source.html#l00057">57</a> 行定义.</p>
+
+</div>
+</div>
+<a id="a07b8351422bf48753fd4a57a0135aa11" name="a07b8351422bf48753fd4a57a0135aa11"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a07b8351422bf48753fd4a57a0135aa11">&#9670;&#160;</a></span>total_timeout_ms</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">int agent::StreamOptions::total_timeout_ms = 600000</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>整体上限，兜底（0 = 不限） </p>
+
+<p class="definition">在文件 <a class="el" href="options_8hpp_source.html">options.hpp</a> 第 <a class="el" href="options_8hpp_source.html#l00073">73</a> 行定义.</p>
+
+</div>
+</div>
+<hr/>该结构体的文档由以下文件生成:<ul>
+<li><a class="el" href="options_8hpp_source.html">options.hpp</a></li>
+</ul>
+</div><!-- contents -->
+</div><!-- doc-content -->
+<div id="page-nav" class="page-nav-panel">
+<div id="page-nav-resize-handle"></div>
+<div id="page-nav-tree">
+<div id="page-nav-contents">
+</div><!-- page-nav-contents -->
+</div><!-- page-nav-tree -->
+</div><!-- page-nav -->
+</div><!-- container -->
+<!-- start footer part -->
+<div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
+  <ul>
+    <li class="navelem"><b>agent</b></li><li class="navelem"><a href="structagent_1_1_stream_options.html">StreamOptions</a></li>
+    <li class="footer">制作者 <a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.17.0 </li>
+  </ul>
+</div>
+</body>
+</html>

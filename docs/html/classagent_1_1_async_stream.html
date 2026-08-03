@@ -1,0 +1,439 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "https://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="zh">
+<head>
+<meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=11"/>
+<meta name="generator" content="Doxygen 1.17.0"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>agent: agent::AsyncStream&lt; T &gt; 模板类 参考</title>
+<link href="tabs.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="codefolding.js"></script>
+<script type="text/javascript" src="clipboard.js"></script>
+<link href="navtree.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="navtreedata.js"></script>
+<script type="text/javascript" src="navtree.js"></script>
+<script type="text/javascript" src="cookie.js"></script>
+<link href="search/search.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="search/searchdata.js"></script>
+<script type="text/javascript" src="search/search.js"></script>
+<script type="module">
+import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.esm.min.mjs';
+const theme = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'default';
+mermaid.initialize({ startOnLoad: true, theme: theme });
+</script>
+<link href="doxygen.css" rel="stylesheet" type="text/css" />
+</head>
+<body>
+<div id="top"><!-- do not remove this div, it is closed by doxygen! -->
+<div id="titlearea">
+<table cellspacing="0" cellpadding="0">
+ <tbody>
+ <tr id="projectrow">
+  <td id="projectalign">
+   <div id="projectname">agent<span id="projectnumber">&#160;experimental</span>
+   </div>
+   <div id="projectbrief">C++26 实验性 LLM / Agent 库</div>
+  </td>
+ </tr>
+ </tbody>
+</table>
+</div>
+<!-- end header part -->
+<!-- 制作者 Doxygen 1.17.0 -->
+<script type="text/javascript">
+let searchBox = new SearchBox("searchBox", "search/",'.html');
+</script>
+<script type="text/javascript">
+document.addEventListener('DOMContentLoaded', codefold.init);
+</script>
+<script type="text/javascript" src="menudata.js"></script>
+<script type="text/javascript" src="menu.js"></script>
+<script type="text/javascript">
+document.addEventListener('DOMContentLoaded', () => {
+  initMenu('',true);
+  init_search();
+});
+</script>
+<div id="main-nav-mobile">
+<div class="sm sm-dox"><input id="main-menu-state" type="checkbox"/>
+<label class="main-menu-btn" for="main-menu-state">
+<span class="main-menu-btn-icon"></span> Toggle main menu visibility</label>
+<span id="searchBoxPos1" style="position:absolute;right:8px;top:8px;height:36px;"></span>
+</div>
+</div><!-- main-nav-mobile -->
+<div id="main-nav">
+  <ul class="sm sm-dox" id="main-menu">
+    <li id="searchBoxPos2" style="float:right">
+        <div id="MSearchBox" class="MSearchBoxInactive">
+        <span class="left">
+          <span id="MSearchSelect" class="search-icon" onmouseover="return searchBox.OnSearchSelectShow()" onmouseout="return searchBox.OnSearchSelectHide()"><span class="search-icon-dropdown"></span></span>
+          <input type="text" id="MSearchField" value="" placeholder="搜索" accesskey="S"
+               onfocus="searchBox.OnSearchFieldFocus(true)" 
+               onblur="searchBox.OnSearchFieldFocus(false)" 
+               onkeyup="searchBox.OnSearchFieldChange(event)"/>
+          </span><span class="right">
+            <a id="MSearchClose" href="javascript:searchBox.CloseResultsWindow()"><div id="MSearchCloseImg" class="close-icon"></div></a>
+          </span>
+        </div>
+    </li>
+  </ul>
+</div><!-- main-nav -->
+</div><!-- top -->
+<div id="side-nav" class="ui-resizable side-nav-resizable">
+  <div id="nav-tree">
+    <div id="nav-tree-contents">
+      <div id="nav-sync" class="sync"></div>
+    </div>
+  </div>
+  <div id="splitbar" style="-moz-user-select:none;" 
+       class="ui-resizable-handle">
+  </div>
+</div>
+<script type="text/javascript">
+document.addEventListener('DOMContentLoaded',() => { initNavTree('classagent_1_1_async_stream.html','','classagent_1_1_async_stream-members'); });
+</script>
+<div id="container">
+<div id="doc-content">
+<!-- window showing the filter options -->
+<div id="MSearchSelectWindow"
+     onmouseover="return searchBox.OnSearchSelectShow()"
+     onmouseout="return searchBox.OnSearchSelectHide()"
+     onkeydown="return searchBox.OnSearchSelectKey(event)">
+</div>
+
+<!-- iframe showing the search results (closed by default) -->
+<div id="MSearchResultsWindow">
+<div id="MSearchResults">
+<div class="SRPage">
+<div id="SRIndex">
+<div id="SRResults"></div>
+<div class="SRStatus" id="Loading">载入中...</div>
+<div class="SRStatus" id="Searching">搜索中...</div>
+<div class="SRStatus" id="NoMatches">未找到</div>
+</div>
+</div>
+</div>
+</div>
+
+<div class="header">
+  <div class="headertitle"><div class="title">agent::AsyncStream&lt; T &gt; 模板类 参考</div></div>
+</div><!--header-->
+<div class="contents">
+
+<p>基于 asio::experimental::basic_concurrent_channel 的薄包装。 ⚠️ 不用 concurrent_channel 别名——它硬编码 channel_traits&lt;&gt;（缺 receive_cancelled/closed_signature），编译报错（L0-spike 已验证）。 必须显式 traits： basic_concurrent_channel&lt;any_io_executor, channel_traits&lt;void(error_code, T)&gt;, void(error_code, T)&gt;  
+ <a href="#details">更多...</a></p>
+
+<p><code>#include &lt;<a class="el" href="stream_8hpp_source.html">stream.hpp</a>&gt;</code></p>
+<table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 id="header-pub-types" class="groupheader"><a id="pub-types" name="pub-types"></a>
+Public 类型</h2></td></tr>
+<tr class="memitem:a3fe25d0326c7412902b4bb2bf301f3e4" id="r_a3fe25d0326c7412902b4bb2bf301f3e4"><td class="memItemLeft">using&#160;</td><td class="memItemRight"><a class="el" href="#a3fe25d0326c7412902b4bb2bf301f3e4">channel_traits_t</a> = asio::experimental::channel_traits&lt;void(asio::error_code, T)&gt;</td></tr>
+<tr class="memdesc:a3fe25d0326c7412902b4bb2bf301f3e4"><td class="mdescLeft">&#160;</td><td class="mdescRight">通道 traits（receive 签名）  <br /></td></tr>
+<tr class="memitem:a9683262fee0a790a56520f905a89b663" id="r_a9683262fee0a790a56520f905a89b663"><td class="memItemLeft">using&#160;</td><td class="memItemRight"><a class="el" href="#a9683262fee0a790a56520f905a89b663">channel_t</a> = asio::experimental::basic_concurrent_channel&lt;asio::any_io_executor, <a class="el" href="#a3fe25d0326c7412902b4bb2bf301f3e4">channel_traits_t</a>, void(asio::error_code, T)&gt;</td></tr>
+<tr class="memdesc:a9683262fee0a790a56520f905a89b663"><td class="mdescLeft">&#160;</td><td class="mdescRight">有界并发通道类型  <br /></td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 id="header-pub-methods" class="groupheader"><a id="pub-methods" name="pub-methods"></a>
+Public 成员函数</h2></td></tr>
+<tr class="memitem:ad8b4d384b336af3b5b0808bb2157096f" id="r_ad8b4d384b336af3b5b0808bb2157096f"><td class="memItemLeft">&#160;</td><td class="memItemRight"><a class="el" href="#ad8b4d384b336af3b5b0808bb2157096f">AsyncStream</a> (asio::any_io_executor executor, std::size_t capacity=64)</td></tr>
+<tr class="memitem:a882b66f81da9c5955cb2421eadd5b29c" id="r_a882b66f81da9c5955cb2421eadd5b29c"><td class="memItemLeft"><a id="a882b66f81da9c5955cb2421eadd5b29c" name="a882b66f81da9c5955cb2421eadd5b29c"></a>
+&#160;</td><td class="memItemRight"><b>AsyncStream</b> (AsyncStream const &amp;) noexcept=default</td></tr>
+<tr class="memdesc:a882b66f81da9c5955cb2421eadd5b29c"><td class="mdescLeft">&#160;</td><td class="mdescRight">拷贝：共享同一 channel <br /></td></tr>
+<tr class="memitem:abc1a8d146a2a6b01abefead23db41e9e" id="r_abc1a8d146a2a6b01abefead23db41e9e"><td class="memItemLeft"><a id="abc1a8d146a2a6b01abefead23db41e9e" name="abc1a8d146a2a6b01abefead23db41e9e"></a>
+<a class="el" href="#ad8b4d384b336af3b5b0808bb2157096f">AsyncStream</a> &amp;&#160;</td><td class="memItemRight"><b>operator=</b> (<a class="el" href="#ad8b4d384b336af3b5b0808bb2157096f">AsyncStream</a> const &amp;) noexcept=default</td></tr>
+<tr class="memdesc:abc1a8d146a2a6b01abefead23db41e9e"><td class="mdescLeft">&#160;</td><td class="mdescRight">拷贝赋值：共享同一 channel <br /></td></tr>
+<tr class="memitem:a9794483f5db0dc5dbaa2fca578193771" id="r_a9794483f5db0dc5dbaa2fca578193771"><td class="memItemLeft"><a id="a9794483f5db0dc5dbaa2fca578193771" name="a9794483f5db0dc5dbaa2fca578193771"></a>
+&#160;</td><td class="memItemRight"><b>AsyncStream</b> (AsyncStream &amp;&amp;) noexcept=default</td></tr>
+<tr class="memdesc:a9794483f5db0dc5dbaa2fca578193771"><td class="mdescLeft">&#160;</td><td class="mdescRight">移动：通道本体是 shared_ptr，移动即共享 <br /></td></tr>
+<tr class="memitem:af1847760ea3cbe402aa95481c0f1f27a" id="r_af1847760ea3cbe402aa95481c0f1f27a"><td class="memItemLeft"><a id="af1847760ea3cbe402aa95481c0f1f27a" name="af1847760ea3cbe402aa95481c0f1f27a"></a>
+<a class="el" href="#ad8b4d384b336af3b5b0808bb2157096f">AsyncStream</a> &amp;&#160;</td><td class="memItemRight"><b>operator=</b> (<a class="el" href="#ad8b4d384b336af3b5b0808bb2157096f">AsyncStream</a> &amp;&amp;) noexcept=default</td></tr>
+<tr class="memdesc:af1847760ea3cbe402aa95481c0f1f27a"><td class="mdescLeft">&#160;</td><td class="mdescRight">移动赋值 <br /></td></tr>
+<tr class="memitem:aecfa64c7e3aa2f261681faefb90efdec" id="r_aecfa64c7e3aa2f261681faefb90efdec"><td class="memItemLeft">asio::awaitable&lt; bool &gt;&#160;</td><td class="memItemRight"><a class="el" href="#aecfa64c7e3aa2f261681faefb90efdec">send</a> (T value)</td></tr>
+<tr class="memdesc:aecfa64c7e3aa2f261681faefb90efdec"><td class="mdescLeft">&#160;</td><td class="mdescRight">生产端发送一个事件。channel 满则挂起（背压）。  <br /></td></tr>
+<tr class="memitem:a3f349f05a2eaafb5e6bcc70695340802" id="r_a3f349f05a2eaafb5e6bcc70695340802"><td class="memItemLeft">void&#160;</td><td class="memItemRight"><a class="el" href="#a3f349f05a2eaafb5e6bcc70695340802">close</a> ()</td></tr>
+<tr class="memdesc:a3f349f05a2eaafb5e6bcc70695340802"><td class="mdescLeft">&#160;</td><td class="mdescRight">生产端结束：发送完毕后关闭通道。消费端 receive 收到 channel_closed 错误。  <br /></td></tr>
+<tr class="memitem:ab61e16e5a71b2c16cacc9bcb380cb823" id="r_ab61e16e5a71b2c16cacc9bcb380cb823"><td class="memItemLeft">bool&#160;</td><td class="memItemRight"><a class="el" href="#ab61e16e5a71b2c16cacc9bcb380cb823">is_open</a> () const</td></tr>
+<tr class="memdesc:ab61e16e5a71b2c16cacc9bcb380cb823"><td class="mdescLeft">&#160;</td><td class="mdescRight">通道是否仍开放（未关闭）。  <br /></td></tr>
+<tr class="memitem:a7d0468179e8ac8ef95dd568b79322bd3" id="r_a7d0468179e8ac8ef95dd568b79322bd3"><td class="memItemLeft">asio::awaitable&lt; Result&lt; T &gt; &gt;&#160;</td><td class="memItemRight"><a class="el" href="#a7d0468179e8ac8ef95dd568b79322bd3">receive</a> ()</td></tr>
+<tr class="memdesc:a7d0468179e8ac8ef95dd568b79322bd3"><td class="mdescLeft">&#160;</td><td class="mdescRight">消费端异步取一个事件。  <br /></td></tr>
+<tr class="memitem:a0525c9aeafa457bf8b179cc826a77463" id="r_a0525c9aeafa457bf8b179cc826a77463"><td class="memItemLeft">std::optional&lt; Result&lt; T &gt; &gt;&#160;</td><td class="memItemRight"><a class="el" href="#a0525c9aeafa457bf8b179cc826a77463">try_receive</a> ()</td></tr>
+<tr class="memdesc:a0525c9aeafa457bf8b179cc826a77463"><td class="mdescLeft">&#160;</td><td class="mdescRight">消费端同步取（非阻塞）。队列空 → nullopt；否则返回事件或关闭错误。  <br /></td></tr>
+</table>
+<a name="details" id="details"></a><h2 id="header-details" class="groupheader">详细描述</h2>
+<div class="textblock"><div class="compoundTemplParams">template&lt;typename T&gt;<br />
+class agent::AsyncStream&lt; T &gt;</div><p>基于 asio::experimental::basic_concurrent_channel 的薄包装。 ⚠️ 不用 concurrent_channel 别名——它硬编码 channel_traits&lt;&gt;（缺 receive_cancelled/closed_signature），编译报错（L0-spike 已验证）。 必须显式 traits： basic_concurrent_channel&lt;any_io_executor, channel_traits&lt;void(error_code, T)&gt;, void(error_code, T)&gt; </p>
+<ul>
+<li>有界容量（默认 64）：消费慢时生产协程 async_send 挂起（背压），不无限积压</li>
+<li>**可共享**：内部 channel 用 shared_ptr 包装，AsyncStream 可拷贝—— 生产端（move 进 stream_async）与消费端（SyncStreamBridge / 调用方） 各自持一份副本共享同一 channel，close 语义对全体副本生效</li>
+<li>close 语义：生产协程结束（Done/Error 后）close；消费端 receive 收到 channel_closed 错误即流结束</li>
+<li>消费侧同步取：try_receive(handler)——handler 收 (error_code, value)， 非 try_receive(ec, value)（L0-spike 已验证） </li>
+</ul>
+
+<p class="definition">在文件 <a class="el" href="stream_8hpp_source.html">stream.hpp</a> 第 <a class="el" href="stream_8hpp_source.html#l00038">38</a> 行定义.</p>
+</div><a name="doc-typedef-members" id="doc-typedef-members"></a><h2 id="header-doc-typedef-members" class="groupheader">成员类型定义说明</h2>
+<a id="a9683262fee0a790a56520f905a89b663" name="a9683262fee0a790a56520f905a89b663"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a9683262fee0a790a56520f905a89b663">&#9670;&#160;</a></span>channel_t</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename T&gt; </div>
+      <table class="memname">
+        <tr>
+          <td class="memname">using <a class="el" href="classagent_1_1_async_stream.html">agent::AsyncStream</a>&lt; T &gt;::channel_t = asio::experimental::basic_concurrent_channel&lt;asio::any_io_executor, <a class="el" href="#a3fe25d0326c7412902b4bb2bf301f3e4">channel_traits_t</a>, void(asio::error_code, T)&gt;</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>有界并发通道类型 </p>
+
+<p class="definition">在文件 <a class="el" href="stream_8hpp_source.html">stream.hpp</a> 第 <a class="el" href="stream_8hpp_source.html#l00041">41</a> 行定义.</p>
+
+</div>
+</div>
+<a id="a3fe25d0326c7412902b4bb2bf301f3e4" name="a3fe25d0326c7412902b4bb2bf301f3e4"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a3fe25d0326c7412902b4bb2bf301f3e4">&#9670;&#160;</a></span>channel_traits_t</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename T&gt; </div>
+      <table class="memname">
+        <tr>
+          <td class="memname">using <a class="el" href="classagent_1_1_async_stream.html">agent::AsyncStream</a>&lt; T &gt;::channel_traits_t = asio::experimental::channel_traits&lt;void(asio::error_code, T)&gt;</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>通道 traits（receive 签名） </p>
+
+<p class="definition">在文件 <a class="el" href="stream_8hpp_source.html">stream.hpp</a> 第 <a class="el" href="stream_8hpp_source.html#l00040">40</a> 行定义.</p>
+
+</div>
+</div>
+<a name="doc-constructors" id="doc-constructors"></a><h2 id="header-doc-constructors" class="groupheader">构造及析构函数说明</h2>
+<a id="ad8b4d384b336af3b5b0808bb2157096f" name="ad8b4d384b336af3b5b0808bb2157096f"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ad8b4d384b336af3b5b0808bb2157096f">&#9670;&#160;</a></span>AsyncStream()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename T&gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classagent_1_1_async_stream.html">agent::AsyncStream</a>&lt; T &gt;::AsyncStream </td>
+          <td>(</td>
+          <td class="paramtype">asio::any_io_executor</td>          <td class="paramname"><span class="paramname"><em>executor</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">std::size_t</td>          <td class="paramname"><span class="paramname"><em>capacity</em></span><span class="paramdefsep"> = </span><span class="paramdefval">64</span>&#160;)</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel inline">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<dl class="params"><dt>参数</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">executor</td><td>生产/消费协程的 io_context executor </td></tr>
+    <tr><td class="paramname">capacity</td><td>有界容量（背压上限） </td></tr>
+  </table>
+  </dd>
+</dl>
+
+<p class="definition">在文件 <a class="el" href="stream_8hpp_source.html">stream.hpp</a> 第 <a class="el" href="stream_8hpp_source.html#l00045">45</a> 行定义.</p>
+
+</div>
+</div>
+<a name="doc-func-members" id="doc-func-members"></a><h2 id="header-doc-func-members" class="groupheader">成员函数说明</h2>
+<a id="a3f349f05a2eaafb5e6bcc70695340802" name="a3f349f05a2eaafb5e6bcc70695340802"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a3f349f05a2eaafb5e6bcc70695340802">&#9670;&#160;</a></span>close()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename T&gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void <a class="el" href="classagent_1_1_async_stream.html">agent::AsyncStream</a>&lt; T &gt;::close </td>
+          <td>(</td>
+          <td class="paramname"><span class="paramname"><em></em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel inline">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>生产端结束：发送完毕后关闭通道。消费端 receive 收到 channel_closed 错误。 </p>
+
+<p class="definition">在文件 <a class="el" href="stream_8hpp_source.html">stream.hpp</a> 第 <a class="el" href="stream_8hpp_source.html#l00067">67</a> 行定义.</p>
+
+</div>
+</div>
+<a id="ab61e16e5a71b2c16cacc9bcb380cb823" name="ab61e16e5a71b2c16cacc9bcb380cb823"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ab61e16e5a71b2c16cacc9bcb380cb823">&#9670;&#160;</a></span>is_open()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename T&gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool <a class="el" href="classagent_1_1_async_stream.html">agent::AsyncStream</a>&lt; T &gt;::is_open </td>
+          <td>(</td>
+          <td class="paramname"><span class="paramname"><em></em></span></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel inline">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>通道是否仍开放（未关闭）。 </p>
+
+<p class="definition">在文件 <a class="el" href="stream_8hpp_source.html">stream.hpp</a> 第 <a class="el" href="stream_8hpp_source.html#l00070">70</a> 行定义.</p>
+
+</div>
+</div>
+<a id="a7d0468179e8ac8ef95dd568b79322bd3" name="a7d0468179e8ac8ef95dd568b79322bd3"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a7d0468179e8ac8ef95dd568b79322bd3">&#9670;&#160;</a></span>receive()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename T&gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">asio::awaitable&lt; Result&lt; T &gt; &gt; <a class="el" href="classagent_1_1_async_stream.html">agent::AsyncStream</a>&lt; T &gt;::receive </td>
+          <td>(</td>
+          <td class="paramname"><span class="paramname"><em></em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel inline">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>消费端异步取一个事件。 </p>
+<dl class="section return"><dt>返回</dt><dd>成功 → 事件值；channel 关闭 → Error（调用方以此判断流结束） </dd></dl>
+
+<p class="definition">在文件 <a class="el" href="stream_8hpp_source.html">stream.hpp</a> 第 <a class="el" href="stream_8hpp_source.html#l00074">74</a> 行定义.</p>
+
+</div>
+</div>
+<a id="aecfa64c7e3aa2f261681faefb90efdec" name="aecfa64c7e3aa2f261681faefb90efdec"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aecfa64c7e3aa2f261681faefb90efdec">&#9670;&#160;</a></span>send()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename T&gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">asio::awaitable&lt; bool &gt; <a class="el" href="classagent_1_1_async_stream.html">agent::AsyncStream</a>&lt; T &gt;::send </td>
+          <td>(</td>
+          <td class="paramtype">T</td>          <td class="paramname"><span class="paramname"><em>value</em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel inline">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>生产端发送一个事件。channel 满则挂起（背压）。 </p>
+<dl class="params"><dt>参数</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">value</td><td>事件载荷 </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>返回</dt><dd>true = 已入队；false = channel 已关闭（消费端提前结束，应停止生产） </dd></dl>
+
+<p class="definition">在文件 <a class="el" href="stream_8hpp_source.html">stream.hpp</a> 第 <a class="el" href="stream_8hpp_source.html#l00058">58</a> 行定义.</p>
+
+</div>
+</div>
+<a id="a0525c9aeafa457bf8b179cc826a77463" name="a0525c9aeafa457bf8b179cc826a77463"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a0525c9aeafa457bf8b179cc826a77463">&#9670;&#160;</a></span>try_receive()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename T&gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::optional&lt; Result&lt; T &gt; &gt; <a class="el" href="classagent_1_1_async_stream.html">agent::AsyncStream</a>&lt; T &gt;::try_receive </td>
+          <td>(</td>
+          <td class="paramname"><span class="paramname"><em></em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel inline">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>消费端同步取（非阻塞）。队列空 → nullopt；否则返回事件或关闭错误。 </p>
+
+<p class="definition">在文件 <a class="el" href="stream_8hpp_source.html">stream.hpp</a> 第 <a class="el" href="stream_8hpp_source.html#l00083">83</a> 行定义.</p>
+
+</div>
+</div>
+<hr/>该类的文档由以下文件生成:<ul>
+<li><a class="el" href="stream_8hpp_source.html">stream.hpp</a></li>
+</ul>
+</div><!-- contents -->
+</div><!-- doc-content -->
+<div id="page-nav" class="page-nav-panel">
+<div id="page-nav-resize-handle"></div>
+<div id="page-nav-tree">
+<div id="page-nav-contents">
+</div><!-- page-nav-contents -->
+</div><!-- page-nav-tree -->
+</div><!-- page-nav -->
+</div><!-- container -->
+<!-- start footer part -->
+<div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
+  <ul>
+    <li class="navelem"><b>agent</b></li><li class="navelem"><a href="classagent_1_1_async_stream.html">AsyncStream</a></li>
+    <li class="footer">制作者 <a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.17.0 </li>
+  </ul>
+</div>
+</body>
+</html>

@@ -1,0 +1,28 @@
+var structagent_1_1_http_request =
+[
+    [ "auth", "structagent_1_1_http_request.html#a8b2f4b41bf38e0b5e70d6cf0d0c9f3c7", null ],
+    [ "auth_credentials", "structagent_1_1_http_request.html#a75c0a1ea8454213e5a1622538d9a5d45", null ],
+    [ "auto_referer", "structagent_1_1_http_request.html#a40a63f5ef5959be5fc5d9beef2201e1f", null ],
+    [ "body", "structagent_1_1_http_request.html#a9ba909f03dc7486bc61744ffb4b29936", null ],
+    [ "ca_file", "structagent_1_1_http_request.html#a2b3998f1f48d20c08f608a37289b84e4", null ],
+    [ "client_cert", "structagent_1_1_http_request.html#ab71eca808e6bfb779f410cb174497ab0", null ],
+    [ "client_key", "structagent_1_1_http_request.html#ac69741bb6034c2b36a6aa9e4acf62684", null ],
+    [ "client_key_password", "structagent_1_1_http_request.html#a37b20e74c7ce1cfe4f5d025e58322f93", null ],
+    [ "content_type", "structagent_1_1_http_request.html#a2fb40c07c57a85879ba2874eeeb0341c", null ],
+    [ "cookie", "structagent_1_1_http_request.html#ac507326eab56b2ed2e0ec43e42b39db2", null ],
+    [ "cookie_file", "structagent_1_1_http_request.html#ad843d13e4d375af234e79f9b9c46b398", null ],
+    [ "cookie_jar", "structagent_1_1_http_request.html#a832739bd372927d23317a7d079f6e3bd", null ],
+    [ "cookie_session", "structagent_1_1_http_request.html#a92e8664261d491e1eb96bd24f704bce3", null ],
+    [ "follow_redirects", "structagent_1_1_http_request.html#ad0da912cf439a73332420a8a46dd71f7", null ],
+    [ "headers", "structagent_1_1_http_request.html#a30e1a3c701d04c7c47cd8bb546e9458a", null ],
+    [ "max_redirects", "structagent_1_1_http_request.html#afe065e96ce22043b53ef8485dc33652d", null ],
+    [ "method", "structagent_1_1_http_request.html#ab836705f2590f6a0aa4e8ed58f6d3705", null ],
+    [ "multipart", "structagent_1_1_http_request.html#a4b658a10264ea3319a8387ea0a1b209c", null ],
+    [ "proxy", "structagent_1_1_http_request.html#ae8e17c77e3f256c3955a6893f513f8be", null ],
+    [ "proxy_auth", "structagent_1_1_http_request.html#afb2ccdd075b1a9ed605147affec10414", null ],
+    [ "proxy_type", "structagent_1_1_http_request.html#a823a8937a465c0b9a8503f13015a0ab3", null ],
+    [ "query", "structagent_1_1_http_request.html#a75b2d85620fbbd207cc83efe12a9ef93", null ],
+    [ "upload_file", "structagent_1_1_http_request.html#a28272479eb2d4d73f77da29d712c4760", null ],
+    [ "url", "structagent_1_1_http_request.html#a70282352af8b7b5a326237f59a1bfd0c", null ],
+    [ "verify_tls", "structagent_1_1_http_request.html#ac9808dd2c2fdf364a154a734a1fdd0d4", null ]
+];

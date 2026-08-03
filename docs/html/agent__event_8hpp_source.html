@@ -1,0 +1,282 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "https://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="zh">
+<head>
+<meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=11"/>
+<meta name="generator" content="Doxygen 1.17.0"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>agent: agent_event.hpp 源文件</title>
+<link href="tabs.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="codefolding.js"></script>
+<script type="text/javascript" src="clipboard.js"></script>
+<link href="navtree.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="navtreedata.js"></script>
+<script type="text/javascript" src="navtree.js"></script>
+<script type="text/javascript" src="cookie.js"></script>
+<link href="search/search.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="search/searchdata.js"></script>
+<script type="text/javascript" src="search/search.js"></script>
+<script type="module">
+import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.esm.min.mjs';
+const theme = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'default';
+mermaid.initialize({ startOnLoad: true, theme: theme });
+</script>
+<link href="doxygen.css" rel="stylesheet" type="text/css" />
+</head>
+<body>
+<div id="top"><!-- do not remove this div, it is closed by doxygen! -->
+<div id="titlearea">
+<table cellspacing="0" cellpadding="0">
+ <tbody>
+ <tr id="projectrow">
+  <td id="projectalign">
+   <div id="projectname">agent<span id="projectnumber">&#160;experimental</span>
+   </div>
+   <div id="projectbrief">C++26 实验性 LLM / Agent 库</div>
+  </td>
+ </tr>
+ </tbody>
+</table>
+</div>
+<!-- end header part -->
+<!-- 制作者 Doxygen 1.17.0 -->
+<script type="text/javascript">
+let searchBox = new SearchBox("searchBox", "search/",'.html');
+</script>
+<script type="text/javascript">
+document.addEventListener('DOMContentLoaded', codefold.init);
+</script>
+<script type="text/javascript" src="menudata.js"></script>
+<script type="text/javascript" src="menu.js"></script>
+<script type="text/javascript">
+document.addEventListener('DOMContentLoaded', () => {
+  initMenu('',true);
+  init_search();
+});
+</script>
+<div id="main-nav-mobile">
+<div class="sm sm-dox"><input id="main-menu-state" type="checkbox"/>
+<label class="main-menu-btn" for="main-menu-state">
+<span class="main-menu-btn-icon"></span> Toggle main menu visibility</label>
+<span id="searchBoxPos1" style="position:absolute;right:8px;top:8px;height:36px;"></span>
+</div>
+</div><!-- main-nav-mobile -->
+<div id="main-nav">
+  <ul class="sm sm-dox" id="main-menu">
+    <li id="searchBoxPos2" style="float:right">
+        <div id="MSearchBox" class="MSearchBoxInactive">
+        <span class="left">
+          <span id="MSearchSelect" class="search-icon" onmouseover="return searchBox.OnSearchSelectShow()" onmouseout="return searchBox.OnSearchSelectHide()"><span class="search-icon-dropdown"></span></span>
+          <input type="text" id="MSearchField" value="" placeholder="搜索" accesskey="S"
+               onfocus="searchBox.OnSearchFieldFocus(true)" 
+               onblur="searchBox.OnSearchFieldFocus(false)" 
+               onkeyup="searchBox.OnSearchFieldChange(event)"/>
+          </span><span class="right">
+            <a id="MSearchClose" href="javascript:searchBox.CloseResultsWindow()"><div id="MSearchCloseImg" class="close-icon"></div></a>
+          </span>
+        </div>
+    </li>
+  </ul>
+</div><!-- main-nav -->
+</div><!-- top -->
+<div id="side-nav" class="ui-resizable side-nav-resizable">
+  <div id="nav-tree">
+    <div id="nav-tree-contents">
+      <div id="nav-sync" class="sync"></div>
+    </div>
+  </div>
+  <div id="splitbar" style="-moz-user-select:none;" 
+       class="ui-resizable-handle">
+  </div>
+</div>
+<script type="text/javascript">
+document.addEventListener('DOMContentLoaded',() => { initNavTree('agent__event_8hpp_source.html','',''); });
+</script>
+<div id="container">
+<div id="doc-content">
+<!-- window showing the filter options -->
+<div id="MSearchSelectWindow"
+     onmouseover="return searchBox.OnSearchSelectShow()"
+     onmouseout="return searchBox.OnSearchSelectHide()"
+     onkeydown="return searchBox.OnSearchSelectKey(event)">
+</div>
+
+<!-- iframe showing the search results (closed by default) -->
+<div id="MSearchResultsWindow">
+<div id="MSearchResults">
+<div class="SRPage">
+<div id="SRIndex">
+<div id="SRResults"></div>
+<div class="SRStatus" id="Loading">载入中...</div>
+<div class="SRStatus" id="Searching">搜索中...</div>
+<div class="SRStatus" id="NoMatches">未找到</div>
+</div>
+</div>
+</div>
+</div>
+
+<div class="header">
+  <div class="headertitle"><div class="title">agent_event.hpp</div></div>
+</div><!--header-->
+<div class="contents">
+<div class="fragment"><div class="line"><a id="l00001" name="l00001"></a><span class="lineno">    1</span><span class="preprocessor">#pragma once</span></div>
+<div class="line"><a id="l00002" name="l00002"></a><span class="lineno">    2</span> </div>
+<div class="line"><a id="l00003" name="l00003"></a><span class="lineno">    3</span><span class="comment">// Agent 层事件（对齐 pi AgentEvent，13 种）。</span></div>
+<div class="line"><a id="l00004" name="l00004"></a><span class="lineno">    4</span><span class="comment">//</span></div>
+<div class="line"><a id="l00005" name="l00005"></a><span class="lineno">    5</span><span class="comment">// ⚠️ ToolCallDelta / ToolCallEnd 复用 types.hpp 的同名类型（同形状）——</span></div>
+<div class="line"><a id="l00006" name="l00006"></a><span class="lineno">    6</span><span class="comment">//    不在此重新定义，避免与 LLM 流事件撞名；MessageUpdate.delta 也用</span></div>
+<div class="line"><a id="l00007" name="l00007"></a><span class="lineno">    7</span><span class="comment">//    types.hpp 的 TextDelta / ThinkingDelta。AgentEvent.data 的 variant</span></div>
+<div class="line"><a id="l00008" name="l00008"></a><span class="lineno">    8</span><span class="comment">//    index 与 Type 枚举顺序严格一致（type() 直接强转 index）。</span></div>
+<div class="line"><a id="l00009" name="l00009"></a><span class="lineno">    9</span> </div>
+<div class="line"><a id="l00010" name="l00010"></a><span class="lineno">   10</span><span class="preprocessor">#include &lt;agent/core/result.hpp&gt;</span></div>
+<div class="line"><a id="l00011" name="l00011"></a><span class="lineno">   11</span><span class="preprocessor">#include &lt;agent/llm/content.hpp&gt;</span></div>
+<div class="line"><a id="l00012" name="l00012"></a><span class="lineno">   12</span><span class="preprocessor">#include &lt;agent/llm/types.hpp&gt;</span></div>
+<div class="line"><a id="l00013" name="l00013"></a><span class="lineno">   13</span> </div>
+<div class="line"><a id="l00014" name="l00014"></a><span class="lineno">   14</span><span class="preprocessor">#include &lt;nlohmann/json.hpp&gt;</span></div>
+<div class="line"><a id="l00015" name="l00015"></a><span class="lineno">   15</span> </div>
+<div class="line"><a id="l00016" name="l00016"></a><span class="lineno">   16</span><span class="preprocessor">#include &lt;string&gt;</span></div>
+<div class="line"><a id="l00017" name="l00017"></a><span class="lineno">   17</span><span class="preprocessor">#include &lt;variant&gt;</span></div>
+<div class="line"><a id="l00018" name="l00018"></a><span class="lineno">   18</span><span class="preprocessor">#include &lt;vector&gt;</span></div>
+<div class="line"><a id="l00019" name="l00019"></a><span class="lineno">   19</span> </div>
+<div class="line"><a id="l00020" name="l00020"></a><span class="lineno">   20</span><span class="keyword">namespace </span>agent {</div>
+<div class="line"><a id="l00021" name="l00021"></a><span class="lineno">   21</span></div>
+<div class="line"><a id="l00023" name="l00023"></a><span class="lineno"><a class="line" href="structagent_1_1_agent_start.html">   23</a></span><span class="keyword">struct </span><a class="code hl_struct" href="structagent_1_1_agent_start.html">AgentStart</a> {};</div>
+<div class="line"><a id="l00024" name="l00024"></a><span class="lineno">   24</span></div>
+<div class="foldopen" id="foldopen00026" data-start="{" data-end="};">
+<div class="line"><a id="l00026" name="l00026"></a><span class="lineno"><a class="line" href="structagent_1_1_agent_end.html">   26</a></span><span class="keyword">struct </span><a class="code hl_struct" href="structagent_1_1_agent_end.html">AgentEnd</a> {</div>
+<div class="line"><a id="l00027" name="l00027"></a><span class="lineno"><a class="line" href="structagent_1_1_agent_end.html#a5ec3e51f11558f1c04a32df28b1104b0">   27</a></span>    std::vector&lt;Message&gt; <a class="code hl_variable" href="structagent_1_1_agent_end.html#a5ec3e51f11558f1c04a32df28b1104b0">messages</a>;  </div>
+<div class="line"><a id="l00028" name="l00028"></a><span class="lineno">   28</span>};</div>
+</div>
+<div class="line"><a id="l00029" name="l00029"></a><span class="lineno">   29</span></div>
+<div class="line"><a id="l00031" name="l00031"></a><span class="lineno"><a class="line" href="structagent_1_1_turn_start.html">   31</a></span><span class="keyword">struct </span><a class="code hl_struct" href="structagent_1_1_turn_start.html">TurnStart</a> {};</div>
+<div class="line"><a id="l00032" name="l00032"></a><span class="lineno">   32</span></div>
+<div class="foldopen" id="foldopen00034" data-start="{" data-end="};">
+<div class="line"><a id="l00034" name="l00034"></a><span class="lineno"><a class="line" href="structagent_1_1_turn_end.html">   34</a></span><span class="keyword">struct </span><a class="code hl_struct" href="structagent_1_1_turn_end.html">TurnEnd</a> {</div>
+<div class="line"><a id="l00035" name="l00035"></a><span class="lineno"><a class="line" href="structagent_1_1_turn_end.html#a9a725cb1d719765dbd2f97b4f22a9390">   35</a></span>    <a class="code hl_class" href="classagent_1_1_message.html">Message</a> <a class="code hl_variable" href="structagent_1_1_turn_end.html#a9a725cb1d719765dbd2f97b4f22a9390">assistant_message</a>;              </div>
+<div class="line"><a id="l00036" name="l00036"></a><span class="lineno"><a class="line" href="structagent_1_1_turn_end.html#a9db67f104a85de6f393c46860661cd3a">   36</a></span>    std::vector&lt;ToolResult&gt; <a class="code hl_variable" href="structagent_1_1_turn_end.html#a9db67f104a85de6f393c46860661cd3a">tool_results</a>;   </div>
+<div class="line"><a id="l00037" name="l00037"></a><span class="lineno">   37</span>};</div>
+</div>
+<div class="line"><a id="l00038" name="l00038"></a><span class="lineno">   38</span></div>
+<div class="foldopen" id="foldopen00040" data-start="{" data-end="};">
+<div class="line"><a id="l00040" name="l00040"></a><span class="lineno"><a class="line" href="structagent_1_1_message_start.html">   40</a></span><span class="keyword">struct </span><a class="code hl_struct" href="structagent_1_1_message_start.html">MessageStart</a> {</div>
+<div class="line"><a id="l00041" name="l00041"></a><span class="lineno"><a class="line" href="structagent_1_1_message_start.html#a212925158fee13ff50321b22ce4730b0">   41</a></span>    <a class="code hl_class" href="classagent_1_1_message.html">Message</a> <a class="code hl_variable" href="structagent_1_1_message_start.html#a212925158fee13ff50321b22ce4730b0">message</a>;  </div>
+<div class="line"><a id="l00042" name="l00042"></a><span class="lineno">   42</span>};</div>
+</div>
+<div class="line"><a id="l00043" name="l00043"></a><span class="lineno">   43</span></div>
+<div class="foldopen" id="foldopen00045" data-start="{" data-end="};">
+<div class="line"><a id="l00045" name="l00045"></a><span class="lineno"><a class="line" href="structagent_1_1_message_update.html">   45</a></span><span class="keyword">struct </span><a class="code hl_struct" href="structagent_1_1_message_update.html">MessageUpdate</a> {</div>
+<div class="line"><a id="l00046" name="l00046"></a><span class="lineno"><a class="line" href="structagent_1_1_message_update.html#af351a84b19632b9ee7f1d5d2d653d47e">   46</a></span>    <a class="code hl_class" href="classagent_1_1_message.html">Message</a> <a class="code hl_variable" href="structagent_1_1_message_update.html#af351a84b19632b9ee7f1d5d2d653d47e">message</a>;                              </div>
+<div class="line"><a id="l00047" name="l00047"></a><span class="lineno"><a class="line" href="structagent_1_1_message_update.html#a82cd989a0086555f892a46a44b1d2023">   47</a></span>    std::variant&lt;TextDelta, ThinkingDelta&gt; <a class="code hl_variable" href="structagent_1_1_message_update.html#a82cd989a0086555f892a46a44b1d2023">delta</a>;  </div>
+<div class="line"><a id="l00048" name="l00048"></a><span class="lineno">   48</span>};</div>
+</div>
+<div class="line"><a id="l00049" name="l00049"></a><span class="lineno">   49</span></div>
+<div class="foldopen" id="foldopen00051" data-start="{" data-end="};">
+<div class="line"><a id="l00051" name="l00051"></a><span class="lineno"><a class="line" href="structagent_1_1_message_end.html">   51</a></span><span class="keyword">struct </span><a class="code hl_struct" href="structagent_1_1_message_end.html">MessageEnd</a> {</div>
+<div class="line"><a id="l00052" name="l00052"></a><span class="lineno"><a class="line" href="structagent_1_1_message_end.html#a44515020bf900eea5c5a259ed2a11d5b">   52</a></span>    <a class="code hl_class" href="classagent_1_1_message.html">Message</a> <a class="code hl_variable" href="structagent_1_1_message_end.html#a44515020bf900eea5c5a259ed2a11d5b">message</a>;  </div>
+<div class="line"><a id="l00053" name="l00053"></a><span class="lineno">   53</span>};</div>
+</div>
+<div class="line"><a id="l00054" name="l00054"></a><span class="lineno">   54</span></div>
+<div class="foldopen" id="foldopen00056" data-start="{" data-end="};">
+<div class="line"><a id="l00056" name="l00056"></a><span class="lineno"><a class="line" href="structagent_1_1_tool_exec_start.html">   56</a></span><span class="keyword">struct </span><a class="code hl_struct" href="structagent_1_1_tool_exec_start.html">ToolExecStart</a> {</div>
+<div class="line"><a id="l00057" name="l00057"></a><span class="lineno"><a class="line" href="structagent_1_1_tool_exec_start.html#a5b5737d8ae261e9de7147a017f637ff3">   57</a></span>    std::string <a class="code hl_variable" href="structagent_1_1_tool_exec_start.html#a5b5737d8ae261e9de7147a017f637ff3">id</a>;             </div>
+<div class="line"><a id="l00058" name="l00058"></a><span class="lineno"><a class="line" href="structagent_1_1_tool_exec_start.html#a4e458af67326a8b40804073ab969224d">   58</a></span>    std::string <a class="code hl_variable" href="structagent_1_1_tool_exec_start.html#a4e458af67326a8b40804073ab969224d">name</a>;           </div>
+<div class="line"><a id="l00059" name="l00059"></a><span class="lineno"><a class="line" href="structagent_1_1_tool_exec_start.html#ad1fa0bff30dd1a96f4e8e31910950883">   59</a></span>    nlohmann::json <a class="code hl_variable" href="structagent_1_1_tool_exec_start.html#ad1fa0bff30dd1a96f4e8e31910950883">arguments</a>;   </div>
+<div class="line"><a id="l00060" name="l00060"></a><span class="lineno">   60</span>};</div>
+</div>
+<div class="line"><a id="l00061" name="l00061"></a><span class="lineno">   61</span></div>
+<div class="foldopen" id="foldopen00063" data-start="{" data-end="};">
+<div class="line"><a id="l00063" name="l00063"></a><span class="lineno"><a class="line" href="structagent_1_1_tool_exec_update.html">   63</a></span><span class="keyword">struct </span><a class="code hl_struct" href="structagent_1_1_tool_exec_update.html">ToolExecUpdate</a> {</div>
+<div class="line"><a id="l00064" name="l00064"></a><span class="lineno"><a class="line" href="structagent_1_1_tool_exec_update.html#a504773ee7efae1c4bda6e4369dd4e13f">   64</a></span>    std::string <a class="code hl_variable" href="structagent_1_1_tool_exec_update.html#a504773ee7efae1c4bda6e4369dd4e13f">id</a>;             </div>
+<div class="line"><a id="l00065" name="l00065"></a><span class="lineno"><a class="line" href="structagent_1_1_tool_exec_update.html#ae35cbeb2df6d050f8a5520b1efa40652">   65</a></span>    std::string <a class="code hl_variable" href="structagent_1_1_tool_exec_update.html#ae35cbeb2df6d050f8a5520b1efa40652">name</a>;           </div>
+<div class="line"><a id="l00066" name="l00066"></a><span class="lineno"><a class="line" href="structagent_1_1_tool_exec_update.html#abb7938d000da72273718975a7b8f0ea2">   66</a></span>    nlohmann::json <a class="code hl_variable" href="structagent_1_1_tool_exec_update.html#abb7938d000da72273718975a7b8f0ea2">arguments</a>;   </div>
+<div class="line"><a id="l00067" name="l00067"></a><span class="lineno"><a class="line" href="structagent_1_1_tool_exec_update.html#af7f721339f5acc5bdddd960ae9969292">   67</a></span>    std::string <a class="code hl_variable" href="structagent_1_1_tool_exec_update.html#af7f721339f5acc5bdddd960ae9969292">partial_result</a>; </div>
+<div class="line"><a id="l00068" name="l00068"></a><span class="lineno">   68</span>};</div>
+</div>
+<div class="line"><a id="l00069" name="l00069"></a><span class="lineno">   69</span></div>
+<div class="foldopen" id="foldopen00071" data-start="{" data-end="};">
+<div class="line"><a id="l00071" name="l00071"></a><span class="lineno"><a class="line" href="structagent_1_1_tool_exec_end.html">   71</a></span><span class="keyword">struct </span><a class="code hl_struct" href="structagent_1_1_tool_exec_end.html">ToolExecEnd</a> {</div>
+<div class="line"><a id="l00072" name="l00072"></a><span class="lineno"><a class="line" href="structagent_1_1_tool_exec_end.html#a412085736c3a003cb6332e2021139eed">   72</a></span>    std::string <a class="code hl_variable" href="structagent_1_1_tool_exec_end.html#a412085736c3a003cb6332e2021139eed">id</a>;         </div>
+<div class="line"><a id="l00073" name="l00073"></a><span class="lineno"><a class="line" href="structagent_1_1_tool_exec_end.html#abbb033eb766c3619b4ee3ca6b112b8f8">   73</a></span>    std::string <a class="code hl_variable" href="structagent_1_1_tool_exec_end.html#abbb033eb766c3619b4ee3ca6b112b8f8">name</a>;       </div>
+<div class="line"><a id="l00074" name="l00074"></a><span class="lineno"><a class="line" href="structagent_1_1_tool_exec_end.html#ad2c211c7a4404fe3c5d497de1df480b1">   74</a></span>    <a class="code hl_struct" href="structagent_1_1_tool_result.html">ToolResult</a> <a class="code hl_variable" href="structagent_1_1_tool_exec_end.html#ad2c211c7a4404fe3c5d497de1df480b1">result</a>;      </div>
+<div class="line"><a id="l00075" name="l00075"></a><span class="lineno">   75</span>};</div>
+</div>
+<div class="line"><a id="l00076" name="l00076"></a><span class="lineno">   76</span></div>
+<div class="foldopen" id="foldopen00078" data-start="{" data-end="};">
+<div class="line"><a id="l00078" name="l00078"></a><span class="lineno"><a class="line" href="structagent_1_1_agent_error.html">   78</a></span><span class="keyword">struct </span><a class="code hl_struct" href="structagent_1_1_agent_error.html">AgentError</a> {</div>
+<div class="line"><a id="l00079" name="l00079"></a><span class="lineno"><a class="line" href="structagent_1_1_agent_error.html#a85b5c95935299d61c5bc123196a98159">   79</a></span>    <a class="code hl_struct" href="structagent_1_1_error.html">Error</a> <a class="code hl_variable" href="structagent_1_1_agent_error.html#a85b5c95935299d61c5bc123196a98159">error</a>;  </div>
+<div class="line"><a id="l00080" name="l00080"></a><span class="lineno">   80</span>};</div>
+</div>
+<div class="line"><a id="l00081" name="l00081"></a><span class="lineno">   81</span></div>
+<div class="foldopen" id="foldopen00084" data-start="{" data-end="};">
+<div class="line"><a id="l00084" name="l00084"></a><span class="lineno"><a class="line" href="classagent_1_1_agent_event.html">   84</a></span><span class="keyword">class </span><a class="code hl_class" href="classagent_1_1_agent_event.html">AgentEvent</a> {</div>
+<div class="line"><a id="l00085" name="l00085"></a><span class="lineno">   85</span><span class="keyword">public</span>:</div>
+<div class="foldopen" id="foldopen00087" data-start="{" data-end="};">
+<div class="line"><a id="l00087" name="l00087"></a><span class="lineno"><a class="line" href="classagent_1_1_agent_event.html#a211cfeb92b075ab02e7b14cc56affe1c">   87</a></span>    <span class="keyword">enum class</span> <a class="code hl_enumeration" href="classagent_1_1_agent_event.html#a211cfeb92b075ab02e7b14cc56affe1c">Type</a> {</div>
+<div class="line"><a id="l00088" name="l00088"></a><span class="lineno">   88</span>        <a class="code hl_struct" href="structagent_1_1_agent_start.html">AgentStart</a>, <a class="code hl_struct" href="structagent_1_1_agent_end.html">AgentEnd</a>, <a class="code hl_struct" href="structagent_1_1_turn_start.html">TurnStart</a>, <a class="code hl_struct" href="structagent_1_1_turn_end.html">TurnEnd</a>,</div>
+<div class="line"><a id="l00089" name="l00089"></a><span class="lineno">   89</span>        <a class="code hl_struct" href="structagent_1_1_message_start.html">MessageStart</a>, <a class="code hl_struct" href="structagent_1_1_message_update.html">MessageUpdate</a>, <a class="code hl_struct" href="structagent_1_1_message_end.html">MessageEnd</a>,</div>
+<div class="line"><a id="l00090" name="l00090"></a><span class="lineno">   90</span>        <a class="code hl_struct" href="structagent_1_1_tool_call_delta.html">ToolCallDelta</a>, <a class="code hl_struct" href="structagent_1_1_tool_call_end.html">ToolCallEnd</a>,</div>
+<div class="line"><a id="l00091" name="l00091"></a><span class="lineno">   91</span>        <a class="code hl_struct" href="structagent_1_1_tool_exec_start.html">ToolExecStart</a>, <a class="code hl_struct" href="structagent_1_1_tool_exec_update.html">ToolExecUpdate</a>, <a class="code hl_struct" href="structagent_1_1_tool_exec_end.html">ToolExecEnd</a>, <a class="code hl_struct" href="structagent_1_1_agent_error.html">AgentError</a>,</div>
+<div class="line"><a id="l00092" name="l00092"></a><span class="lineno">   92</span>    };</div>
+</div>
+<div class="line"><a id="l00093" name="l00093"></a><span class="lineno">   93</span></div>
+<div class="line"><a id="l00094" name="l00094"></a><span class="lineno">   94</span>    std::variant&lt;<a class="code hl_struct" href="structagent_1_1_agent_start.html">AgentStart</a>, <a class="code hl_struct" href="structagent_1_1_agent_end.html">AgentEnd</a>, <a class="code hl_struct" href="structagent_1_1_turn_start.html">TurnStart</a>, <a class="code hl_struct" href="structagent_1_1_turn_end.html">TurnEnd</a>, <a class="code hl_struct" href="structagent_1_1_message_start.html">MessageStart</a>, <a class="code hl_struct" href="structagent_1_1_message_update.html">MessageUpdate</a>,</div>
+<div class="line"><a id="l00095" name="l00095"></a><span class="lineno">   95</span>                 <a class="code hl_struct" href="structagent_1_1_message_end.html">MessageEnd</a>, <a class="code hl_struct" href="structagent_1_1_tool_call_delta.html">ToolCallDelta</a>, <a class="code hl_struct" href="structagent_1_1_tool_call_end.html">ToolCallEnd</a>,</div>
+<div class="line"><a id="l00096" name="l00096"></a><span class="lineno"><a class="line" href="classagent_1_1_agent_event.html#a6e0bc3ef24a4465f79475c2f461e6966">   96</a></span>                 <a class="code hl_struct" href="structagent_1_1_tool_exec_start.html">ToolExecStart</a>, <a class="code hl_struct" href="structagent_1_1_tool_exec_update.html">ToolExecUpdate</a>, <a class="code hl_struct" href="structagent_1_1_tool_exec_end.html">ToolExecEnd</a>, <a class="code hl_struct" href="structagent_1_1_agent_error.html">AgentError</a>&gt; <a class="code hl_variable" href="classagent_1_1_agent_event.html#a6e0bc3ef24a4465f79475c2f461e6966">data</a>;</div>
+<div class="line"><a id="l00097" name="l00097"></a><span class="lineno">   97</span></div>
+<div class="line"><a id="l00099" name="l00099"></a><span class="lineno"><a class="line" href="classagent_1_1_agent_event.html#a78db563dbd8086641cc6f3713d0b43ba">   99</a></span>    <a class="code hl_enumeration" href="classagent_1_1_agent_event.html#a211cfeb92b075ab02e7b14cc56affe1c">Type</a> <a class="code hl_function" href="classagent_1_1_agent_event.html#a78db563dbd8086641cc6f3713d0b43ba">type</a>()<span class="keyword"> const </span>{ <span class="keywordflow">return</span> <span class="keyword">static_cast&lt;</span><a class="code hl_enumeration" href="classagent_1_1_agent_event.html#a211cfeb92b075ab02e7b14cc56affe1c">Type</a><span class="keyword">&gt;</span>(<a class="code hl_variable" href="classagent_1_1_agent_event.html#a6e0bc3ef24a4465f79475c2f461e6966">data</a>.index()); }</div>
+<div class="line"><a id="l00100" name="l00100"></a><span class="lineno">  100</span>};</div>
+</div>
+<div class="line"><a id="l00101" name="l00101"></a><span class="lineno">  101</span><span class="keyword">static_assert</span>(std::variant_size_v&lt;<span class="keyword">decltype</span>(<a class="code hl_variable" href="classagent_1_1_agent_event.html#a6e0bc3ef24a4465f79475c2f461e6966">AgentEvent::data</a>)&gt; == 13,</div>
+<div class="line"><a id="l00102" name="l00102"></a><span class="lineno">  102</span>              <span class="stringliteral">&quot;AgentEvent 载荷类型数与 Type 枚举必须一致&quot;</span>);</div>
+<div class="line"><a id="l00103" name="l00103"></a><span class="lineno">  103</span> </div>
+<div class="line"><a id="l00104" name="l00104"></a><span class="lineno">  104</span>}  <span class="comment">// namespace agent</span></div>
+<div class="ttc" id="aclassagent_1_1_agent_event_html"><div class="ttname"><a href="classagent_1_1_agent_event.html">agent::AgentEvent</a></div><div class="ttdoc">统一事件（variant 风格，对齐 StreamEvent）。聚合初始化： AgentEvent{ MessageStart{ msg } } 直接初始化 data。</div><div class="ttdef"><b>定义</b> <a href="#l00084">agent_event.hpp:84</a></div></div>
+<div class="ttc" id="aclassagent_1_1_agent_event_html_a211cfeb92b075ab02e7b14cc56affe1c"><div class="ttname"><a href="classagent_1_1_agent_event.html#a211cfeb92b075ab02e7b14cc56affe1c">agent::AgentEvent::Type</a></div><div class="ttdeci">Type</div><div class="ttdoc">事件种类，与 data 的 variant 下标严格一一对应（type() 直接强转 index）。</div><div class="ttdef"><b>定义</b> <a href="#l00087">agent_event.hpp:87</a></div></div>
+<div class="ttc" id="aclassagent_1_1_agent_event_html_a6e0bc3ef24a4465f79475c2f461e6966"><div class="ttname"><a href="classagent_1_1_agent_event.html#a6e0bc3ef24a4465f79475c2f461e6966">agent::AgentEvent::data</a></div><div class="ttdeci">std::variant&lt; AgentStart, AgentEnd, TurnStart, TurnEnd, MessageStart, MessageUpdate, MessageEnd, ToolCallDelta, ToolCallEnd, ToolExecStart, ToolExecUpdate, ToolExecEnd, AgentError &gt; data</div><div class="ttdoc">事件载荷（variant 风格，聚合初始化如 AgentEvent{ MessageStart{ msg } }）。</div><div class="ttdef"><b>定义</b> <a href="#l00096">agent_event.hpp:96</a></div></div>
+<div class="ttc" id="aclassagent_1_1_agent_event_html_a78db563dbd8086641cc6f3713d0b43ba"><div class="ttname"><a href="classagent_1_1_agent_event.html#a78db563dbd8086641cc6f3713d0b43ba">agent::AgentEvent::type</a></div><div class="ttdeci">Type type() const</div><div class="ttdoc">类型判别从 variant 下标推导——单一真相源，不存冗余 type 字段。</div><div class="ttdef"><b>定义</b> <a href="#l00099">agent_event.hpp:99</a></div></div>
+<div class="ttc" id="aclassagent_1_1_message_html"><div class="ttname"><a href="classagent_1_1_message.html">agent::Message</a></div><div class="ttdoc">一条消息，包含角色和内容块数组</div><div class="ttdef"><b>定义</b> <a href="content_8hpp_source.html#l00106">content.hpp:106</a></div></div>
+<div class="ttc" id="astructagent_1_1_agent_end_html"><div class="ttname"><a href="structagent_1_1_agent_end.html">agent::AgentEnd</a></div><div class="ttdoc">run 结束，携带完整对话</div><div class="ttdef"><b>定义</b> <a href="#l00026">agent_event.hpp:26</a></div></div>
+<div class="ttc" id="astructagent_1_1_agent_end_html_a5ec3e51f11558f1c04a32df28b1104b0"><div class="ttname"><a href="structagent_1_1_agent_end.html#a5ec3e51f11558f1c04a32df28b1104b0">agent::AgentEnd::messages</a></div><div class="ttdeci">std::vector&lt; Message &gt; messages</div><div class="ttdoc">完整对话消息（user + assistant + toolResult）</div><div class="ttdef"><b>定义</b> <a href="#l00027">agent_event.hpp:27</a></div></div>
+<div class="ttc" id="astructagent_1_1_agent_error_html"><div class="ttname"><a href="structagent_1_1_agent_error.html">agent::AgentError</a></div><div class="ttdoc">失败不裸抛（对齐 pi failure message）</div><div class="ttdef"><b>定义</b> <a href="#l00078">agent_event.hpp:78</a></div></div>
+<div class="ttc" id="astructagent_1_1_agent_error_html_a85b5c95935299d61c5bc123196a98159"><div class="ttname"><a href="structagent_1_1_agent_error.html#a85b5c95935299d61c5bc123196a98159">agent::AgentError::error</a></div><div class="ttdeci">Error error</div><div class="ttdoc">错误详情（码 + 详情文本）</div><div class="ttdef"><b>定义</b> <a href="#l00079">agent_event.hpp:79</a></div></div>
+<div class="ttc" id="astructagent_1_1_agent_start_html"><div class="ttname"><a href="structagent_1_1_agent_start.html">agent::AgentStart</a></div><div class="ttdoc">run 开始（纯信号）</div><div class="ttdef"><b>定义</b> <a href="#l00023">agent_event.hpp:23</a></div></div>
+<div class="ttc" id="astructagent_1_1_error_html"><div class="ttname"><a href="structagent_1_1_error.html">agent::Error</a></div><div class="ttdoc">错误信息</div><div class="ttdef"><b>定义</b> <a href="result_8hpp_source.html#l00043">result.hpp:43</a></div></div>
+<div class="ttc" id="astructagent_1_1_message_end_html"><div class="ttname"><a href="structagent_1_1_message_end.html">agent::MessageEnd</a></div><div class="ttdoc">一条消息完成</div><div class="ttdef"><b>定义</b> <a href="#l00051">agent_event.hpp:51</a></div></div>
+<div class="ttc" id="astructagent_1_1_message_end_html_a44515020bf900eea5c5a259ed2a11d5b"><div class="ttname"><a href="structagent_1_1_message_end.html#a44515020bf900eea5c5a259ed2a11d5b">agent::MessageEnd::message</a></div><div class="ttdeci">Message message</div><div class="ttdoc">完成的消息</div><div class="ttdef"><b>定义</b> <a href="#l00052">agent_event.hpp:52</a></div></div>
+<div class="ttc" id="astructagent_1_1_message_start_html"><div class="ttname"><a href="structagent_1_1_message_start.html">agent::MessageStart</a></div><div class="ttdoc">一条消息出现（user / assistant / toolResult 都发）</div><div class="ttdef"><b>定义</b> <a href="#l00040">agent_event.hpp:40</a></div></div>
+<div class="ttc" id="astructagent_1_1_message_start_html_a212925158fee13ff50321b22ce4730b0"><div class="ttname"><a href="structagent_1_1_message_start.html#a212925158fee13ff50321b22ce4730b0">agent::MessageStart::message</a></div><div class="ttdeci">Message message</div><div class="ttdoc">出现的消息</div><div class="ttdef"><b>定义</b> <a href="#l00041">agent_event.hpp:41</a></div></div>
+<div class="ttc" id="astructagent_1_1_message_update_html"><div class="ttname"><a href="structagent_1_1_message_update.html">agent::MessageUpdate</a></div><div class="ttdoc">assistant 流式增量</div><div class="ttdef"><b>定义</b> <a href="#l00045">agent_event.hpp:45</a></div></div>
+<div class="ttc" id="astructagent_1_1_message_update_html_a82cd989a0086555f892a46a44b1d2023"><div class="ttname"><a href="structagent_1_1_message_update.html#a82cd989a0086555f892a46a44b1d2023">agent::MessageUpdate::delta</a></div><div class="ttdeci">std::variant&lt; TextDelta, ThinkingDelta &gt; delta</div><div class="ttdoc">本次增量（正文/思考）</div><div class="ttdef"><b>定义</b> <a href="#l00047">agent_event.hpp:47</a></div></div>
+<div class="ttc" id="astructagent_1_1_message_update_html_af351a84b19632b9ee7f1d5d2d653d47e"><div class="ttname"><a href="structagent_1_1_message_update.html#af351a84b19632b9ee7f1d5d2d653d47e">agent::MessageUpdate::message</a></div><div class="ttdeci">Message message</div><div class="ttdoc">当前 partial 消息</div><div class="ttdef"><b>定义</b> <a href="#l00046">agent_event.hpp:46</a></div></div>
+<div class="ttc" id="astructagent_1_1_tool_call_delta_html"><div class="ttname"><a href="structagent_1_1_tool_call_delta.html">agent::ToolCallDelta</a></div><div class="ttdoc">工具参数增量。delta 阶段只给 JSON 字符串增量，不 parse—— 由 Agent 层自行决定何时累积/解析。</div><div class="ttdef"><b>定义</b> <a href="types_8hpp_source.html#l00131">types.hpp:131</a></div></div>
+<div class="ttc" id="astructagent_1_1_tool_call_end_html"><div class="ttname"><a href="structagent_1_1_tool_call_end.html">agent::ToolCallEnd</a></div><div class="ttdoc">工具调用完成：参数为完整解析后的 JSON 对象。</div><div class="ttdef"><b>定义</b> <a href="types_8hpp_source.html#l00141">types.hpp:141</a></div></div>
+<div class="ttc" id="astructagent_1_1_tool_exec_end_html"><div class="ttname"><a href="structagent_1_1_tool_exec_end.html">agent::ToolExecEnd</a></div><div class="ttdoc">工具跑完</div><div class="ttdef"><b>定义</b> <a href="#l00071">agent_event.hpp:71</a></div></div>
+<div class="ttc" id="astructagent_1_1_tool_exec_end_html_a412085736c3a003cb6332e2021139eed"><div class="ttname"><a href="structagent_1_1_tool_exec_end.html#a412085736c3a003cb6332e2021139eed">agent::ToolExecEnd::id</a></div><div class="ttdeci">std::string id</div><div class="ttdoc">工具调用 id</div><div class="ttdef"><b>定义</b> <a href="#l00072">agent_event.hpp:72</a></div></div>
+<div class="ttc" id="astructagent_1_1_tool_exec_end_html_abbb033eb766c3619b4ee3ca6b112b8f8"><div class="ttname"><a href="structagent_1_1_tool_exec_end.html#abbb033eb766c3619b4ee3ca6b112b8f8">agent::ToolExecEnd::name</a></div><div class="ttdeci">std::string name</div><div class="ttdoc">工具名</div><div class="ttdef"><b>定义</b> <a href="#l00073">agent_event.hpp:73</a></div></div>
+<div class="ttc" id="astructagent_1_1_tool_exec_end_html_ad2c211c7a4404fe3c5d497de1df480b1"><div class="ttname"><a href="structagent_1_1_tool_exec_end.html#ad2c211c7a4404fe3c5d497de1df480b1">agent::ToolExecEnd::result</a></div><div class="ttdeci">ToolResult result</div><div class="ttdoc">最终工具结果</div><div class="ttdef"><b>定义</b> <a href="#l00074">agent_event.hpp:74</a></div></div>
+<div class="ttc" id="astructagent_1_1_tool_exec_start_html"><div class="ttname"><a href="structagent_1_1_tool_exec_start.html">agent::ToolExecStart</a></div><div class="ttdoc">工具开跑（ToolCallDelta / ToolCallEnd 复用 types.hpp，见文件头注释）</div><div class="ttdef"><b>定义</b> <a href="#l00056">agent_event.hpp:56</a></div></div>
+<div class="ttc" id="astructagent_1_1_tool_exec_start_html_a4e458af67326a8b40804073ab969224d"><div class="ttname"><a href="structagent_1_1_tool_exec_start.html#a4e458af67326a8b40804073ab969224d">agent::ToolExecStart::name</a></div><div class="ttdeci">std::string name</div><div class="ttdoc">工具名</div><div class="ttdef"><b>定义</b> <a href="#l00058">agent_event.hpp:58</a></div></div>
+<div class="ttc" id="astructagent_1_1_tool_exec_start_html_a5b5737d8ae261e9de7147a017f637ff3"><div class="ttname"><a href="structagent_1_1_tool_exec_start.html#a5b5737d8ae261e9de7147a017f637ff3">agent::ToolExecStart::id</a></div><div class="ttdeci">std::string id</div><div class="ttdoc">工具调用 id（对齐 ToolCallDelta.id）</div><div class="ttdef"><b>定义</b> <a href="#l00057">agent_event.hpp:57</a></div></div>
+<div class="ttc" id="astructagent_1_1_tool_exec_start_html_ad1fa0bff30dd1a96f4e8e31910950883"><div class="ttname"><a href="structagent_1_1_tool_exec_start.html#ad1fa0bff30dd1a96f4e8e31910950883">agent::ToolExecStart::arguments</a></div><div class="ttdeci">nlohmann::json arguments</div><div class="ttdoc">工具参数（JSON 对象）</div><div class="ttdef"><b>定义</b> <a href="#l00059">agent_event.hpp:59</a></div></div>
+<div class="ttc" id="astructagent_1_1_tool_exec_update_html"><div class="ttname"><a href="structagent_1_1_tool_exec_update.html">agent::ToolExecUpdate</a></div><div class="ttdoc">工具部分结果（当前同步工具执行不产生流式部分结果，此事件类型保留供流式工具使用）</div><div class="ttdef"><b>定义</b> <a href="#l00063">agent_event.hpp:63</a></div></div>
+<div class="ttc" id="astructagent_1_1_tool_exec_update_html_a504773ee7efae1c4bda6e4369dd4e13f"><div class="ttname"><a href="structagent_1_1_tool_exec_update.html#a504773ee7efae1c4bda6e4369dd4e13f">agent::ToolExecUpdate::id</a></div><div class="ttdeci">std::string id</div><div class="ttdoc">工具调用 id</div><div class="ttdef"><b>定义</b> <a href="#l00064">agent_event.hpp:64</a></div></div>
+<div class="ttc" id="astructagent_1_1_tool_exec_update_html_abb7938d000da72273718975a7b8f0ea2"><div class="ttname"><a href="structagent_1_1_tool_exec_update.html#abb7938d000da72273718975a7b8f0ea2">agent::ToolExecUpdate::arguments</a></div><div class="ttdeci">nlohmann::json arguments</div><div class="ttdoc">工具参数（JSON 对象）</div><div class="ttdef"><b>定义</b> <a href="#l00066">agent_event.hpp:66</a></div></div>
+<div class="ttc" id="astructagent_1_1_tool_exec_update_html_ae35cbeb2df6d050f8a5520b1efa40652"><div class="ttname"><a href="structagent_1_1_tool_exec_update.html#ae35cbeb2df6d050f8a5520b1efa40652">agent::ToolExecUpdate::name</a></div><div class="ttdeci">std::string name</div><div class="ttdoc">工具名</div><div class="ttdef"><b>定义</b> <a href="#l00065">agent_event.hpp:65</a></div></div>
+<div class="ttc" id="astructagent_1_1_tool_exec_update_html_af7f721339f5acc5bdddd960ae9969292"><div class="ttname"><a href="structagent_1_1_tool_exec_update.html#af7f721339f5acc5bdddd960ae9969292">agent::ToolExecUpdate::partial_result</a></div><div class="ttdeci">std::string partial_result</div><div class="ttdoc">已产生的部分结果文本</div><div class="ttdef"><b>定义</b> <a href="#l00067">agent_event.hpp:67</a></div></div>
+<div class="ttc" id="astructagent_1_1_tool_result_html"><div class="ttname"><a href="structagent_1_1_tool_result.html">agent::ToolResult</a></div><div class="ttdoc">工具执行结果内容块</div><div class="ttdef"><b>定义</b> <a href="content_8hpp_source.html#l00067">content.hpp:67</a></div></div>
+<div class="ttc" id="astructagent_1_1_turn_end_html"><div class="ttname"><a href="structagent_1_1_turn_end.html">agent::TurnEnd</a></div><div class="ttdoc">一轮结束</div><div class="ttdef"><b>定义</b> <a href="#l00034">agent_event.hpp:34</a></div></div>
+<div class="ttc" id="astructagent_1_1_turn_end_html_a9a725cb1d719765dbd2f97b4f22a9390"><div class="ttname"><a href="structagent_1_1_turn_end.html#a9a725cb1d719765dbd2f97b4f22a9390">agent::TurnEnd::assistant_message</a></div><div class="ttdeci">Message assistant_message</div><div class="ttdoc">本轮 assistant 回复</div><div class="ttdef"><b>定义</b> <a href="#l00035">agent_event.hpp:35</a></div></div>
+<div class="ttc" id="astructagent_1_1_turn_end_html_a9db67f104a85de6f393c46860661cd3a"><div class="ttname"><a href="structagent_1_1_turn_end.html#a9db67f104a85de6f393c46860661cd3a">agent::TurnEnd::tool_results</a></div><div class="ttdeci">std::vector&lt; ToolResult &gt; tool_results</div><div class="ttdoc">本轮工具结果</div><div class="ttdef"><b>定义</b> <a href="#l00036">agent_event.hpp:36</a></div></div>
+<div class="ttc" id="astructagent_1_1_turn_start_html"><div class="ttname"><a href="structagent_1_1_turn_start.html">agent::TurnStart</a></div><div class="ttdoc">一轮开始（纯信号；一轮 = 一次回复 + 其工具往返）</div><div class="ttdef"><b>定义</b> <a href="#l00031">agent_event.hpp:31</a></div></div>
+</div><!-- fragment --></div><!-- contents -->
+</div><!-- doc-content -->
+</div><!-- container -->
+<!-- start footer part -->
+<div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
+  <ul>
+    <li class="navelem"><b>agent</b></li><li class="navelem"><b>agent</b></li><li class="navelem"><b>agent_event.hpp</b></li>
+    <li class="footer">制作者 <a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.17.0 </li>
+  </ul>
+</div>
+</body>
+</html>

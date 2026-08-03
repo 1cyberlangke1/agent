@@ -1,6 +1,6 @@
 # Doxygen 配置——从 Doxygen 注释（/// @brief / ///< / @param / @return）自动生成 API 文档。
 # 用法：cmake --build --preset default --target doc   （需先安装 doxygen）
-# 产物：build/docs/html/index.html（build/ 已 gitignore，不入库）
+# 产物：docs/html/index.html（提交 git）
 
 # 项目元信息
 PROJECT_NAME           = "agent"
@@ -10,7 +10,7 @@ PROJECT_NUMBER         = experimental
 # 输入 / 输出
 INPUT                  = include/agent
 RECURSIVE              = YES
-OUTPUT_DIRECTORY       = build/docs
+OUTPUT_DIRECTORY       = docs
 GENERATE_HTML          = YES
 GENERATE_LATEX         = NO
 

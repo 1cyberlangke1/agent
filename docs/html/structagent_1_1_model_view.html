@@ -1,0 +1,377 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "https://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="zh">
+<head>
+<meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=11"/>
+<meta name="generator" content="Doxygen 1.17.0"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>agent: agent::ModelView结构体 参考</title>
+<link href="tabs.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="codefolding.js"></script>
+<script type="text/javascript" src="clipboard.js"></script>
+<link href="navtree.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="navtreedata.js"></script>
+<script type="text/javascript" src="navtree.js"></script>
+<script type="text/javascript" src="cookie.js"></script>
+<link href="search/search.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="search/searchdata.js"></script>
+<script type="text/javascript" src="search/search.js"></script>
+<script type="module">
+import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.esm.min.mjs';
+const theme = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'default';
+mermaid.initialize({ startOnLoad: true, theme: theme });
+</script>
+<link href="doxygen.css" rel="stylesheet" type="text/css" />
+</head>
+<body>
+<div id="top"><!-- do not remove this div, it is closed by doxygen! -->
+<div id="titlearea">
+<table cellspacing="0" cellpadding="0">
+ <tbody>
+ <tr id="projectrow">
+  <td id="projectalign">
+   <div id="projectname">agent<span id="projectnumber">&#160;experimental</span>
+   </div>
+   <div id="projectbrief">C++26 实验性 LLM / Agent 库</div>
+  </td>
+ </tr>
+ </tbody>
+</table>
+</div>
+<!-- end header part -->
+<!-- 制作者 Doxygen 1.17.0 -->
+<script type="text/javascript">
+let searchBox = new SearchBox("searchBox", "search/",'.html');
+</script>
+<script type="text/javascript">
+document.addEventListener('DOMContentLoaded', codefold.init);
+</script>
+<script type="text/javascript" src="menudata.js"></script>
+<script type="text/javascript" src="menu.js"></script>
+<script type="text/javascript">
+document.addEventListener('DOMContentLoaded', () => {
+  initMenu('',true);
+  init_search();
+});
+</script>
+<div id="main-nav-mobile">
+<div class="sm sm-dox"><input id="main-menu-state" type="checkbox"/>
+<label class="main-menu-btn" for="main-menu-state">
+<span class="main-menu-btn-icon"></span> Toggle main menu visibility</label>
+<span id="searchBoxPos1" style="position:absolute;right:8px;top:8px;height:36px;"></span>
+</div>
+</div><!-- main-nav-mobile -->
+<div id="main-nav">
+  <ul class="sm sm-dox" id="main-menu">
+    <li id="searchBoxPos2" style="float:right">
+        <div id="MSearchBox" class="MSearchBoxInactive">
+        <span class="left">
+          <span id="MSearchSelect" class="search-icon" onmouseover="return searchBox.OnSearchSelectShow()" onmouseout="return searchBox.OnSearchSelectHide()"><span class="search-icon-dropdown"></span></span>
+          <input type="text" id="MSearchField" value="" placeholder="搜索" accesskey="S"
+               onfocus="searchBox.OnSearchFieldFocus(true)" 
+               onblur="searchBox.OnSearchFieldFocus(false)" 
+               onkeyup="searchBox.OnSearchFieldChange(event)"/>
+          </span><span class="right">
+            <a id="MSearchClose" href="javascript:searchBox.CloseResultsWindow()"><div id="MSearchCloseImg" class="close-icon"></div></a>
+          </span>
+        </div>
+    </li>
+  </ul>
+</div><!-- main-nav -->
+</div><!-- top -->
+<div id="side-nav" class="ui-resizable side-nav-resizable">
+  <div id="nav-tree">
+    <div id="nav-tree-contents">
+      <div id="nav-sync" class="sync"></div>
+    </div>
+  </div>
+  <div id="splitbar" style="-moz-user-select:none;" 
+       class="ui-resizable-handle">
+  </div>
+</div>
+<script type="text/javascript">
+document.addEventListener('DOMContentLoaded',() => { initNavTree('structagent_1_1_model_view.html','','structagent_1_1_model_view-members'); });
+</script>
+<div id="container">
+<div id="doc-content">
+<!-- window showing the filter options -->
+<div id="MSearchSelectWindow"
+     onmouseover="return searchBox.OnSearchSelectShow()"
+     onmouseout="return searchBox.OnSearchSelectHide()"
+     onkeydown="return searchBox.OnSearchSelectKey(event)">
+</div>
+
+<!-- iframe showing the search results (closed by default) -->
+<div id="MSearchResultsWindow">
+<div id="MSearchResults">
+<div class="SRPage">
+<div id="SRIndex">
+<div id="SRResults"></div>
+<div class="SRStatus" id="Loading">载入中...</div>
+<div class="SRStatus" id="Searching">搜索中...</div>
+<div class="SRStatus" id="NoMatches">未找到</div>
+</div>
+</div>
+</div>
+</div>
+
+<div class="header">
+  <div class="headertitle"><div class="title">agent::ModelView结构体 参考</div></div>
+</div><!--header-->
+<div class="contents">
+
+<p>统一模型视图：引擎/调用方唯一消费类型。 string_view 指向底层存储（静态 → 全局字面量；动态 → <a class="el" href="classagent_1_1_model_registry.html" title="全局模型注册表。**纯静态类**：禁实例化，全 static 成员，进程生命周期。 独立于 API 调用层——只关心「有哪些模型、元数据是什么」，零协议概念。 内置表（生成器产物）+ 运行时注册 + 合...">ModelRegistry</a> 的 deque 元素， 全局存储、地址稳定、进程生命周期），返回后长期有效。 从 BuiltinModel / <a class="el" href="structagent_1_1_runtime_model.html" title="运行时注册的模型（全 std::string 自持）。 语义同 detail::BuiltinModel，字符串动态，由 ModelRegistry 拥有生命周期。">RuntimeModel</a> 均可构造（ModelRegistry 内部转换）。  
+ <a href="#details">更多...</a></p>
+
+<p><code>#include &lt;<a class="el" href="model_8hpp_source.html">model.hpp</a>&gt;</code></p>
+<table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 id="header-pub-attribs" class="groupheader"><a id="pub-attribs" name="pub-attribs"></a>
+Public 属性</h2></td></tr>
+<tr class="memitem:a27d92ceb1cfdcb01aa938cb11c971ccc" id="r_a27d92ceb1cfdcb01aa938cb11c971ccc"><td class="memItemLeft">std::string_view&#160;</td><td class="memItemRight"><a class="el" href="#a27d92ceb1cfdcb01aa938cb11c971ccc">id</a></td></tr>
+<tr class="memdesc:a27d92ceb1cfdcb01aa938cb11c971ccc"><td class="mdescLeft">&#160;</td><td class="mdescRight">模型标识（string_view，指向全局存储长期有效）  <br /></td></tr>
+<tr class="memitem:a92b21f5424c028bd409908699c51a731" id="r_a92b21f5424c028bd409908699c51a731"><td class="memItemLeft">int&#160;</td><td class="memItemRight"><a class="el" href="#a92b21f5424c028bd409908699c51a731">context_window</a> = 0</td></tr>
+<tr class="memdesc:a92b21f5424c028bd409908699c51a731"><td class="mdescLeft">&#160;</td><td class="mdescRight">上下文窗口大小（token）  <br /></td></tr>
+<tr class="memitem:aa11eef46449fbdb41295fb44d07c82d7" id="r_aa11eef46449fbdb41295fb44d07c82d7"><td class="memItemLeft">int&#160;</td><td class="memItemRight"><a class="el" href="#aa11eef46449fbdb41295fb44d07c82d7">max_output_tokens</a> = 0</td></tr>
+<tr class="memdesc:aa11eef46449fbdb41295fb44d07c82d7"><td class="mdescLeft">&#160;</td><td class="mdescRight">单次最大输出 token  <br /></td></tr>
+<tr class="memitem:a545fdc33551f1bb17f0fc833ec172be8" id="r_a545fdc33551f1bb17f0fc833ec172be8"><td class="memItemLeft">bool&#160;</td><td class="memItemRight"><a class="el" href="#a545fdc33551f1bb17f0fc833ec172be8">reasoning</a> = false</td></tr>
+<tr class="memdesc:a545fdc33551f1bb17f0fc833ec172be8"><td class="mdescLeft">&#160;</td><td class="mdescRight">是否支持思考模式  <br /></td></tr>
+<tr class="memitem:a9497be20b8935693ad1a5b69ee2732d0" id="r_a9497be20b8935693ad1a5b69ee2732d0"><td class="memItemLeft">bool&#160;</td><td class="memItemRight"><a class="el" href="#a9497be20b8935693ad1a5b69ee2732d0">supports_image_input</a> = false</td></tr>
+<tr class="memdesc:a9497be20b8935693ad1a5b69ee2732d0"><td class="mdescLeft">&#160;</td><td class="mdescRight">是否支持图片输入（多模态）  <br /></td></tr>
+<tr class="memitem:a668f0105d5c7e701aad08e0edd9eafce" id="r_a668f0105d5c7e701aad08e0edd9eafce"><td class="memItemLeft">std::array&lt; std::optional&lt; std::string_view &gt;, thinking_level_count &gt;&#160;</td><td class="memItemRight"><a class="el" href="#a668f0105d5c7e701aad08e0edd9eafce">thinking_level_map</a></td></tr>
+<tr class="memdesc:a668f0105d5c7e701aad08e0edd9eafce"><td class="mdescLeft">&#160;</td><td class="mdescRight">思考等级 → 厂商字段值映射  <br /></td></tr>
+<tr class="memitem:a4790f3304e49f98844b7c37930d0703a" id="r_a4790f3304e49f98844b7c37930d0703a"><td class="memItemLeft">std::string_view&#160;</td><td class="memItemRight"><a class="el" href="#a4790f3304e49f98844b7c37930d0703a">thinking_field</a></td></tr>
+<tr class="memdesc:a4790f3304e49f98844b7c37930d0703a"><td class="mdescLeft">&#160;</td><td class="mdescRight">思考输出字段名  <br /></td></tr>
+<tr class="memitem:a00aedd97a294c2666fe13f914b3ad895" id="r_a00aedd97a294c2666fe13f914b3ad895"><td class="memItemLeft">double&#160;</td><td class="memItemRight"><a class="el" href="#a00aedd97a294c2666fe13f914b3ad895">price_input</a> = 0</td></tr>
+<tr class="memdesc:a00aedd97a294c2666fe13f914b3ad895"><td class="mdescLeft">&#160;</td><td class="mdescRight">美元/百万 token；0 = 未知或免费  <br /></td></tr>
+<tr class="memitem:a88f291137461e32ac39d556b96d586a9" id="r_a88f291137461e32ac39d556b96d586a9"><td class="memItemLeft">double&#160;</td><td class="memItemRight"><a class="el" href="#a88f291137461e32ac39d556b96d586a9">price_output</a> = 0</td></tr>
+<tr class="memdesc:a88f291137461e32ac39d556b96d586a9"><td class="mdescLeft">&#160;</td><td class="mdescRight">输出价（美元/百万 token；0 = 未知或免费）  <br /></td></tr>
+<tr class="memitem:a2cfd94850cd027b3c774ff223284027e" id="r_a2cfd94850cd027b3c774ff223284027e"><td class="memItemLeft">double&#160;</td><td class="memItemRight"><a class="el" href="#a2cfd94850cd027b3c774ff223284027e">price_cache_read</a> = 0</td></tr>
+<tr class="memdesc:a2cfd94850cd027b3c774ff223284027e"><td class="mdescLeft">&#160;</td><td class="mdescRight">缓存读取价  <br /></td></tr>
+<tr class="memitem:a8f4c690b2fbe4518794b36ee2d812318" id="r_a8f4c690b2fbe4518794b36ee2d812318"><td class="memItemLeft">double&#160;</td><td class="memItemRight"><a class="el" href="#a8f4c690b2fbe4518794b36ee2d812318">price_cache_write</a> = 0</td></tr>
+<tr class="memdesc:a8f4c690b2fbe4518794b36ee2d812318"><td class="mdescLeft">&#160;</td><td class="mdescRight">缓存写入价  <br /></td></tr>
+</table>
+<a name="details" id="details"></a><h2 id="header-details" class="groupheader">详细描述</h2>
+<div class="textblock"><p>统一模型视图：引擎/调用方唯一消费类型。 string_view 指向底层存储（静态 → 全局字面量；动态 → <a class="el" href="classagent_1_1_model_registry.html" title="全局模型注册表。**纯静态类**：禁实例化，全 static 成员，进程生命周期。 独立于 API 调用层——只关心「有哪些模型、元数据是什么」，零协议概念。 内置表（生成器产物）+ 运行时注册 + 合...">ModelRegistry</a> 的 deque 元素， 全局存储、地址稳定、进程生命周期），返回后长期有效。 从 BuiltinModel / <a class="el" href="structagent_1_1_runtime_model.html" title="运行时注册的模型（全 std::string 自持）。 语义同 detail::BuiltinModel，字符串动态，由 ModelRegistry 拥有生命周期。">RuntimeModel</a> 均可构造（ModelRegistry 内部转换）。 </p>
+
+<p class="definition">在文件 <a class="el" href="model_8hpp_source.html">model.hpp</a> 第 <a class="el" href="model_8hpp_source.html#l00089">89</a> 行定义.</p>
+</div><a name="doc-variable-members" id="doc-variable-members"></a><h2 id="header-doc-variable-members" class="groupheader">类成员变量说明</h2>
+<a id="a92b21f5424c028bd409908699c51a731" name="a92b21f5424c028bd409908699c51a731"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a92b21f5424c028bd409908699c51a731">&#9670;&#160;</a></span>context_window</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">int agent::ModelView::context_window = 0</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>上下文窗口大小（token） </p>
+
+<p class="definition">在文件 <a class="el" href="model_8hpp_source.html">model.hpp</a> 第 <a class="el" href="model_8hpp_source.html#l00091">91</a> 行定义.</p>
+
+</div>
+</div>
+<a id="a27d92ceb1cfdcb01aa938cb11c971ccc" name="a27d92ceb1cfdcb01aa938cb11c971ccc"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a27d92ceb1cfdcb01aa938cb11c971ccc">&#9670;&#160;</a></span>id</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::string_view agent::ModelView::id</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>模型标识（string_view，指向全局存储长期有效） </p>
+
+<p class="definition">在文件 <a class="el" href="model_8hpp_source.html">model.hpp</a> 第 <a class="el" href="model_8hpp_source.html#l00090">90</a> 行定义.</p>
+
+</div>
+</div>
+<a id="aa11eef46449fbdb41295fb44d07c82d7" name="aa11eef46449fbdb41295fb44d07c82d7"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aa11eef46449fbdb41295fb44d07c82d7">&#9670;&#160;</a></span>max_output_tokens</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">int agent::ModelView::max_output_tokens = 0</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>单次最大输出 token </p>
+
+<p class="definition">在文件 <a class="el" href="model_8hpp_source.html">model.hpp</a> 第 <a class="el" href="model_8hpp_source.html#l00092">92</a> 行定义.</p>
+
+</div>
+</div>
+<a id="a2cfd94850cd027b3c774ff223284027e" name="a2cfd94850cd027b3c774ff223284027e"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a2cfd94850cd027b3c774ff223284027e">&#9670;&#160;</a></span>price_cache_read</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">double agent::ModelView::price_cache_read = 0</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>缓存读取价 </p>
+
+<p class="definition">在文件 <a class="el" href="model_8hpp_source.html">model.hpp</a> 第 <a class="el" href="model_8hpp_source.html#l00099">99</a> 行定义.</p>
+
+</div>
+</div>
+<a id="a8f4c690b2fbe4518794b36ee2d812318" name="a8f4c690b2fbe4518794b36ee2d812318"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a8f4c690b2fbe4518794b36ee2d812318">&#9670;&#160;</a></span>price_cache_write</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">double agent::ModelView::price_cache_write = 0</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>缓存写入价 </p>
+
+<p class="definition">在文件 <a class="el" href="model_8hpp_source.html">model.hpp</a> 第 <a class="el" href="model_8hpp_source.html#l00100">100</a> 行定义.</p>
+
+</div>
+</div>
+<a id="a00aedd97a294c2666fe13f914b3ad895" name="a00aedd97a294c2666fe13f914b3ad895"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a00aedd97a294c2666fe13f914b3ad895">&#9670;&#160;</a></span>price_input</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">double agent::ModelView::price_input = 0</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>美元/百万 token；0 = 未知或免费 </p>
+
+<p class="definition">在文件 <a class="el" href="model_8hpp_source.html">model.hpp</a> 第 <a class="el" href="model_8hpp_source.html#l00097">97</a> 行定义.</p>
+
+</div>
+</div>
+<a id="a88f291137461e32ac39d556b96d586a9" name="a88f291137461e32ac39d556b96d586a9"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a88f291137461e32ac39d556b96d586a9">&#9670;&#160;</a></span>price_output</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">double agent::ModelView::price_output = 0</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>输出价（美元/百万 token；0 = 未知或免费） </p>
+
+<p class="definition">在文件 <a class="el" href="model_8hpp_source.html">model.hpp</a> 第 <a class="el" href="model_8hpp_source.html#l00098">98</a> 行定义.</p>
+
+</div>
+</div>
+<a id="a545fdc33551f1bb17f0fc833ec172be8" name="a545fdc33551f1bb17f0fc833ec172be8"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a545fdc33551f1bb17f0fc833ec172be8">&#9670;&#160;</a></span>reasoning</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool agent::ModelView::reasoning = false</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>是否支持思考模式 </p>
+
+<p class="definition">在文件 <a class="el" href="model_8hpp_source.html">model.hpp</a> 第 <a class="el" href="model_8hpp_source.html#l00093">93</a> 行定义.</p>
+
+</div>
+</div>
+<a id="a9497be20b8935693ad1a5b69ee2732d0" name="a9497be20b8935693ad1a5b69ee2732d0"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a9497be20b8935693ad1a5b69ee2732d0">&#9670;&#160;</a></span>supports_image_input</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool agent::ModelView::supports_image_input = false</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>是否支持图片输入（多模态） </p>
+
+<p class="definition">在文件 <a class="el" href="model_8hpp_source.html">model.hpp</a> 第 <a class="el" href="model_8hpp_source.html#l00094">94</a> 行定义.</p>
+
+</div>
+</div>
+<a id="a4790f3304e49f98844b7c37930d0703a" name="a4790f3304e49f98844b7c37930d0703a"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a4790f3304e49f98844b7c37930d0703a">&#9670;&#160;</a></span>thinking_field</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::string_view agent::ModelView::thinking_field</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>思考输出字段名 </p>
+
+<p class="definition">在文件 <a class="el" href="model_8hpp_source.html">model.hpp</a> 第 <a class="el" href="model_8hpp_source.html#l00096">96</a> 行定义.</p>
+
+</div>
+</div>
+<a id="a668f0105d5c7e701aad08e0edd9eafce" name="a668f0105d5c7e701aad08e0edd9eafce"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a668f0105d5c7e701aad08e0edd9eafce">&#9670;&#160;</a></span>thinking_level_map</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::array&lt;std::optional&lt;std::string_view&gt;, thinking_level_count&gt; agent::ModelView::thinking_level_map</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>思考等级 → 厂商字段值映射 </p>
+
+<p class="definition">在文件 <a class="el" href="model_8hpp_source.html">model.hpp</a> 第 <a class="el" href="model_8hpp_source.html#l00095">95</a> 行定义.</p>
+
+</div>
+</div>
+<hr/>该结构体的文档由以下文件生成:<ul>
+<li><a class="el" href="model_8hpp_source.html">model.hpp</a></li>
+</ul>
+</div><!-- contents -->
+</div><!-- doc-content -->
+<div id="page-nav" class="page-nav-panel">
+<div id="page-nav-resize-handle"></div>
+<div id="page-nav-tree">
+<div id="page-nav-contents">
+</div><!-- page-nav-contents -->
+</div><!-- page-nav-tree -->
+</div><!-- page-nav -->
+</div><!-- container -->
+<!-- start footer part -->
+<div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
+  <ul>
+    <li class="navelem"><b>agent</b></li><li class="navelem"><a href="structagent_1_1_model_view.html">ModelView</a></li>
+    <li class="footer">制作者 <a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.17.0 </li>
+  </ul>
+</div>
+</body>
+</html>

@@ -1,0 +1,270 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "https://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="zh">
+<head>
+<meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=11"/>
+<meta name="generator" content="Doxygen 1.17.0"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>agent: agent::ModelRegistry类 参考</title>
+<link href="tabs.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="codefolding.js"></script>
+<script type="text/javascript" src="clipboard.js"></script>
+<link href="navtree.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="navtreedata.js"></script>
+<script type="text/javascript" src="navtree.js"></script>
+<script type="text/javascript" src="cookie.js"></script>
+<link href="search/search.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="search/searchdata.js"></script>
+<script type="text/javascript" src="search/search.js"></script>
+<script type="module">
+import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.esm.min.mjs';
+const theme = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'default';
+mermaid.initialize({ startOnLoad: true, theme: theme });
+</script>
+<link href="doxygen.css" rel="stylesheet" type="text/css" />
+</head>
+<body>
+<div id="top"><!-- do not remove this div, it is closed by doxygen! -->
+<div id="titlearea">
+<table cellspacing="0" cellpadding="0">
+ <tbody>
+ <tr id="projectrow">
+  <td id="projectalign">
+   <div id="projectname">agent<span id="projectnumber">&#160;experimental</span>
+   </div>
+   <div id="projectbrief">C++26 实验性 LLM / Agent 库</div>
+  </td>
+ </tr>
+ </tbody>
+</table>
+</div>
+<!-- end header part -->
+<!-- 制作者 Doxygen 1.17.0 -->
+<script type="text/javascript">
+let searchBox = new SearchBox("searchBox", "search/",'.html');
+</script>
+<script type="text/javascript">
+document.addEventListener('DOMContentLoaded', codefold.init);
+</script>
+<script type="text/javascript" src="menudata.js"></script>
+<script type="text/javascript" src="menu.js"></script>
+<script type="text/javascript">
+document.addEventListener('DOMContentLoaded', () => {
+  initMenu('',true);
+  init_search();
+});
+</script>
+<div id="main-nav-mobile">
+<div class="sm sm-dox"><input id="main-menu-state" type="checkbox"/>
+<label class="main-menu-btn" for="main-menu-state">
+<span class="main-menu-btn-icon"></span> Toggle main menu visibility</label>
+<span id="searchBoxPos1" style="position:absolute;right:8px;top:8px;height:36px;"></span>
+</div>
+</div><!-- main-nav-mobile -->
+<div id="main-nav">
+  <ul class="sm sm-dox" id="main-menu">
+    <li id="searchBoxPos2" style="float:right">
+        <div id="MSearchBox" class="MSearchBoxInactive">
+        <span class="left">
+          <span id="MSearchSelect" class="search-icon" onmouseover="return searchBox.OnSearchSelectShow()" onmouseout="return searchBox.OnSearchSelectHide()"><span class="search-icon-dropdown"></span></span>
+          <input type="text" id="MSearchField" value="" placeholder="搜索" accesskey="S"
+               onfocus="searchBox.OnSearchFieldFocus(true)" 
+               onblur="searchBox.OnSearchFieldFocus(false)" 
+               onkeyup="searchBox.OnSearchFieldChange(event)"/>
+          </span><span class="right">
+            <a id="MSearchClose" href="javascript:searchBox.CloseResultsWindow()"><div id="MSearchCloseImg" class="close-icon"></div></a>
+          </span>
+        </div>
+    </li>
+  </ul>
+</div><!-- main-nav -->
+</div><!-- top -->
+<div id="side-nav" class="ui-resizable side-nav-resizable">
+  <div id="nav-tree">
+    <div id="nav-tree-contents">
+      <div id="nav-sync" class="sync"></div>
+    </div>
+  </div>
+  <div id="splitbar" style="-moz-user-select:none;" 
+       class="ui-resizable-handle">
+  </div>
+</div>
+<script type="text/javascript">
+document.addEventListener('DOMContentLoaded',() => { initNavTree('classagent_1_1_model_registry.html','','classagent_1_1_model_registry-members'); });
+</script>
+<div id="container">
+<div id="doc-content">
+<!-- window showing the filter options -->
+<div id="MSearchSelectWindow"
+     onmouseover="return searchBox.OnSearchSelectShow()"
+     onmouseout="return searchBox.OnSearchSelectHide()"
+     onkeydown="return searchBox.OnSearchSelectKey(event)">
+</div>
+
+<!-- iframe showing the search results (closed by default) -->
+<div id="MSearchResultsWindow">
+<div id="MSearchResults">
+<div class="SRPage">
+<div id="SRIndex">
+<div id="SRResults"></div>
+<div class="SRStatus" id="Loading">载入中...</div>
+<div class="SRStatus" id="Searching">搜索中...</div>
+<div class="SRStatus" id="NoMatches">未找到</div>
+</div>
+</div>
+</div>
+</div>
+
+<div class="header">
+  <div class="headertitle"><div class="title">agent::ModelRegistry类 参考</div></div>
+</div><!--header-->
+<div class="contents">
+
+<p>全局模型注册表。**纯静态类**：禁实例化，全 static 成员，进程生命周期。 独立于 API 调用层——只关心「有哪些模型、元数据是什么」，零协议概念。 内置表（生成器产物）+ 运行时注册 + 合并索引；动态覆盖静态。 线程安全：**COW 不可变快照**——写路径（register）持 write_mutex_ 重建快照 原子替换；读路径（find/for_each）只 atomic load 快照，**零锁**（单线程热路径 零开销）。旧快照由 shared_ptr 保活，并发读看到一致（可能略旧）视图。  
+ <a href="#details">更多...</a></p>
+
+<p><code>#include &lt;<a class="el" href="model_8hpp_source.html">model.hpp</a>&gt;</code></p>
+<table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 id="header-pub-static-methods" class="groupheader"><a id="pub-static-methods" name="pub-static-methods"></a>
+静态 Public 成员函数</h2></td></tr>
+<tr class="memitem:a86c796f5ce6b64d91e570af5412b9cd1" id="r_a86c796f5ce6b64d91e570af5412b9cd1"><td class="memItemLeft">static bool&#160;</td><td class="memItemRight"><a class="el" href="#a86c796f5ce6b64d91e570af5412b9cd1">register_model</a> (<a class="el" href="structagent_1_1_runtime_model.html">RuntimeModel</a> model)</td></tr>
+<tr class="memdesc:a86c796f5ce6b64d91e570af5412b9cd1"><td class="mdescLeft">&#160;</td><td class="mdescRight">运行时注册/覆盖模型（同 id 覆盖内置或已有动态项）。线程安全。 覆盖实现约束：deque 只追加新条目、旧条目永不改写/删除—— 原地改写会使已发出的 <a class="el" href="structagent_1_1_model_view.html" title="统一模型视图：引擎/调用方唯一消费类型。 string_view 指向底层存储（静态 → 全局字面量；动态 → ModelRegistry 的 deque 元素， 全局存储、地址稳定、进程生命周期），返...">ModelView</a> 的 string_view 悬空。 新快照把 id 指向最新条目；旧快照引用旧条目仍有效（地址稳定）。 注册支持思考的模型：须填 reasoning=true 且按新语义填 thinking_level_map （"off"/"on"/effort 值/budget 值）；thinking_level_map 全 nullopt = 无思考能力， thinking 静默失效——非推理模型才应留空。  <br /></td></tr>
+<tr class="memitem:a23b63d52857f7fa6d4fe05d755380ca7" id="r_a23b63d52857f7fa6d4fe05d755380ca7"><td class="memItemLeft">static std::optional&lt; <a class="el" href="structagent_1_1_model_view.html">ModelView</a> &gt;&#160;</td><td class="memItemRight"><a class="el" href="#a23b63d52857f7fa6d4fe05d755380ca7">find_model</a> (std::string_view id)</td></tr>
+<tr class="memdesc:a23b63d52857f7fa6d4fe05d755380ca7"><td class="mdescLeft">&#160;</td><td class="mdescRight">统一查找（动态覆盖静态）。O(1) 哈希索引。线程安全（锁自由读）。  <br /></td></tr>
+<tr class="memitem:ab6e4308c31de4f13f2ed9a1a6b007ae9" id="r_ab6e4308c31de4f13f2ed9a1a6b007ae9"><td class="memTemplParams" colspan="2">template&lt;typename F&gt; </td></tr>
+<tr class="memitem:ab6e4308c31de4f13f2ed9a1a6b007ae9 template"><td class="memItemLeft">static void&#160;</td><td class="memItemRight"><a class="el" href="#ab6e4308c31de4f13f2ed9a1a6b007ae9">for_each_model</a> (F &amp;&amp;f)</td></tr>
+<tr class="memdesc:ab6e4308c31de4f13f2ed9a1a6b007ae9"><td class="mdescLeft">&#160;</td><td class="mdescRight">遍历全部可用模型（稳定顺序：静态表顺序 → 动态首次注册序，动态覆盖不重复）。 读锁自由（COW 快照）；回调内可安全再调 register_model（快照不可变，无重入问题）。  <br /></td></tr>
+</table>
+<a name="details" id="details"></a><h2 id="header-details" class="groupheader">详细描述</h2>
+<div class="textblock"><p>全局模型注册表。**纯静态类**：禁实例化，全 static 成员，进程生命周期。 独立于 API 调用层——只关心「有哪些模型、元数据是什么」，零协议概念。 内置表（生成器产物）+ 运行时注册 + 合并索引；动态覆盖静态。 线程安全：**COW 不可变快照**——写路径（register）持 write_mutex_ 重建快照 原子替换；读路径（find/for_each）只 atomic load 快照，**零锁**（单线程热路径 零开销）。旧快照由 shared_ptr 保活，并发读看到一致（可能略旧）视图。 </p>
+
+<p class="definition">在文件 <a class="el" href="model_8hpp_source.html">model.hpp</a> 第 <a class="el" href="model_8hpp_source.html#l00127">127</a> 行定义.</p>
+</div><a name="doc-func-members" id="doc-func-members"></a><h2 id="header-doc-func-members" class="groupheader">成员函数说明</h2>
+<a id="a23b63d52857f7fa6d4fe05d755380ca7" name="a23b63d52857f7fa6d4fe05d755380ca7"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a23b63d52857f7fa6d4fe05d755380ca7">&#9670;&#160;</a></span>find_model()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::optional&lt; <a class="el" href="structagent_1_1_model_view.html">ModelView</a> &gt; agent::ModelRegistry::find_model </td>
+          <td>(</td>
+          <td class="paramtype">std::string_view</td>          <td class="paramname"><span class="paramname"><em>id</em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel static">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>统一查找（动态覆盖静态）。O(1) 哈希索引。线程安全（锁自由读）。 </p>
+<dl class="params"><dt>参数</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">id</td><td>模型 id </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>返回</dt><dd>匹配的 ModelView；未找到返回 nullopt </dd></dl>
+
+</div>
+</div>
+<a id="ab6e4308c31de4f13f2ed9a1a6b007ae9" name="ab6e4308c31de4f13f2ed9a1a6b007ae9"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ab6e4308c31de4f13f2ed9a1a6b007ae9">&#9670;&#160;</a></span>for_each_model()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename F&gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void agent::ModelRegistry::for_each_model </td>
+          <td>(</td>
+          <td class="paramtype">F &amp;&amp;</td>          <td class="paramname"><span class="paramname"><em>f</em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel inline">inline</span><span class="mlabel static">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>遍历全部可用模型（稳定顺序：静态表顺序 → 动态首次注册序，动态覆盖不重复）。 读锁自由（COW 快照）；回调内可安全再调 register_model（快照不可变，无重入问题）。 </p>
+<dl class="params"><dt>参数</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">f</td><td>回调，接收 const <a class="el" href="structagent_1_1_model_view.html" title="统一模型视图：引擎/调用方唯一消费类型。 string_view 指向底层存储（静态 → 全局字面量；动态 → ModelRegistry 的 deque 元素， 全局存储、地址稳定、进程生命周期），返...">ModelView</a>&amp; </td></tr>
+  </table>
+  </dd>
+</dl>
+<p>&lt; 被动态覆盖 → 在动态序里输出新视图</p>
+
+<p class="definition">在文件 <a class="el" href="model_8hpp_source.html">model.hpp</a> 第 <a class="el" href="model_8hpp_source.html#l00151">151</a> 行定义.</p>
+
+</div>
+</div>
+<a id="a86c796f5ce6b64d91e570af5412b9cd1" name="a86c796f5ce6b64d91e570af5412b9cd1"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a86c796f5ce6b64d91e570af5412b9cd1">&#9670;&#160;</a></span>register_model()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool agent::ModelRegistry::register_model </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="structagent_1_1_runtime_model.html">RuntimeModel</a></td>          <td class="paramname"><span class="paramname"><em>model</em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel static">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>运行时注册/覆盖模型（同 id 覆盖内置或已有动态项）。线程安全。 覆盖实现约束：deque 只追加新条目、旧条目永不改写/删除—— 原地改写会使已发出的 <a class="el" href="structagent_1_1_model_view.html" title="统一模型视图：引擎/调用方唯一消费类型。 string_view 指向底层存储（静态 → 全局字面量；动态 → ModelRegistry 的 deque 元素， 全局存储、地址稳定、进程生命周期），返...">ModelView</a> 的 string_view 悬空。 新快照把 id 指向最新条目；旧快照引用旧条目仍有效（地址稳定）。 注册支持思考的模型：须填 reasoning=true 且按新语义填 thinking_level_map （"off"/"on"/effort 值/budget 值）；thinking_level_map 全 nullopt = 无思考能力， thinking 静默失效——非推理模型才应留空。 </p>
+<dl class="params"><dt>参数</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">model</td><td>模型数据（拷贝进注册表） </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>返回</dt><dd>true = 新增 id，false = 覆盖已有 id </dd></dl>
+
+</div>
+</div>
+<hr/>该类的文档由以下文件生成:<ul>
+<li><a class="el" href="model_8hpp_source.html">model.hpp</a></li>
+</ul>
+</div><!-- contents -->
+</div><!-- doc-content -->
+<div id="page-nav" class="page-nav-panel">
+<div id="page-nav-resize-handle"></div>
+<div id="page-nav-tree">
+<div id="page-nav-contents">
+</div><!-- page-nav-contents -->
+</div><!-- page-nav-tree -->
+</div><!-- page-nav -->
+</div><!-- container -->
+<!-- start footer part -->
+<div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
+  <ul>
+    <li class="navelem"><b>agent</b></li><li class="navelem"><a href="classagent_1_1_model_registry.html">ModelRegistry</a></li>
+    <li class="footer">制作者 <a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.17.0 </li>
+  </ul>
+</div>
+</body>
+</html>

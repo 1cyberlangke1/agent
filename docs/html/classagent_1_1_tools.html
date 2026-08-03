@@ -1,0 +1,348 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "https://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="zh">
+<head>
+<meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=11"/>
+<meta name="generator" content="Doxygen 1.17.0"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>agent: agent::Tools类 参考</title>
+<link href="tabs.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="codefolding.js"></script>
+<script type="text/javascript" src="clipboard.js"></script>
+<link href="navtree.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="navtreedata.js"></script>
+<script type="text/javascript" src="navtree.js"></script>
+<script type="text/javascript" src="cookie.js"></script>
+<link href="search/search.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="search/searchdata.js"></script>
+<script type="text/javascript" src="search/search.js"></script>
+<script type="module">
+import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.esm.min.mjs';
+const theme = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'default';
+mermaid.initialize({ startOnLoad: true, theme: theme });
+</script>
+<link href="doxygen.css" rel="stylesheet" type="text/css" />
+</head>
+<body>
+<div id="top"><!-- do not remove this div, it is closed by doxygen! -->
+<div id="titlearea">
+<table cellspacing="0" cellpadding="0">
+ <tbody>
+ <tr id="projectrow">
+  <td id="projectalign">
+   <div id="projectname">agent<span id="projectnumber">&#160;experimental</span>
+   </div>
+   <div id="projectbrief">C++26 实验性 LLM / Agent 库</div>
+  </td>
+ </tr>
+ </tbody>
+</table>
+</div>
+<!-- end header part -->
+<!-- 制作者 Doxygen 1.17.0 -->
+<script type="text/javascript">
+let searchBox = new SearchBox("searchBox", "search/",'.html');
+</script>
+<script type="text/javascript">
+document.addEventListener('DOMContentLoaded', codefold.init);
+</script>
+<script type="text/javascript" src="menudata.js"></script>
+<script type="text/javascript" src="menu.js"></script>
+<script type="text/javascript">
+document.addEventListener('DOMContentLoaded', () => {
+  initMenu('',true);
+  init_search();
+});
+</script>
+<div id="main-nav-mobile">
+<div class="sm sm-dox"><input id="main-menu-state" type="checkbox"/>
+<label class="main-menu-btn" for="main-menu-state">
+<span class="main-menu-btn-icon"></span> Toggle main menu visibility</label>
+<span id="searchBoxPos1" style="position:absolute;right:8px;top:8px;height:36px;"></span>
+</div>
+</div><!-- main-nav-mobile -->
+<div id="main-nav">
+  <ul class="sm sm-dox" id="main-menu">
+    <li id="searchBoxPos2" style="float:right">
+        <div id="MSearchBox" class="MSearchBoxInactive">
+        <span class="left">
+          <span id="MSearchSelect" class="search-icon" onmouseover="return searchBox.OnSearchSelectShow()" onmouseout="return searchBox.OnSearchSelectHide()"><span class="search-icon-dropdown"></span></span>
+          <input type="text" id="MSearchField" value="" placeholder="搜索" accesskey="S"
+               onfocus="searchBox.OnSearchFieldFocus(true)" 
+               onblur="searchBox.OnSearchFieldFocus(false)" 
+               onkeyup="searchBox.OnSearchFieldChange(event)"/>
+          </span><span class="right">
+            <a id="MSearchClose" href="javascript:searchBox.CloseResultsWindow()"><div id="MSearchCloseImg" class="close-icon"></div></a>
+          </span>
+        </div>
+    </li>
+  </ul>
+</div><!-- main-nav -->
+</div><!-- top -->
+<div id="side-nav" class="ui-resizable side-nav-resizable">
+  <div id="nav-tree">
+    <div id="nav-tree-contents">
+      <div id="nav-sync" class="sync"></div>
+    </div>
+  </div>
+  <div id="splitbar" style="-moz-user-select:none;" 
+       class="ui-resizable-handle">
+  </div>
+</div>
+<script type="text/javascript">
+document.addEventListener('DOMContentLoaded',() => { initNavTree('classagent_1_1_tools.html','','classagent_1_1_tools-members'); });
+</script>
+<div id="container">
+<div id="doc-content">
+<!-- window showing the filter options -->
+<div id="MSearchSelectWindow"
+     onmouseover="return searchBox.OnSearchSelectShow()"
+     onmouseout="return searchBox.OnSearchSelectHide()"
+     onkeydown="return searchBox.OnSearchSelectKey(event)">
+</div>
+
+<!-- iframe showing the search results (closed by default) -->
+<div id="MSearchResultsWindow">
+<div id="MSearchResults">
+<div class="SRPage">
+<div id="SRIndex">
+<div id="SRResults"></div>
+<div class="SRStatus" id="Loading">载入中...</div>
+<div class="SRStatus" id="Searching">搜索中...</div>
+<div class="SRStatus" id="NoMatches">未找到</div>
+</div>
+</div>
+</div>
+</div>
+
+<div class="header">
+  <div class="headertitle"><div class="title">agent::Tools类 参考</div></div>
+</div><!--header-->
+<div class="contents">
+
+<p>工具注册中心。纯静态类，不可实例化。  
+ <a href="#details">更多...</a></p>
+
+<p><code>#include &lt;<a class="el" href="tools_8hpp_source.html">tools.hpp</a>&gt;</code></p>
+<table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 id="header-pub-static-methods" class="groupheader"><a id="pub-static-methods" name="pub-static-methods"></a>
+静态 Public 成员函数</h2></td></tr>
+<tr class="memitem:a1f8997a1d5ec138e2451514df54b73fe" id="r_a1f8997a1d5ec138e2451514df54b73fe"><td class="memItemLeft">static Result&lt; std::string &gt;&#160;</td><td class="memItemRight"><a class="el" href="#a1f8997a1d5ec138e2451514df54b73fe">exec</a> (std::string_view name, nlohmann::json args)</td></tr>
+<tr class="memdesc:a1f8997a1d5ec138e2451514df54b73fe"><td class="mdescLeft">&#160;</td><td class="mdescRight">执行工具。  <br /></td></tr>
+<tr class="memitem:ab636d3661377b55b327454d8082d63e9" id="r_ab636d3661377b55b327454d8082d63e9"><td class="memItemLeft">static Result&lt; void &gt;&#160;</td><td class="memItemRight"><a class="el" href="#ab636d3661377b55b327454d8082d63e9">reg</a> (<a class="el" href="structagent_1_1_tool_info.html">ToolInfo</a> info, std::function&lt; Result&lt; std::string &gt;(nlohmann::json)&gt; fn, ArgsCheck check=ArgsCheck::Schema, ToolExecutionMode mode=ToolExecutionMode::Default)</td></tr>
+<tr class="memdesc:ab636d3661377b55b327454d8082d63e9"><td class="mdescLeft">&#160;</td><td class="mdescRight">运行时注册工具。  <br /></td></tr>
+<tr class="memitem:aaf6fa730e7289cf41c3bdbaee6ab3d53" id="r_aaf6fa730e7289cf41c3bdbaee6ab3d53"><td class="memItemLeft">static Result&lt; void &gt;&#160;</td><td class="memItemRight"><a class="el" href="#aaf6fa730e7289cf41c3bdbaee6ab3d53">reg</a> (<a class="el" href="structagent_1_1_tool_info.html">ToolInfo</a> info, std::function&lt; asio::awaitable&lt; Result&lt; std::string &gt; &gt;(nlohmann::json)&gt; fn, ArgsCheck check=ArgsCheck::Schema, ToolExecutionMode mode=ToolExecutionMode::Default)</td></tr>
+<tr class="memdesc:aaf6fa730e7289cf41c3bdbaee6ab3d53"><td class="mdescLeft">&#160;</td><td class="mdescRight">注册异步工具：fn 是协程（内部可 co_await async_http_get 等）。 exec 仍同步返回 Result——库在 exec 时用 io_context 桥接等协程完成。  <br /></td></tr>
+<tr class="memitem:a3cd8bf946498556643a5c98e0b34ecd6" id="r_a3cd8bf946498556643a5c98e0b34ecd6"><td class="memItemLeft">static std::vector&lt; <a class="el" href="structagent_1_1_tool_info.html">ToolInfo</a> &gt;&#160;</td><td class="memItemRight"><a class="el" href="#a3cd8bf946498556643a5c98e0b34ecd6">list</a> ()</td></tr>
+<tr class="memdesc:a3cd8bf946498556643a5c98e0b34ecd6"><td class="mdescLeft">&#160;</td><td class="mdescRight">列出所有已注册工具（副本）。  <br /></td></tr>
+<tr class="memitem:a702ad72458e2c037dd5f141d92d7baca" id="r_a702ad72458e2c037dd5f141d92d7baca"><td class="memItemLeft"><a id="a702ad72458e2c037dd5f141d92d7baca" name="a702ad72458e2c037dd5f141d92d7baca"></a>
+static Result&lt; <a class="el" href="structagent_1_1_tool_info.html">ToolInfo</a> &gt;&#160;</td><td class="memItemRight"><b>get</b> (std::string_view name)</td></tr>
+<tr class="memdesc:a702ad72458e2c037dd5f141d92d7baca"><td class="mdescLeft">&#160;</td><td class="mdescRight">按名称查询工具信息。不存在返回 Errc::NotFound。 <br /></td></tr>
+<tr class="memitem:a6bba74044ab0b3ab784c30efe3228f41" id="r_a6bba74044ab0b3ab784c30efe3228f41"><td class="memItemLeft"><a id="a6bba74044ab0b3ab784c30efe3228f41" name="a6bba74044ab0b3ab784c30efe3228f41"></a>
+static Result&lt; ToolExecutionMode &gt;&#160;</td><td class="memItemRight"><b>mode</b> (std::string_view name)</td></tr>
+<tr class="memdesc:a6bba74044ab0b3ab784c30efe3228f41"><td class="mdescLeft">&#160;</td><td class="mdescRight">查询工具的执行模式（per-tool，Default = 跟随 <a class="el" href="classagent_1_1_agent.html" title="高层 Agent：多轮对话 + 工具调用的驱动核心。">Agent</a> 全局）。不存在返回 Errc::NotFound。 <br /></td></tr>
+<tr class="memitem:a8a0fe2569ab2f982d79a9d2d47693738" id="r_a8a0fe2569ab2f982d79a9d2d47693738"><td class="memItemLeft"><a id="a8a0fe2569ab2f982d79a9d2d47693738" name="a8a0fe2569ab2f982d79a9d2d47693738"></a>
+static Result&lt; std::vector&lt; <a class="el" href="structagent_1_1_tool_info.html">ToolInfo</a> &gt; &gt;&#160;</td><td class="memItemRight"><b>resolve</b> (std::vector&lt; std::string &gt; const &amp;names)</td></tr>
+<tr class="memdesc:a8a0fe2569ab2f982d79a9d2d47693738"><td class="mdescLeft">&#160;</td><td class="mdescRight">批量按名解析工具定义（一次 shared_lock，避免逐个 get 反复加锁）。 按传入名字顺序返回；遇到未注册的名字 → Result 错误（NotFound）。 供引擎 build_params 用：Context.tools 存工具名，这里取定义转各家 schema。 <br /></td></tr>
+<tr class="memitem:ad1c25dbbb70a699ecb82afb3951ac50a" id="r_ad1c25dbbb70a699ecb82afb3951ac50a"><td class="memItemLeft"><a id="ad1c25dbbb70a699ecb82afb3951ac50a" name="ad1c25dbbb70a699ecb82afb3951ac50a"></a>
+static std::vector&lt; std::string &gt;&#160;</td><td class="memItemRight"><b>names</b> ()</td></tr>
+<tr class="memdesc:ad1c25dbbb70a699ecb82afb3951ac50a"><td class="mdescLeft">&#160;</td><td class="mdescRight">全部已注册工具名（供调用方「本次要全部工具」时填 Context.tools）。 <br /></td></tr>
+</table>
+<a name="details" id="details"></a><h2 id="header-details" class="groupheader">详细描述</h2>
+<div class="textblock"><p>工具注册中心。纯静态类，不可实例化。 </p>
+<p>两种注册方式： 编译期: struct X : <a class="el" href="structagent_1_1_tool_base.html" title="CRTP 自注册工具基类。">ToolBase&lt;X&gt;</a> { ... }; + template struct <a class="el" href="structagent_1_1_tool_base.html" title="CRTP 自注册工具基类。">agent::ToolBase&lt;X&gt;</a>; （见 tools_reflection.hpp，schema 自动从反射生成） 运行时: <a class="el" href="#ab636d3661377b55b327454d8082d63e9" title="运行时注册工具。">Tools::reg</a>(<a class="el" href="structagent_1_1_tool_info.html" title="工具注册信息。包含名称、描述、参数 JSON Schema。">ToolInfo</a>{...}, lambda);</p>
+<p>线程安全：**COW 不可变快照**——写路径（reg）持 write_mutex_ 重建快照原子替换； 读路径（exec/list/get/resolve/names）只 atomic load 快照，**零锁**（单线程热路径零开销）。 exec 复制 shared_ptr&lt;RegisteredTool&gt; 后调用工具函数，不在持锁状态执行用户代码。 </p>
+
+<p class="definition">在文件 <a class="el" href="tools_8hpp_source.html">tools.hpp</a> 第 <a class="el" href="tools_8hpp_source.html#l00231">231</a> 行定义.</p>
+</div><a name="doc-func-members" id="doc-func-members"></a><h2 id="header-doc-func-members" class="groupheader">成员函数说明</h2>
+<a id="a1f8997a1d5ec138e2451514df54b73fe" name="a1f8997a1d5ec138e2451514df54b73fe"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a1f8997a1d5ec138e2451514df54b73fe">&#9670;&#160;</a></span>exec()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">Result&lt; std::string &gt; agent::Tools::exec </td>
+          <td>(</td>
+          <td class="paramtype">std::string_view</td>          <td class="paramname"><span class="paramname"><em>name</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">nlohmann::json</td>          <td class="paramname"><span class="paramname"><em>args</em></span>&#160;)</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel static">static</span><span class="mlabel nodiscard">nodiscard</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>执行工具。 </p>
+<p>流程：查找 → （ArgsCheck::Schema 时）按 schema 预校验参数 → 调用工具函数。 工具函数遵循零异常约定：错误全部通过 Result 返回，不抛异常。</p>
+<dl class="params"><dt>参数</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">name</td><td>工具名 </td></tr>
+    <tr><td class="paramname">args</td><td>JSON 参数对象 </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>返回</dt><dd>成功返回工具输出文本；失败返回错误 （NotFound / InvalidArgs / 工具自身返回的错误） </dd></dl>
+
+</div>
+</div>
+<a id="a3cd8bf946498556643a5c98e0b34ecd6" name="a3cd8bf946498556643a5c98e0b34ecd6"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a3cd8bf946498556643a5c98e0b34ecd6">&#9670;&#160;</a></span>list()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::vector&lt; <a class="el" href="structagent_1_1_tool_info.html">ToolInfo</a> &gt; agent::Tools::list </td>
+          <td>(</td>
+          <td class="paramname"><span class="paramname"><em></em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel static">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>列出所有已注册工具（副本）。 </p>
+<p><a class="el" href="classagent_1_1_tools.html" title="工具注册中心。纯静态类，不可实例化。">Tools</a> 只是全量工具仓库，实际传给 LLM 的工具子集由 <a class="el" href="classagent_1_1_content.html" title="完整对话上下文">Content</a> 层决定。 返回按名字典序排序：输出确定性，不随 unordered_map rehash 变化。 </p>
+
+</div>
+</div>
+<a id="aaf6fa730e7289cf41c3bdbaee6ab3d53" name="aaf6fa730e7289cf41c3bdbaee6ab3d53"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aaf6fa730e7289cf41c3bdbaee6ab3d53">&#9670;&#160;</a></span>reg() <span class="overload">[1/2]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">Result&lt; void &gt; agent::Tools::reg </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="structagent_1_1_tool_info.html">ToolInfo</a></td>          <td class="paramname"><span class="paramname"><em>info</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">std::function&lt; asio::awaitable&lt; Result&lt; std::string &gt; &gt;(nlohmann::json)&gt;</td>          <td class="paramname"><span class="paramname"><em>fn</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">ArgsCheck</td>          <td class="paramname"><span class="paramname"><em>check</em></span><span class="paramdefsep"> = </span><span class="paramdefval">ArgsCheck::Schema</span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">ToolExecutionMode</td>          <td class="paramname"><span class="paramname"><em>mode</em></span><span class="paramdefsep"> = </span><span class="paramdefval">ToolExecutionMode::Default</span>&#160;)</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel static">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>注册异步工具：fn 是协程（内部可 co_await async_http_get 等）。 exec 仍同步返回 Result——库在 exec 时用 io_context 桥接等协程完成。 </p>
+<dl class="params"><dt>参数</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">info</td><td>工具信息 </td></tr>
+    <tr><td class="paramname">fn</td><td>异步工具函数，返回 asio 协程 </td></tr>
+    <tr><td class="paramname">check</td><td>exec 前参数预校验策略 </td></tr>
+    <tr><td class="paramname">mode</td><td>该工具的执行模式（per-tool，覆盖 <a class="el" href="classagent_1_1_agent.html" title="高层 Agent：多轮对话 + 工具调用的驱动核心。">Agent</a> 全局） </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a id="ab636d3661377b55b327454d8082d63e9" name="ab636d3661377b55b327454d8082d63e9"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ab636d3661377b55b327454d8082d63e9">&#9670;&#160;</a></span>reg() <span class="overload">[2/2]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">Result&lt; void &gt; agent::Tools::reg </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="structagent_1_1_tool_info.html">ToolInfo</a></td>          <td class="paramname"><span class="paramname"><em>info</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">std::function&lt; Result&lt; std::string &gt;(nlohmann::json)&gt;</td>          <td class="paramname"><span class="paramname"><em>fn</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">ArgsCheck</td>          <td class="paramname"><span class="paramname"><em>check</em></span><span class="paramdefsep"> = </span><span class="paramdefval">ArgsCheck::Schema</span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">ToolExecutionMode</td>          <td class="paramname"><span class="paramname"><em>mode</em></span><span class="paramdefsep"> = </span><span class="paramdefval">ToolExecutionMode::Default</span>&#160;)</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel static">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>运行时注册工具。 </p>
+<p>校验链：名字非空 → fn 非空 → parameters 是良构 JSON Schema （根节点必须 type:"object"，各节点结构合法）→ 名字未被占用。 任何一步失败返回 InvalidArgs / Duplicate，注册表不变。</p>
+<dl class="params"><dt>参数</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">info</td><td>工具信息（name/description/parameters） </td></tr>
+    <tr><td class="paramname">fn</td><td>工具函数，接收 JSON 参数返回 Result </td></tr>
+    <tr><td class="paramname">check</td><td>exec 前参数预校验策略，默认按 schema 校验 </td></tr>
+    <tr><td class="paramname">mode</td><td>该工具的**执行模式**（per-tool，覆盖 <a class="el" href="classagent_1_1_agent.html" title="高层 Agent：多轮对话 + 工具调用的驱动核心。">Agent</a> 全局；Default = 跟随全局） </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<hr/>该类的文档由以下文件生成:<ul>
+<li><a class="el" href="tools_8hpp_source.html">tools.hpp</a></li>
+</ul>
+</div><!-- contents -->
+</div><!-- doc-content -->
+<div id="page-nav" class="page-nav-panel">
+<div id="page-nav-resize-handle"></div>
+<div id="page-nav-tree">
+<div id="page-nav-contents">
+</div><!-- page-nav-contents -->
+</div><!-- page-nav-tree -->
+</div><!-- page-nav -->
+</div><!-- container -->
+<!-- start footer part -->
+<div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
+  <ul>
+    <li class="navelem"><b>agent</b></li><li class="navelem"><a href="classagent_1_1_tools.html">Tools</a></li>
+    <li class="footer">制作者 <a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.17.0 </li>
+  </ul>
+</div>
+</body>
+</html>

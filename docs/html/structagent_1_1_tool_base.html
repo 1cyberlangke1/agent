@@ -1,0 +1,199 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "https://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="zh">
+<head>
+<meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=11"/>
+<meta name="generator" content="Doxygen 1.17.0"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>agent: agent::ToolBase&lt; T &gt; 模板结构体 参考</title>
+<link href="tabs.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="codefolding.js"></script>
+<script type="text/javascript" src="clipboard.js"></script>
+<link href="navtree.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="navtreedata.js"></script>
+<script type="text/javascript" src="navtree.js"></script>
+<script type="text/javascript" src="cookie.js"></script>
+<link href="search/search.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="search/searchdata.js"></script>
+<script type="text/javascript" src="search/search.js"></script>
+<script type="module">
+import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.esm.min.mjs';
+const theme = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'default';
+mermaid.initialize({ startOnLoad: true, theme: theme });
+</script>
+<link href="doxygen.css" rel="stylesheet" type="text/css" />
+</head>
+<body>
+<div id="top"><!-- do not remove this div, it is closed by doxygen! -->
+<div id="titlearea">
+<table cellspacing="0" cellpadding="0">
+ <tbody>
+ <tr id="projectrow">
+  <td id="projectalign">
+   <div id="projectname">agent<span id="projectnumber">&#160;experimental</span>
+   </div>
+   <div id="projectbrief">C++26 实验性 LLM / Agent 库</div>
+  </td>
+ </tr>
+ </tbody>
+</table>
+</div>
+<!-- end header part -->
+<!-- 制作者 Doxygen 1.17.0 -->
+<script type="text/javascript">
+let searchBox = new SearchBox("searchBox", "search/",'.html');
+</script>
+<script type="text/javascript">
+document.addEventListener('DOMContentLoaded', codefold.init);
+</script>
+<script type="text/javascript" src="menudata.js"></script>
+<script type="text/javascript" src="menu.js"></script>
+<script type="text/javascript">
+document.addEventListener('DOMContentLoaded', () => {
+  initMenu('',true);
+  init_search();
+});
+</script>
+<div id="main-nav-mobile">
+<div class="sm sm-dox"><input id="main-menu-state" type="checkbox"/>
+<label class="main-menu-btn" for="main-menu-state">
+<span class="main-menu-btn-icon"></span> Toggle main menu visibility</label>
+<span id="searchBoxPos1" style="position:absolute;right:8px;top:8px;height:36px;"></span>
+</div>
+</div><!-- main-nav-mobile -->
+<div id="main-nav">
+  <ul class="sm sm-dox" id="main-menu">
+    <li id="searchBoxPos2" style="float:right">
+        <div id="MSearchBox" class="MSearchBoxInactive">
+        <span class="left">
+          <span id="MSearchSelect" class="search-icon" onmouseover="return searchBox.OnSearchSelectShow()" onmouseout="return searchBox.OnSearchSelectHide()"><span class="search-icon-dropdown"></span></span>
+          <input type="text" id="MSearchField" value="" placeholder="搜索" accesskey="S"
+               onfocus="searchBox.OnSearchFieldFocus(true)" 
+               onblur="searchBox.OnSearchFieldFocus(false)" 
+               onkeyup="searchBox.OnSearchFieldChange(event)"/>
+          </span><span class="right">
+            <a id="MSearchClose" href="javascript:searchBox.CloseResultsWindow()"><div id="MSearchCloseImg" class="close-icon"></div></a>
+          </span>
+        </div>
+    </li>
+  </ul>
+</div><!-- main-nav -->
+</div><!-- top -->
+<div id="side-nav" class="ui-resizable side-nav-resizable">
+  <div id="nav-tree">
+    <div id="nav-tree-contents">
+      <div id="nav-sync" class="sync"></div>
+    </div>
+  </div>
+  <div id="splitbar" style="-moz-user-select:none;" 
+       class="ui-resizable-handle">
+  </div>
+</div>
+<script type="text/javascript">
+document.addEventListener('DOMContentLoaded',() => { initNavTree('structagent_1_1_tool_base.html','','structagent_1_1_tool_base-members'); });
+</script>
+<div id="container">
+<div id="doc-content">
+<!-- window showing the filter options -->
+<div id="MSearchSelectWindow"
+     onmouseover="return searchBox.OnSearchSelectShow()"
+     onmouseout="return searchBox.OnSearchSelectHide()"
+     onkeydown="return searchBox.OnSearchSelectKey(event)">
+</div>
+
+<!-- iframe showing the search results (closed by default) -->
+<div id="MSearchResultsWindow">
+<div id="MSearchResults">
+<div class="SRPage">
+<div id="SRIndex">
+<div id="SRResults"></div>
+<div class="SRStatus" id="Loading">载入中...</div>
+<div class="SRStatus" id="Searching">搜索中...</div>
+<div class="SRStatus" id="NoMatches">未找到</div>
+</div>
+</div>
+</div>
+</div>
+
+<div class="header">
+  <div class="headertitle"><div class="title">agent::ToolBase&lt; T &gt; 模板结构体 参考</div></div>
+</div><!--header-->
+<div class="contents">
+
+<p>CRTP 自注册工具基类。  
+ <a href="#details">更多...</a></p>
+
+<p><code>#include &lt;<a class="el" href="tools__reflection_8hpp_source.html">tools_reflection.hpp</a>&gt;</code></p>
+<table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 id="header-nested-classes" class="groupheader"><a id="nested-classes" name="nested-classes"></a>
+类</h2></td></tr>
+<tr class="memitem:Registrar" id="r_Registrar"><td class="memItemLeft">class &#160;</td><td class="memItemRight"><a class="el" href="classagent_1_1_tool_base_1_1_registrar.html">Registrar</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">注册器：构造函数在 main() 前调用 <a class="el" href="classagent_1_1_tools.html#ab636d3661377b55b327454d8082d63e9" title="运行时注册工具。">Tools::reg</a> 完成静态注册。  <a href="classagent_1_1_tool_base_1_1_registrar.html#details">更多...</a><br /></td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 id="header-pub-static-attribs" class="groupheader"><a id="pub-static-attribs" name="pub-static-attribs"></a>
+静态 Public 属性</h2></td></tr>
+<tr class="memitem:a7fec378cb040594781cf263abf82bcd8" id="r_a7fec378cb040594781cf263abf82bcd8"><td class="memItemLeft">static <a class="el" href="classagent_1_1_tool_base_1_1_registrar.html">Registrar</a>&#160;</td><td class="memItemRight"><a class="el" href="#a7fec378cb040594781cf263abf82bcd8">reg</a> {}</td></tr>
+<tr class="memdesc:a7fec378cb040594781cf263abf82bcd8"><td class="mdescLeft">&#160;</td><td class="mdescRight">注册器实例（静态初始化触发注册；无需用户手动调用）。  <br /></td></tr>
+</table>
+<a name="details" id="details"></a><h2 id="header-details" class="groupheader">详细描述</h2>
+<div class="textblock"><div class="compoundTemplParams">template&lt;typename T&gt;<br />
+struct agent::ToolBase&lt; T &gt;</div><p>CRTP 自注册工具基类。 </p>
+<p>继承者须提供：</p><ul>
+<li>using params_type = 参数结构体（字段可带 [[= Desc("...")]] 注解）</li>
+<li>static Result&lt;std::string&gt; invoke(params_type const&amp;) 工具名取 struct 标识符，描述取 struct 头的 [[= Desc("...")]] 注解， 参数 schema 从 params_type 反射自动生成——三者都不需要手写。</li>
+</ul>
+<p>可选：<span class="tt">static constexpr ToolExecutionMode execution_mode</span> —— 该工具的 执行模式（per-tool，覆盖 <a class="el" href="classagent_1_1_agent.html" title="高层 Agent：多轮对话 + 工具调用的驱动核心。">Agent</a> 全局）；缺省 = Default（跟随全局）。</p>
+<p>在定义工具的 .cpp 中显式实例化触发静态注册（缺了链接器会丢弃注册代码）： template struct <a class="el" href="structagent_1_1_tool_base.html" title="CRTP 自注册工具基类。">agent::ToolBase&lt;MyTool&gt;</a>; inline static <a class="el" href="classagent_1_1_tool_base_1_1_registrar.html" title="注册器：构造函数在 main() 前调用 Tools::reg 完成静态注册。">Registrar</a> reg{} 的构造函数在 main() 前运行完成注册。 </p>
+
+<p class="definition">在文件 <a class="el" href="tools__reflection_8hpp_source.html">tools_reflection.hpp</a> 第 <a class="el" href="tools__reflection_8hpp_source.html#l00519">519</a> 行定义.</p>
+</div><a name="doc-variable-members" id="doc-variable-members"></a><h2 id="header-doc-variable-members" class="groupheader">类成员变量说明</h2>
+<a id="a7fec378cb040594781cf263abf82bcd8" name="a7fec378cb040594781cf263abf82bcd8"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a7fec378cb040594781cf263abf82bcd8">&#9670;&#160;</a></span>reg</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename T&gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classagent_1_1_tool_base_1_1_registrar.html">Registrar</a> <a class="el" href="structagent_1_1_tool_base.html">agent::ToolBase</a>&lt; T &gt;::reg {}</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel inline">inline</span><span class="mlabel static">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>注册器实例（静态初始化触发注册；无需用户手动调用）。 </p>
+
+<p class="definition">在文件 <a class="el" href="tools__reflection_8hpp_source.html">tools_reflection.hpp</a> 第 <a class="el" href="tools__reflection_8hpp_source.html#l00528">528</a> 行定义.</p>
+
+</div>
+</div>
+<hr/>该结构体的文档由以下文件生成:<ul>
+<li><a class="el" href="tools__reflection_8hpp_source.html">tools_reflection.hpp</a></li>
+</ul>
+</div><!-- contents -->
+</div><!-- doc-content -->
+<div id="page-nav" class="page-nav-panel">
+<div id="page-nav-resize-handle"></div>
+<div id="page-nav-tree">
+<div id="page-nav-contents">
+</div><!-- page-nav-contents -->
+</div><!-- page-nav-tree -->
+</div><!-- page-nav -->
+</div><!-- container -->
+<!-- start footer part -->
+<div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
+  <ul>
+    <li class="navelem"><b>agent</b></li><li class="navelem"><a href="structagent_1_1_tool_base.html">ToolBase</a></li>
+    <li class="footer">制作者 <a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.17.0 </li>
+  </ul>
+</div>
+</body>
+</html>

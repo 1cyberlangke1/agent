@@ -1,0 +1,663 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "https://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="zh">
+<head>
+<meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=11"/>
+<meta name="generator" content="Doxygen 1.17.0"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>agent: agent::HttpRequest结构体 参考</title>
+<link href="tabs.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="codefolding.js"></script>
+<script type="text/javascript" src="clipboard.js"></script>
+<link href="navtree.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="navtreedata.js"></script>
+<script type="text/javascript" src="navtree.js"></script>
+<script type="text/javascript" src="cookie.js"></script>
+<link href="search/search.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="search/searchdata.js"></script>
+<script type="text/javascript" src="search/search.js"></script>
+<script type="module">
+import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.esm.min.mjs';
+const theme = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'default';
+mermaid.initialize({ startOnLoad: true, theme: theme });
+</script>
+<link href="doxygen.css" rel="stylesheet" type="text/css" />
+</head>
+<body>
+<div id="top"><!-- do not remove this div, it is closed by doxygen! -->
+<div id="titlearea">
+<table cellspacing="0" cellpadding="0">
+ <tbody>
+ <tr id="projectrow">
+  <td id="projectalign">
+   <div id="projectname">agent<span id="projectnumber">&#160;experimental</span>
+   </div>
+   <div id="projectbrief">C++26 实验性 LLM / Agent 库</div>
+  </td>
+ </tr>
+ </tbody>
+</table>
+</div>
+<!-- end header part -->
+<!-- 制作者 Doxygen 1.17.0 -->
+<script type="text/javascript">
+let searchBox = new SearchBox("searchBox", "search/",'.html');
+</script>
+<script type="text/javascript">
+document.addEventListener('DOMContentLoaded', codefold.init);
+</script>
+<script type="text/javascript" src="menudata.js"></script>
+<script type="text/javascript" src="menu.js"></script>
+<script type="text/javascript">
+document.addEventListener('DOMContentLoaded', () => {
+  initMenu('',true);
+  init_search();
+});
+</script>
+<div id="main-nav-mobile">
+<div class="sm sm-dox"><input id="main-menu-state" type="checkbox"/>
+<label class="main-menu-btn" for="main-menu-state">
+<span class="main-menu-btn-icon"></span> Toggle main menu visibility</label>
+<span id="searchBoxPos1" style="position:absolute;right:8px;top:8px;height:36px;"></span>
+</div>
+</div><!-- main-nav-mobile -->
+<div id="main-nav">
+  <ul class="sm sm-dox" id="main-menu">
+    <li id="searchBoxPos2" style="float:right">
+        <div id="MSearchBox" class="MSearchBoxInactive">
+        <span class="left">
+          <span id="MSearchSelect" class="search-icon" onmouseover="return searchBox.OnSearchSelectShow()" onmouseout="return searchBox.OnSearchSelectHide()"><span class="search-icon-dropdown"></span></span>
+          <input type="text" id="MSearchField" value="" placeholder="搜索" accesskey="S"
+               onfocus="searchBox.OnSearchFieldFocus(true)" 
+               onblur="searchBox.OnSearchFieldFocus(false)" 
+               onkeyup="searchBox.OnSearchFieldChange(event)"/>
+          </span><span class="right">
+            <a id="MSearchClose" href="javascript:searchBox.CloseResultsWindow()"><div id="MSearchCloseImg" class="close-icon"></div></a>
+          </span>
+        </div>
+    </li>
+  </ul>
+</div><!-- main-nav -->
+</div><!-- top -->
+<div id="side-nav" class="ui-resizable side-nav-resizable">
+  <div id="nav-tree">
+    <div id="nav-tree-contents">
+      <div id="nav-sync" class="sync"></div>
+    </div>
+  </div>
+  <div id="splitbar" style="-moz-user-select:none;" 
+       class="ui-resizable-handle">
+  </div>
+</div>
+<script type="text/javascript">
+document.addEventListener('DOMContentLoaded',() => { initNavTree('structagent_1_1_http_request.html','','structagent_1_1_http_request-members'); });
+</script>
+<div id="container">
+<div id="doc-content">
+<!-- window showing the filter options -->
+<div id="MSearchSelectWindow"
+     onmouseover="return searchBox.OnSearchSelectShow()"
+     onmouseout="return searchBox.OnSearchSelectHide()"
+     onkeydown="return searchBox.OnSearchSelectKey(event)">
+</div>
+
+<!-- iframe showing the search results (closed by default) -->
+<div id="MSearchResultsWindow">
+<div id="MSearchResults">
+<div class="SRPage">
+<div id="SRIndex">
+<div id="SRResults"></div>
+<div class="SRStatus" id="Loading">载入中...</div>
+<div class="SRStatus" id="Searching">搜索中...</div>
+<div class="SRStatus" id="NoMatches">未找到</div>
+</div>
+</div>
+</div>
+</div>
+
+<div class="header">
+  <div class="headertitle"><div class="title">agent::HttpRequest结构体 参考</div></div>
+</div><!--header-->
+<div class="contents">
+
+<p>一次 HTTP 请求「发什么 + 怎么发」。  
+ <a href="#details">更多...</a></p>
+
+<p><code>#include &lt;<a class="el" href="http__client_8hpp_source.html">http_client.hpp</a>&gt;</code></p>
+<table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 id="header-pub-attribs" class="groupheader"><a id="pub-attribs" name="pub-attribs"></a>
+Public 属性</h2></td></tr>
+<tr class="memitem:ab836705f2590f6a0aa4e8ed58f6d3705" id="r_ab836705f2590f6a0aa4e8ed58f6d3705"><td class="memItemLeft">std::string&#160;</td><td class="memItemRight"><a class="el" href="#ab836705f2590f6a0aa4e8ed58f6d3705">method</a> = &quot;GET&quot;</td></tr>
+<tr class="memdesc:ab836705f2590f6a0aa4e8ed58f6d3705"><td class="mdescLeft">&#160;</td><td class="mdescRight">GET/POST/PUT/PATCH/DELETE/HEAD/OPTIONS/任意  <br /></td></tr>
+<tr class="memitem:a70282352af8b7b5a326237f59a1bfd0c" id="r_a70282352af8b7b5a326237f59a1bfd0c"><td class="memItemLeft">std::string&#160;</td><td class="memItemRight"><a class="el" href="#a70282352af8b7b5a326237f59a1bfd0c">url</a></td></tr>
+<tr class="memdesc:a70282352af8b7b5a326237f59a1bfd0c"><td class="mdescLeft">&#160;</td><td class="mdescRight">请求 URL（可已带 query）  <br /></td></tr>
+<tr class="memitem:a75b2d85620fbbd207cc83efe12a9ef93" id="r_a75b2d85620fbbd207cc83efe12a9ef93"><td class="memItemLeft">std::vector&lt; std::pair&lt; std::string, std::string &gt; &gt;&#160;</td><td class="memItemRight"><a class="el" href="#a75b2d85620fbbd207cc83efe12a9ef93">query</a></td></tr>
+<tr class="memdesc:a75b2d85620fbbd207cc83efe12a9ef93"><td class="mdescLeft">&#160;</td><td class="mdescRight">自动 url_encode 拼接  <br /></td></tr>
+<tr class="memitem:a30e1a3c701d04c7c47cd8bb546e9458a" id="r_a30e1a3c701d04c7c47cd8bb546e9458a"><td class="memItemLeft">std::vector&lt; std::pair&lt; std::string, std::string &gt; &gt;&#160;</td><td class="memItemRight"><a class="el" href="#a30e1a3c701d04c7c47cd8bb546e9458a">headers</a></td></tr>
+<tr class="memdesc:a30e1a3c701d04c7c47cd8bb546e9458a"><td class="mdescLeft">&#160;</td><td class="mdescRight">请求头  <br /></td></tr>
+<tr class="memitem:a9ba909f03dc7486bc61744ffb4b29936" id="r_a9ba909f03dc7486bc61744ffb4b29936"><td class="memItemLeft">std::optional&lt; std::string &gt;&#160;</td><td class="memItemRight"><a class="el" href="#a9ba909f03dc7486bc61744ffb4b29936">body</a></td></tr>
+<tr class="memdesc:a9ba909f03dc7486bc61744ffb4b29936"><td class="mdescLeft">&#160;</td><td class="mdescRight">请求体（字符串形态）  <br /></td></tr>
+<tr class="memitem:a2fb40c07c57a85879ba2874eeeb0341c" id="r_a2fb40c07c57a85879ba2874eeeb0341c"><td class="memItemLeft">std::optional&lt; std::string &gt;&#160;</td><td class="memItemRight"><a class="el" href="#a2fb40c07c57a85879ba2874eeeb0341c">content_type</a></td></tr>
+<tr class="memdesc:a2fb40c07c57a85879ba2874eeeb0341c"><td class="mdescLeft">&#160;</td><td class="mdescRight">body 的 Content-Type  <br /></td></tr>
+<tr class="memitem:a4b658a10264ea3319a8387ea0a1b209c" id="r_a4b658a10264ea3319a8387ea0a1b209c"><td class="memItemLeft">std::vector&lt; <a class="el" href="structagent_1_1_multipart_part.html">MultipartPart</a> &gt;&#160;</td><td class="memItemRight"><a class="el" href="#a4b658a10264ea3319a8387ea0a1b209c">multipart</a></td></tr>
+<tr class="memdesc:a4b658a10264ea3319a8387ea0a1b209c"><td class="mdescLeft">&#160;</td><td class="mdescRight">multipart 表单 parts  <br /></td></tr>
+<tr class="memitem:a28272479eb2d4d73f77da29d712c4760" id="r_a28272479eb2d4d73f77da29d712c4760"><td class="memItemLeft">std::optional&lt; std::string &gt;&#160;</td><td class="memItemRight"><a class="el" href="#a28272479eb2d4d73f77da29d712c4760">upload_file</a></td></tr>
+<tr class="memdesc:a28272479eb2d4d73f77da29d712c4760"><td class="mdescLeft">&#160;</td><td class="mdescRight">大文件流式上传路径  <br /></td></tr>
+<tr class="memitem:a8b2f4b41bf38e0b5e70d6cf0d0c9f3c7" id="r_a8b2f4b41bf38e0b5e70d6cf0d0c9f3c7"><td class="memItemLeft">HttpAuth&#160;</td><td class="memItemRight"><a class="el" href="#a8b2f4b41bf38e0b5e70d6cf0d0c9f3c7">auth</a> = HttpAuth::None</td></tr>
+<tr class="memdesc:a8b2f4b41bf38e0b5e70d6cf0d0c9f3c7"><td class="mdescLeft">&#160;</td><td class="mdescRight">认证方式  <br /></td></tr>
+<tr class="memitem:a75c0a1ea8454213e5a1622538d9a5d45" id="r_a75c0a1ea8454213e5a1622538d9a5d45"><td class="memItemLeft">std::optional&lt; std::string &gt;&#160;</td><td class="memItemRight"><a class="el" href="#a75c0a1ea8454213e5a1622538d9a5d45">auth_credentials</a></td></tr>
+<tr class="memdesc:a75c0a1ea8454213e5a1622538d9a5d45"><td class="mdescLeft">&#160;</td><td class="mdescRight">"user:pass"（Basic/Digest/Ntlm/Negotiate）  <br /></td></tr>
+<tr class="memitem:ac9808dd2c2fdf364a154a734a1fdd0d4" id="r_ac9808dd2c2fdf364a154a734a1fdd0d4"><td class="memItemLeft">bool&#160;</td><td class="memItemRight"><a class="el" href="#ac9808dd2c2fdf364a154a734a1fdd0d4">verify_tls</a> = true</td></tr>
+<tr class="memdesc:ac9808dd2c2fdf364a154a734a1fdd0d4"><td class="mdescLeft">&#160;</td><td class="mdescRight">是否校验证书（自签端点可关）  <br /></td></tr>
+<tr class="memitem:a2b3998f1f48d20c08f608a37289b84e4" id="r_a2b3998f1f48d20c08f608a37289b84e4"><td class="memItemLeft">std::optional&lt; std::string &gt;&#160;</td><td class="memItemRight"><a class="el" href="#a2b3998f1f48d20c08f608a37289b84e4">ca_file</a></td></tr>
+<tr class="memdesc:a2b3998f1f48d20c08f608a37289b84e4"><td class="mdescLeft">&#160;</td><td class="mdescRight">CA 证书文件（覆盖系统信任库）  <br /></td></tr>
+<tr class="memitem:ab71eca808e6bfb779f410cb174497ab0" id="r_ab71eca808e6bfb779f410cb174497ab0"><td class="memItemLeft">std::optional&lt; std::string &gt;&#160;</td><td class="memItemRight"><a class="el" href="#ab71eca808e6bfb779f410cb174497ab0">client_cert</a></td></tr>
+<tr class="memdesc:ab71eca808e6bfb779f410cb174497ab0"><td class="mdescLeft">&#160;</td><td class="mdescRight">客户端证书（双向 TLS）  <br /></td></tr>
+<tr class="memitem:ac69741bb6034c2b36a6aa9e4acf62684" id="r_ac69741bb6034c2b36a6aa9e4acf62684"><td class="memItemLeft">std::optional&lt; std::string &gt;&#160;</td><td class="memItemRight"><a class="el" href="#ac69741bb6034c2b36a6aa9e4acf62684">client_key</a></td></tr>
+<tr class="memdesc:ac69741bb6034c2b36a6aa9e4acf62684"><td class="mdescLeft">&#160;</td><td class="mdescRight">客户端私钥  <br /></td></tr>
+<tr class="memitem:a37b20e74c7ce1cfe4f5d025e58322f93" id="r_a37b20e74c7ce1cfe4f5d025e58322f93"><td class="memItemLeft">std::optional&lt; std::string &gt;&#160;</td><td class="memItemRight"><a class="el" href="#a37b20e74c7ce1cfe4f5d025e58322f93">client_key_password</a></td></tr>
+<tr class="memdesc:a37b20e74c7ce1cfe4f5d025e58322f93"><td class="mdescLeft">&#160;</td><td class="mdescRight">私钥口令  <br /></td></tr>
+<tr class="memitem:ad0da912cf439a73332420a8a46dd71f7" id="r_ad0da912cf439a73332420a8a46dd71f7"><td class="memItemLeft">bool&#160;</td><td class="memItemRight"><a class="el" href="#ad0da912cf439a73332420a8a46dd71f7">follow_redirects</a> = false</td></tr>
+<tr class="memdesc:ad0da912cf439a73332420a8a46dd71f7"><td class="mdescLeft">&#160;</td><td class="mdescRight">是否跟随重定向  <br /></td></tr>
+<tr class="memitem:afe065e96ce22043b53ef8485dc33652d" id="r_afe065e96ce22043b53ef8485dc33652d"><td class="memItemLeft">int&#160;</td><td class="memItemRight"><a class="el" href="#afe065e96ce22043b53ef8485dc33652d">max_redirects</a> = 5</td></tr>
+<tr class="memdesc:afe065e96ce22043b53ef8485dc33652d"><td class="mdescLeft">&#160;</td><td class="mdescRight">最大重定向次数  <br /></td></tr>
+<tr class="memitem:a40a63f5ef5959be5fc5d9beef2201e1f" id="r_a40a63f5ef5959be5fc5d9beef2201e1f"><td class="memItemLeft">bool&#160;</td><td class="memItemRight"><a class="el" href="#a40a63f5ef5959be5fc5d9beef2201e1f">auto_referer</a> = false</td></tr>
+<tr class="memdesc:a40a63f5ef5959be5fc5d9beef2201e1f"><td class="mdescLeft">&#160;</td><td class="mdescRight">自动带 Referer  <br /></td></tr>
+<tr class="memitem:ae8e17c77e3f256c3955a6893f513f8be" id="r_ae8e17c77e3f256c3955a6893f513f8be"><td class="memItemLeft">std::optional&lt; std::string &gt;&#160;</td><td class="memItemRight"><a class="el" href="#ae8e17c77e3f256c3955a6893f513f8be">proxy</a></td></tr>
+<tr class="memdesc:ae8e17c77e3f256c3955a6893f513f8be"><td class="mdescLeft">&#160;</td><td class="mdescRight">代理地址（如 <a href="http://127.0.0.1:7890）">http://127.0.0.1:7890）</a>  <br /></td></tr>
+<tr class="memitem:a823a8937a465c0b9a8503f13015a0ab3" id="r_a823a8937a465c0b9a8503f13015a0ab3"><td class="memItemLeft">HttpProxyType&#160;</td><td class="memItemRight"><a class="el" href="#a823a8937a465c0b9a8503f13015a0ab3">proxy_type</a> = HttpProxyType::Http</td></tr>
+<tr class="memdesc:a823a8937a465c0b9a8503f13015a0ab3"><td class="mdescLeft">&#160;</td><td class="mdescRight">代理类型  <br /></td></tr>
+<tr class="memitem:afb2ccdd075b1a9ed605147affec10414" id="r_afb2ccdd075b1a9ed605147affec10414"><td class="memItemLeft">std::optional&lt; std::string &gt;&#160;</td><td class="memItemRight"><a class="el" href="#afb2ccdd075b1a9ed605147affec10414">proxy_auth</a></td></tr>
+<tr class="memdesc:afb2ccdd075b1a9ed605147affec10414"><td class="mdescLeft">&#160;</td><td class="mdescRight">代理认证 "user:pass"  <br /></td></tr>
+<tr class="memitem:ac507326eab56b2ed2e0ec43e42b39db2" id="r_ac507326eab56b2ed2e0ec43e42b39db2"><td class="memItemLeft">std::optional&lt; std::string &gt;&#160;</td><td class="memItemRight"><a class="el" href="#ac507326eab56b2ed2e0ec43e42b39db2">cookie</a></td></tr>
+<tr class="memdesc:ac507326eab56b2ed2e0ec43e42b39db2"><td class="mdescLeft">&#160;</td><td class="mdescRight">一次性 "k=v; k2=v2"  <br /></td></tr>
+<tr class="memitem:ad843d13e4d375af234e79f9b9c46b398" id="r_ad843d13e4d375af234e79f9b9c46b398"><td class="memItemLeft">std::optional&lt; std::string &gt;&#160;</td><td class="memItemRight"><a class="el" href="#ad843d13e4d375af234e79f9b9c46b398">cookie_file</a></td></tr>
+<tr class="memdesc:ad843d13e4d375af234e79f9b9c46b398"><td class="mdescLeft">&#160;</td><td class="mdescRight">读 jar 文件（空串 = 内存 jar）  <br /></td></tr>
+<tr class="memitem:a832739bd372927d23317a7d079f6e3bd" id="r_a832739bd372927d23317a7d079f6e3bd"><td class="memItemLeft">std::optional&lt; std::string &gt;&#160;</td><td class="memItemRight"><a class="el" href="#a832739bd372927d23317a7d079f6e3bd">cookie_jar</a></td></tr>
+<tr class="memdesc:a832739bd372927d23317a7d079f6e3bd"><td class="mdescLeft">&#160;</td><td class="mdescRight">响应后写 jar 文件  <br /></td></tr>
+<tr class="memitem:a92e8664261d491e1eb96bd24f704bce3" id="r_a92e8664261d491e1eb96bd24f704bce3"><td class="memItemLeft">bool&#160;</td><td class="memItemRight"><a class="el" href="#a92e8664261d491e1eb96bd24f704bce3">cookie_session</a> = false</td></tr>
+<tr class="memdesc:a92e8664261d491e1eb96bd24f704bce3"><td class="mdescLeft">&#160;</td><td class="mdescRight">会话 cookie（不持久化）  <br /></td></tr>
+</table>
+<a name="details" id="details"></a><h2 id="header-details" class="groupheader">详细描述</h2>
+<div class="textblock"><p>一次 HTTP 请求「发什么 + 怎么发」。 </p>
+
+<p class="definition">在文件 <a class="el" href="http__client_8hpp_source.html">http_client.hpp</a> 第 <a class="el" href="http__client_8hpp_source.html#l00058">58</a> 行定义.</p>
+</div><a name="doc-variable-members" id="doc-variable-members"></a><h2 id="header-doc-variable-members" class="groupheader">类成员变量说明</h2>
+<a id="a8b2f4b41bf38e0b5e70d6cf0d0c9f3c7" name="a8b2f4b41bf38e0b5e70d6cf0d0c9f3c7"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a8b2f4b41bf38e0b5e70d6cf0d0c9f3c7">&#9670;&#160;</a></span>auth</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">HttpAuth agent::HttpRequest::auth = HttpAuth::None</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>认证方式 </p>
+
+<p class="definition">在文件 <a class="el" href="http__client_8hpp_source.html">http_client.hpp</a> 第 <a class="el" href="http__client_8hpp_source.html#l00071">71</a> 行定义.</p>
+
+</div>
+</div>
+<a id="a75c0a1ea8454213e5a1622538d9a5d45" name="a75c0a1ea8454213e5a1622538d9a5d45"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a75c0a1ea8454213e5a1622538d9a5d45">&#9670;&#160;</a></span>auth_credentials</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::optional&lt;std::string&gt; agent::HttpRequest::auth_credentials</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>"user:pass"（Basic/Digest/Ntlm/Negotiate） </p>
+<p>TLS </p>
+
+<p class="definition">在文件 <a class="el" href="http__client_8hpp_source.html">http_client.hpp</a> 第 <a class="el" href="http__client_8hpp_source.html#l00072">72</a> 行定义.</p>
+
+</div>
+</div>
+<a id="a40a63f5ef5959be5fc5d9beef2201e1f" name="a40a63f5ef5959be5fc5d9beef2201e1f"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a40a63f5ef5959be5fc5d9beef2201e1f">&#9670;&#160;</a></span>auto_referer</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool agent::HttpRequest::auto_referer = false</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>自动带 Referer </p>
+<p>代理 </p>
+
+<p class="definition">在文件 <a class="el" href="http__client_8hpp_source.html">http_client.hpp</a> 第 <a class="el" href="http__client_8hpp_source.html#l00084">84</a> 行定义.</p>
+
+</div>
+</div>
+<a id="a9ba909f03dc7486bc61744ffb4b29936" name="a9ba909f03dc7486bc61744ffb4b29936"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a9ba909f03dc7486bc61744ffb4b29936">&#9670;&#160;</a></span>body</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::optional&lt;std::string&gt; agent::HttpRequest::body</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>请求体（字符串形态） </p>
+
+<p class="definition">在文件 <a class="el" href="http__client_8hpp_source.html">http_client.hpp</a> 第 <a class="el" href="http__client_8hpp_source.html#l00065">65</a> 行定义.</p>
+
+</div>
+</div>
+<a id="a2b3998f1f48d20c08f608a37289b84e4" name="a2b3998f1f48d20c08f608a37289b84e4"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a2b3998f1f48d20c08f608a37289b84e4">&#9670;&#160;</a></span>ca_file</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::optional&lt;std::string&gt; agent::HttpRequest::ca_file</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>CA 证书文件（覆盖系统信任库） </p>
+
+<p class="definition">在文件 <a class="el" href="http__client_8hpp_source.html">http_client.hpp</a> 第 <a class="el" href="http__client_8hpp_source.html#l00076">76</a> 行定义.</p>
+
+</div>
+</div>
+<a id="ab71eca808e6bfb779f410cb174497ab0" name="ab71eca808e6bfb779f410cb174497ab0"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ab71eca808e6bfb779f410cb174497ab0">&#9670;&#160;</a></span>client_cert</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::optional&lt;std::string&gt; agent::HttpRequest::client_cert</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>客户端证书（双向 TLS） </p>
+
+<p class="definition">在文件 <a class="el" href="http__client_8hpp_source.html">http_client.hpp</a> 第 <a class="el" href="http__client_8hpp_source.html#l00077">77</a> 行定义.</p>
+
+</div>
+</div>
+<a id="ac69741bb6034c2b36a6aa9e4acf62684" name="ac69741bb6034c2b36a6aa9e4acf62684"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ac69741bb6034c2b36a6aa9e4acf62684">&#9670;&#160;</a></span>client_key</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::optional&lt;std::string&gt; agent::HttpRequest::client_key</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>客户端私钥 </p>
+
+<p class="definition">在文件 <a class="el" href="http__client_8hpp_source.html">http_client.hpp</a> 第 <a class="el" href="http__client_8hpp_source.html#l00078">78</a> 行定义.</p>
+
+</div>
+</div>
+<a id="a37b20e74c7ce1cfe4f5d025e58322f93" name="a37b20e74c7ce1cfe4f5d025e58322f93"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a37b20e74c7ce1cfe4f5d025e58322f93">&#9670;&#160;</a></span>client_key_password</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::optional&lt;std::string&gt; agent::HttpRequest::client_key_password</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>私钥口令 </p>
+<p>重定向 </p>
+
+<p class="definition">在文件 <a class="el" href="http__client_8hpp_source.html">http_client.hpp</a> 第 <a class="el" href="http__client_8hpp_source.html#l00079">79</a> 行定义.</p>
+
+</div>
+</div>
+<a id="a2fb40c07c57a85879ba2874eeeb0341c" name="a2fb40c07c57a85879ba2874eeeb0341c"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a2fb40c07c57a85879ba2874eeeb0341c">&#9670;&#160;</a></span>content_type</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::optional&lt;std::string&gt; agent::HttpRequest::content_type</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>body 的 Content-Type </p>
+
+<p class="definition">在文件 <a class="el" href="http__client_8hpp_source.html">http_client.hpp</a> 第 <a class="el" href="http__client_8hpp_source.html#l00066">66</a> 行定义.</p>
+
+</div>
+</div>
+<a id="ac507326eab56b2ed2e0ec43e42b39db2" name="ac507326eab56b2ed2e0ec43e42b39db2"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ac507326eab56b2ed2e0ec43e42b39db2">&#9670;&#160;</a></span>cookie</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::optional&lt;std::string&gt; agent::HttpRequest::cookie</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>一次性 "k=v; k2=v2" </p>
+
+<p class="definition">在文件 <a class="el" href="http__client_8hpp_source.html">http_client.hpp</a> 第 <a class="el" href="http__client_8hpp_source.html#l00092">92</a> 行定义.</p>
+
+</div>
+</div>
+<a id="ad843d13e4d375af234e79f9b9c46b398" name="ad843d13e4d375af234e79f9b9c46b398"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ad843d13e4d375af234e79f9b9c46b398">&#9670;&#160;</a></span>cookie_file</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::optional&lt;std::string&gt; agent::HttpRequest::cookie_file</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>读 jar 文件（空串 = 内存 jar） </p>
+
+<p class="definition">在文件 <a class="el" href="http__client_8hpp_source.html">http_client.hpp</a> 第 <a class="el" href="http__client_8hpp_source.html#l00093">93</a> 行定义.</p>
+
+</div>
+</div>
+<a id="a832739bd372927d23317a7d079f6e3bd" name="a832739bd372927d23317a7d079f6e3bd"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a832739bd372927d23317a7d079f6e3bd">&#9670;&#160;</a></span>cookie_jar</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::optional&lt;std::string&gt; agent::HttpRequest::cookie_jar</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>响应后写 jar 文件 </p>
+
+<p class="definition">在文件 <a class="el" href="http__client_8hpp_source.html">http_client.hpp</a> 第 <a class="el" href="http__client_8hpp_source.html#l00094">94</a> 行定义.</p>
+
+</div>
+</div>
+<a id="a92e8664261d491e1eb96bd24f704bce3" name="a92e8664261d491e1eb96bd24f704bce3"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a92e8664261d491e1eb96bd24f704bce3">&#9670;&#160;</a></span>cookie_session</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool agent::HttpRequest::cookie_session = false</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>会话 cookie（不持久化） </p>
+
+<p class="definition">在文件 <a class="el" href="http__client_8hpp_source.html">http_client.hpp</a> 第 <a class="el" href="http__client_8hpp_source.html#l00095">95</a> 行定义.</p>
+
+</div>
+</div>
+<a id="ad0da912cf439a73332420a8a46dd71f7" name="ad0da912cf439a73332420a8a46dd71f7"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ad0da912cf439a73332420a8a46dd71f7">&#9670;&#160;</a></span>follow_redirects</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool agent::HttpRequest::follow_redirects = false</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>是否跟随重定向 </p>
+
+<p class="definition">在文件 <a class="el" href="http__client_8hpp_source.html">http_client.hpp</a> 第 <a class="el" href="http__client_8hpp_source.html#l00082">82</a> 行定义.</p>
+
+</div>
+</div>
+<a id="a30e1a3c701d04c7c47cd8bb546e9458a" name="a30e1a3c701d04c7c47cd8bb546e9458a"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a30e1a3c701d04c7c47cd8bb546e9458a">&#9670;&#160;</a></span>headers</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::vector&lt;std::pair&lt;std::string, std::string&gt; &gt; agent::HttpRequest::headers</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>请求头 </p>
+<p>body 三选一：字符串（+ content_type）/ multipart / 大文件流式上传 </p>
+
+<p class="definition">在文件 <a class="el" href="http__client_8hpp_source.html">http_client.hpp</a> 第 <a class="el" href="http__client_8hpp_source.html#l00062">62</a> 行定义.</p>
+
+</div>
+</div>
+<a id="afe065e96ce22043b53ef8485dc33652d" name="afe065e96ce22043b53ef8485dc33652d"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#afe065e96ce22043b53ef8485dc33652d">&#9670;&#160;</a></span>max_redirects</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">int agent::HttpRequest::max_redirects = 5</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>最大重定向次数 </p>
+
+<p class="definition">在文件 <a class="el" href="http__client_8hpp_source.html">http_client.hpp</a> 第 <a class="el" href="http__client_8hpp_source.html#l00083">83</a> 行定义.</p>
+
+</div>
+</div>
+<a id="ab836705f2590f6a0aa4e8ed58f6d3705" name="ab836705f2590f6a0aa4e8ed58f6d3705"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ab836705f2590f6a0aa4e8ed58f6d3705">&#9670;&#160;</a></span>method</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::string agent::HttpRequest::method = &quot;GET&quot;</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>GET/POST/PUT/PATCH/DELETE/HEAD/OPTIONS/任意 </p>
+
+<p class="definition">在文件 <a class="el" href="http__client_8hpp_source.html">http_client.hpp</a> 第 <a class="el" href="http__client_8hpp_source.html#l00059">59</a> 行定义.</p>
+
+</div>
+</div>
+<a id="a4b658a10264ea3319a8387ea0a1b209c" name="a4b658a10264ea3319a8387ea0a1b209c"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a4b658a10264ea3319a8387ea0a1b209c">&#9670;&#160;</a></span>multipart</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::vector&lt;<a class="el" href="structagent_1_1_multipart_part.html">MultipartPart</a>&gt; agent::HttpRequest::multipart</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>multipart 表单 parts </p>
+
+<p class="definition">在文件 <a class="el" href="http__client_8hpp_source.html">http_client.hpp</a> 第 <a class="el" href="http__client_8hpp_source.html#l00067">67</a> 行定义.</p>
+
+</div>
+</div>
+<a id="ae8e17c77e3f256c3955a6893f513f8be" name="ae8e17c77e3f256c3955a6893f513f8be"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ae8e17c77e3f256c3955a6893f513f8be">&#9670;&#160;</a></span>proxy</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::optional&lt;std::string&gt; agent::HttpRequest::proxy</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>代理地址（如 <a href="http://127.0.0.1:7890）">http://127.0.0.1:7890）</a> </p>
+
+<p class="definition">在文件 <a class="el" href="http__client_8hpp_source.html">http_client.hpp</a> 第 <a class="el" href="http__client_8hpp_source.html#l00087">87</a> 行定义.</p>
+
+</div>
+</div>
+<a id="afb2ccdd075b1a9ed605147affec10414" name="afb2ccdd075b1a9ed605147affec10414"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#afb2ccdd075b1a9ed605147affec10414">&#9670;&#160;</a></span>proxy_auth</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::optional&lt;std::string&gt; agent::HttpRequest::proxy_auth</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>代理认证 "user:pass" </p>
+<p>Cookie </p>
+
+<p class="definition">在文件 <a class="el" href="http__client_8hpp_source.html">http_client.hpp</a> 第 <a class="el" href="http__client_8hpp_source.html#l00089">89</a> 行定义.</p>
+
+</div>
+</div>
+<a id="a823a8937a465c0b9a8503f13015a0ab3" name="a823a8937a465c0b9a8503f13015a0ab3"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a823a8937a465c0b9a8503f13015a0ab3">&#9670;&#160;</a></span>proxy_type</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">HttpProxyType agent::HttpRequest::proxy_type = HttpProxyType::Http</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>代理类型 </p>
+
+<p class="definition">在文件 <a class="el" href="http__client_8hpp_source.html">http_client.hpp</a> 第 <a class="el" href="http__client_8hpp_source.html#l00088">88</a> 行定义.</p>
+
+</div>
+</div>
+<a id="a75b2d85620fbbd207cc83efe12a9ef93" name="a75b2d85620fbbd207cc83efe12a9ef93"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a75b2d85620fbbd207cc83efe12a9ef93">&#9670;&#160;</a></span>query</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::vector&lt;std::pair&lt;std::string, std::string&gt; &gt; agent::HttpRequest::query</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>自动 url_encode 拼接 </p>
+
+<p class="definition">在文件 <a class="el" href="http__client_8hpp_source.html">http_client.hpp</a> 第 <a class="el" href="http__client_8hpp_source.html#l00061">61</a> 行定义.</p>
+
+</div>
+</div>
+<a id="a28272479eb2d4d73f77da29d712c4760" name="a28272479eb2d4d73f77da29d712c4760"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a28272479eb2d4d73f77da29d712c4760">&#9670;&#160;</a></span>upload_file</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::optional&lt;std::string&gt; agent::HttpRequest::upload_file</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>大文件流式上传路径 </p>
+<p>认证 </p>
+
+<p class="definition">在文件 <a class="el" href="http__client_8hpp_source.html">http_client.hpp</a> 第 <a class="el" href="http__client_8hpp_source.html#l00068">68</a> 行定义.</p>
+
+</div>
+</div>
+<a id="a70282352af8b7b5a326237f59a1bfd0c" name="a70282352af8b7b5a326237f59a1bfd0c"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a70282352af8b7b5a326237f59a1bfd0c">&#9670;&#160;</a></span>url</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::string agent::HttpRequest::url</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>请求 URL（可已带 query） </p>
+
+<p class="definition">在文件 <a class="el" href="http__client_8hpp_source.html">http_client.hpp</a> 第 <a class="el" href="http__client_8hpp_source.html#l00060">60</a> 行定义.</p>
+
+</div>
+</div>
+<a id="ac9808dd2c2fdf364a154a734a1fdd0d4" name="ac9808dd2c2fdf364a154a734a1fdd0d4"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ac9808dd2c2fdf364a154a734a1fdd0d4">&#9670;&#160;</a></span>verify_tls</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool agent::HttpRequest::verify_tls = true</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>是否校验证书（自签端点可关） </p>
+
+<p class="definition">在文件 <a class="el" href="http__client_8hpp_source.html">http_client.hpp</a> 第 <a class="el" href="http__client_8hpp_source.html#l00075">75</a> 行定义.</p>
+
+</div>
+</div>
+<hr/>该结构体的文档由以下文件生成:<ul>
+<li><a class="el" href="http__client_8hpp_source.html">http_client.hpp</a></li>
+</ul>
+</div><!-- contents -->
+</div><!-- doc-content -->
+<div id="page-nav" class="page-nav-panel">
+<div id="page-nav-resize-handle"></div>
+<div id="page-nav-tree">
+<div id="page-nav-contents">
+</div><!-- page-nav-contents -->
+</div><!-- page-nav-tree -->
+</div><!-- page-nav -->
+</div><!-- container -->
+<!-- start footer part -->
+<div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
+  <ul>
+    <li class="navelem"><b>agent</b></li><li class="navelem"><a href="structagent_1_1_http_request.html">HttpRequest</a></li>
+    <li class="footer">制作者 <a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.17.0 </li>
+  </ul>
+</div>
+</body>
+</html>

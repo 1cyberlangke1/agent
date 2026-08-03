@@ -1,0 +1,191 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "https://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="zh">
+<head>
+<meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=11"/>
+<meta name="generator" content="Doxygen 1.17.0"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>agent: 类列表</title>
+<link href="tabs.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="codefolding.js"></script>
+<script type="text/javascript" src="clipboard.js"></script>
+<link href="navtree.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="navtreedata.js"></script>
+<script type="text/javascript" src="navtree.js"></script>
+<script type="text/javascript" src="cookie.js"></script>
+<link href="search/search.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="search/searchdata.js"></script>
+<script type="text/javascript" src="search/search.js"></script>
+<script type="module">
+import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.esm.min.mjs';
+const theme = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'default';
+mermaid.initialize({ startOnLoad: true, theme: theme });
+</script>
+<link href="doxygen.css" rel="stylesheet" type="text/css" />
+</head>
+<body>
+<div id="top"><!-- do not remove this div, it is closed by doxygen! -->
+<div id="titlearea">
+<table cellspacing="0" cellpadding="0">
+ <tbody>
+ <tr id="projectrow">
+  <td id="projectalign">
+   <div id="projectname">agent<span id="projectnumber">&#160;experimental</span>
+   </div>
+   <div id="projectbrief">C++26 实验性 LLM / Agent 库</div>
+  </td>
+ </tr>
+ </tbody>
+</table>
+</div>
+<!-- end header part -->
+<!-- 制作者 Doxygen 1.17.0 -->
+<script type="text/javascript">
+let searchBox = new SearchBox("searchBox", "search/",'.html');
+</script>
+<script type="text/javascript">
+document.addEventListener('DOMContentLoaded', codefold.init);
+</script>
+<script type="text/javascript" src="menudata.js"></script>
+<script type="text/javascript" src="menu.js"></script>
+<script type="text/javascript">
+document.addEventListener('DOMContentLoaded', () => {
+  initMenu('',true);
+  init_search();
+});
+</script>
+<div id="main-nav-mobile">
+<div class="sm sm-dox"><input id="main-menu-state" type="checkbox"/>
+<label class="main-menu-btn" for="main-menu-state">
+<span class="main-menu-btn-icon"></span> Toggle main menu visibility</label>
+<span id="searchBoxPos1" style="position:absolute;right:8px;top:8px;height:36px;"></span>
+</div>
+</div><!-- main-nav-mobile -->
+<div id="main-nav">
+  <ul class="sm sm-dox" id="main-menu">
+    <li id="searchBoxPos2" style="float:right">
+        <div id="MSearchBox" class="MSearchBoxInactive">
+        <span class="left">
+          <span id="MSearchSelect" class="search-icon" onmouseover="return searchBox.OnSearchSelectShow()" onmouseout="return searchBox.OnSearchSelectHide()"><span class="search-icon-dropdown"></span></span>
+          <input type="text" id="MSearchField" value="" placeholder="搜索" accesskey="S"
+               onfocus="searchBox.OnSearchFieldFocus(true)" 
+               onblur="searchBox.OnSearchFieldFocus(false)" 
+               onkeyup="searchBox.OnSearchFieldChange(event)"/>
+          </span><span class="right">
+            <a id="MSearchClose" href="javascript:searchBox.CloseResultsWindow()"><div id="MSearchCloseImg" class="close-icon"></div></a>
+          </span>
+        </div>
+    </li>
+  </ul>
+</div><!-- main-nav -->
+</div><!-- top -->
+<div id="side-nav" class="ui-resizable side-nav-resizable">
+  <div id="nav-tree">
+    <div id="nav-tree-contents">
+      <div id="nav-sync" class="sync"></div>
+    </div>
+  </div>
+  <div id="splitbar" style="-moz-user-select:none;" 
+       class="ui-resizable-handle">
+  </div>
+</div>
+<script type="text/javascript">
+document.addEventListener('DOMContentLoaded',() => { initNavTree('annotated.html','',''); });
+</script>
+<div id="container">
+<div id="doc-content">
+<!-- window showing the filter options -->
+<div id="MSearchSelectWindow"
+     onmouseover="return searchBox.OnSearchSelectShow()"
+     onmouseout="return searchBox.OnSearchSelectHide()"
+     onkeydown="return searchBox.OnSearchSelectKey(event)">
+</div>
+
+<!-- iframe showing the search results (closed by default) -->
+<div id="MSearchResultsWindow">
+<div id="MSearchResults">
+<div class="SRPage">
+<div id="SRIndex">
+<div id="SRResults"></div>
+<div class="SRStatus" id="Loading">载入中...</div>
+<div class="SRStatus" id="Searching">搜索中...</div>
+<div class="SRStatus" id="NoMatches">未找到</div>
+</div>
+</div>
+</div>
+</div>
+
+<div class="header">
+  <div class="headertitle"><div class="title">类列表</div></div>
+</div><!--header-->
+<div class="contents">
+<div class="textblock">这里列出了所有类、结构、联合以及接口定义等，并附带简要说明:</div><div class="directory">
+<table class="directory">
+<tr id="row_0_" class="even"><td class="entry"><span style="width:16px;display:inline-block;">&#160;</span><span class="icona"><span class="icon">N</span></span><b>agent</b></td><td class="desc"></td></tr>
+<tr id="row_0_0_" class="odd"><td class="entry"><span style="width:32px;display:inline-block;">&#160;</span><span class="icona"><span class="icon">C</span></span><a class="el" href="classagent_1_1_agent.html" target="_self">Agent</a></td><td class="desc">高层 Agent：多轮对话 + 工具调用的驱动核心。 </td></tr>
+<tr id="row_0_1_" class="even"><td class="entry"><span style="width:32px;display:inline-block;">&#160;</span><span class="icona"><span class="icon">C</span></span><a class="el" href="structagent_1_1_agent_end.html" target="_self">AgentEnd</a></td><td class="desc">Run 结束，携带完整对话 </td></tr>
+<tr id="row_0_2_" class="odd"><td class="entry"><span style="width:32px;display:inline-block;">&#160;</span><span class="icona"><span class="icon">C</span></span><a class="el" href="structagent_1_1_agent_error.html" target="_self">AgentError</a></td><td class="desc">失败不裸抛（对齐 pi failure message） </td></tr>
+<tr id="row_0_3_" class="even"><td class="entry"><span style="width:32px;display:inline-block;">&#160;</span><span class="icona"><span class="icon">C</span></span><a class="el" href="classagent_1_1_agent_event.html" target="_self">AgentEvent</a></td><td class="desc">统一事件（variant 风格，对齐 StreamEvent）。聚合初始化： <span class="tt"><a class="el" href="classagent_1_1_agent_event.html" title="统一事件（variant 风格，对齐 StreamEvent）。聚合初始化： AgentEvent{ MessageStart{ msg } } 直接初始化 data。">AgentEvent</a>{ <a class="el" href="structagent_1_1_message_start.html" title="一条消息出现（user / assistant / toolResult 都发）">MessageStart</a>{ msg } }</span> 直接初始化 data。 </td></tr>
+<tr id="row_0_4_" class="odd"><td class="entry"><span style="width:32px;display:inline-block;">&#160;</span><span class="icona"><span class="icon">C</span></span><a class="el" href="structagent_1_1_agent_start.html" target="_self">AgentStart</a></td><td class="desc">Run 开始（纯信号） </td></tr>
+<tr id="row_0_5_" class="even"><td class="entry"><span style="width:32px;display:inline-block;">&#160;</span><span class="icona"><span class="icon">C</span></span><a class="el" href="classagent_1_1_async_stream.html" target="_self">AsyncStream</a></td><td class="desc">基于 asio::experimental::basic_concurrent_channel 的薄包装。 ⚠️ 不用 concurrent_channel 别名——它硬编码 channel_traits&lt;&gt;（缺 receive_cancelled/closed_signature），编译报错（L0-spike 已验证）。 必须显式 traits： basic_concurrent_channel&lt;any_io_executor, channel_traits&lt;void(error_code, T)&gt;, void(error_code, T)&gt; </td></tr>
+<tr id="row_0_6_" class="odd"><td class="entry"><span style="width:32px;display:inline-block;">&#160;</span><span class="icona"><span class="icon">C</span></span><a class="el" href="structagent_1_1_chat_response.html" target="_self">ChatResponse</a></td><td class="desc">一次完整（非流式或流式收尾）的模型响应。 </td></tr>
+<tr id="row_0_7_" class="even"><td class="entry"><span style="width:32px;display:inline-block;">&#160;</span><span class="icona"><span class="icon">C</span></span><a class="el" href="structagent_1_1_compaction_settings.html" target="_self">CompactionSettings</a></td><td class="desc">压缩策略阈值。 </td></tr>
+<tr id="row_0_8_" class="odd"><td class="entry"><span style="width:32px;display:inline-block;">&#160;</span><span class="icona"><span class="icon">C</span></span><a class="el" href="classagent_1_1_content.html" target="_self">Content</a></td><td class="desc">完整对话上下文 </td></tr>
+<tr id="row_0_9_" class="even"><td class="entry"><span style="width:32px;display:inline-block;">&#160;</span><span class="icona"><span class="icon">C</span></span><a class="el" href="structagent_1_1_context.html" target="_self">Context</a></td><td class="desc">一次 LLM 调用的完整输入。 </td></tr>
+<tr id="row_0_10_" class="odd"><td class="entry"><span style="width:32px;display:inline-block;">&#160;</span><span class="icona"><span class="icon">C</span></span><a class="el" href="structagent_1_1_context_snapshot.html" target="_self">ContextSnapshot</a></td><td class="desc">上下文快照：Agent 打包的当前上下文信息，统一传给所有 Behaviors 方法 （钩子 / 压缩判断都能拿到 usage / 上下文窗口 / 上次摘要 / 当前对话 / 模型）。 ⚠️ messages 是引用：压缩会丢弃旧段，要旧上下文请在压缩前自行读取。 </td></tr>
+<tr id="row_0_11_" class="even"><td class="entry"><span style="width:32px;display:inline-block;">&#160;</span><span class="icona"><span class="icon">C</span></span><a class="el" href="classagent_1_1_default_behaviors.html" target="_self">DefaultBehaviors</a></td><td class="desc">默认行为：钩子 + 压缩策略统一在一个对象。 未 override 的成员自动用默认行为——想扩展哪个就只写哪个。 </td></tr>
+<tr id="row_0_12_" class="odd"><td class="entry"><span style="width:32px;display:inline-block;">&#160;</span><span class="icona"><span class="icon">C</span></span><a class="el" href="structagent_1_1_desc_arg.html" target="_self">DescArg</a></td><td class="desc">注解值载体。字符串通过 define_static_string 转为 static-storage 指针后传入。 必须为 structural type 才能在 NTTP 中作为注解值。 构造函数 Desc() 在 <a class="el" href="tools__reflection_8hpp_source.html">tools_reflection.hpp</a> 中（依赖 <code>&lt;meta&gt;</code> 头）。 </td></tr>
+<tr id="row_0_13_" class="even"><td class="entry"><span style="width:32px;display:inline-block;">&#160;</span><span class="icona"><span class="icon">C</span></span><a class="el" href="structagent_1_1_done_event.html" target="_self">DoneEvent</a></td><td class="desc">流结束事件，携带完整响应。 </td></tr>
+<tr id="row_0_14_" class="odd"><td class="entry"><span style="width:32px;display:inline-block;">&#160;</span><span class="icona"><span class="icon">C</span></span><a class="el" href="structagent_1_1_endpoint_config.html" target="_self">EndpointConfig</a></td><td class="desc">厂商连接信息。不绑定 model（model 是请求参数）。 </td></tr>
+<tr id="row_0_15_" class="even"><td class="entry"><span style="width:32px;display:inline-block;">&#160;</span><span class="icona"><span class="icon">C</span></span><a class="el" href="structagent_1_1_error.html" target="_self">Error</a></td><td class="desc">错误信息 </td></tr>
+<tr id="row_0_16_" class="odd"><td class="entry"><span style="width:32px;display:inline-block;">&#160;</span><span class="icona"><span class="icon">C</span></span><a class="el" href="classagent_1_1_http_client.html" target="_self">HttpClient</a></td><td class="desc">状态化 HTTP 客户端。纯协程、零线程：executor 懒绑（co_await this_coro::executor） 或构造传入。持有**常驻 curl multi 句柄**（连接池 CURLMOPT_MAXCONNECTS）——curl 8.x 连接缓存挂在 multi 上，跨请求存活，同一 host 后续请求走 keep-alive 复用。 cookie jar 也随客户端持久。 ⚠️ 单 executor 驱动（与 CurlSession 同不变式），非线程安全，须由单一 io_context （或 strand）驱动；多次 async_request 需在同一 executor 上跑（且串行——单活跃请求）。 </td></tr>
+<tr id="row_0_17_" class="even"><td class="entry"><span style="width:32px;display:inline-block;">&#160;</span><span class="icona"><span class="icon">C</span></span><a class="el" href="structagent_1_1_http_request.html" target="_self">HttpRequest</a></td><td class="desc">一次 HTTP 请求「发什么 + 怎么发」。 </td></tr>
+<tr id="row_0_18_" class="odd"><td class="entry"><span style="width:32px;display:inline-block;">&#160;</span><span class="icona"><span class="icon">C</span></span><a class="el" href="structagent_1_1_http_request_options.html" target="_self">HttpRequestOptions</a></td><td class="desc">传输 I/O 配置：超时分层 + 重试 + 取消。 超时分层设计：单一整体超时会误杀合法长流（流式可跑数分钟）， 故拆连接/空闲/整体三档，空闲档最松、整体档兜底。 </td></tr>
+<tr id="row_0_19_" class="even"><td class="entry"><span style="width:32px;display:inline-block;">&#160;</span><span class="icona"><span class="icon">C</span></span><a class="el" href="classagent_1_1_http_response.html" target="_self">HttpResponse</a></td><td class="desc">一次非流式响应。任何 HTTP 状态码都算成功返回（status/body 可查）； Result 错误仅代表传输层失败（连不上 / 超时 / 取消 / 重试耗尽）。 </td></tr>
+<tr id="row_0_20_" class="odd"><td class="entry"><span style="width:32px;display:inline-block;">&#160;</span><span class="icona"><span class="icon">C</span></span><a class="el" href="classagent_1_1_http_stream_reader.html" target="_self">HttpStreamReader</a></td><td class="desc">流式响应读取器：open 发起请求后，next_chunk 逐块拉取响应体（pull 形态）， 供 SSE 等增量解析消费。连接在读取器生命周期内保持。 </td></tr>
+<tr id="row_0_21_" class="even"><td class="entry"><span style="width:32px;display:inline-block;">&#160;</span><span class="icona"><span class="icon">C</span></span><a class="el" href="structagent_1_1_image.html" target="_self">Image</a></td><td class="desc">图片内容块（base64 编码） </td></tr>
+<tr id="row_0_22_" class="odd"><td class="entry"><span style="width:32px;display:inline-block;">&#160;</span><span class="icona"><span class="icon">C</span></span><a class="el" href="classagent_1_1_message.html" target="_self">Message</a></td><td class="desc">一条消息，包含角色和内容块数组 </td></tr>
+<tr id="row_0_23_" class="even"><td class="entry"><span style="width:32px;display:inline-block;">&#160;</span><span class="icona"><span class="icon">C</span></span><a class="el" href="structagent_1_1_message_end.html" target="_self">MessageEnd</a></td><td class="desc">一条消息完成 </td></tr>
+<tr id="row_0_24_" class="odd"><td class="entry"><span style="width:32px;display:inline-block;">&#160;</span><span class="icona"><span class="icon">C</span></span><a class="el" href="structagent_1_1_message_start.html" target="_self">MessageStart</a></td><td class="desc">一条消息出现（user / assistant / toolResult 都发） </td></tr>
+<tr id="row_0_25_" class="even"><td class="entry"><span style="width:32px;display:inline-block;">&#160;</span><span class="icona"><span class="icon">C</span></span><a class="el" href="structagent_1_1_message_update.html" target="_self">MessageUpdate</a></td><td class="desc">Assistant 流式增量 </td></tr>
+<tr id="row_0_26_" class="odd"><td class="entry"><span style="width:32px;display:inline-block;">&#160;</span><span class="icona"><span class="icon">C</span></span><a class="el" href="classagent_1_1_model_registry.html" target="_self">ModelRegistry</a></td><td class="desc">全局模型注册表。**纯静态类**：禁实例化，全 static 成员，进程生命周期。 独立于 API 调用层——只关心「有哪些模型、元数据是什么」，零协议概念。 内置表（生成器产物）+ 运行时注册 + 合并索引；动态覆盖静态。 线程安全：**COW 不可变快照**——写路径（register）持 write_mutex_ 重建快照 原子替换；读路径（find/for_each）只 atomic load 快照，**零锁**（单线程热路径 零开销）。旧快照由 shared_ptr 保活，并发读看到一致（可能略旧）视图。 </td></tr>
+<tr id="row_0_27_" class="even"><td class="entry"><span style="width:32px;display:inline-block;">&#160;</span><span class="icona"><span class="icon">C</span></span><a class="el" href="structagent_1_1_model_view.html" target="_self">ModelView</a></td><td class="desc">统一模型视图：引擎/调用方唯一消费类型。 string_view 指向底层存储（静态 → 全局字面量；动态 → <a class="el" href="classagent_1_1_model_registry.html" title="全局模型注册表。**纯静态类**：禁实例化，全 static 成员，进程生命周期。 独立于 API 调用层——只关心「有哪些模型、元数据是什么」，零协议概念。 内置表（生成器产物）+ 运行时注册 + 合...">ModelRegistry</a> 的 deque 元素， 全局存储、地址稳定、进程生命周期），返回后长期有效。 从 BuiltinModel / <a class="el" href="structagent_1_1_runtime_model.html" title="运行时注册的模型（全 std::string 自持）。 语义同 detail::BuiltinModel，字符串动态，由 ModelRegistry 拥有生命周期。">RuntimeModel</a> 均可构造（ModelRegistry 内部转换）。 </td></tr>
+<tr id="row_0_28_" class="odd"><td class="entry"><span style="width:32px;display:inline-block;">&#160;</span><span class="icona"><span class="icon">C</span></span><a class="el" href="structagent_1_1_multipart_part.html" target="_self">MultipartPart</a></td><td class="desc">Multipart 表单的一个 part：value（文本）/ buffer（内存字节）/ file_path（文件）三选一。 </td></tr>
+<tr id="row_0_29_" class="even"><td class="entry"><span style="width:32px;display:inline-block;">&#160;</span><span class="icona"><span class="icon">C</span></span><a class="el" href="structagent_1_1_next_turn_update.html" target="_self">NextTurnUpdate</a></td><td class="desc">每轮结束可替换的运行时状态（对齐 pi AgentLoopTurnUpdate）。 </td></tr>
+<tr id="row_0_30_" class="odd"><td class="entry"><span style="width:32px;display:inline-block;">&#160;</span><span class="icona"><span class="icon">C</span></span><a class="el" href="structagent_1_1_run_start_patch.html" target="_self">RunStartPatch</a></td><td class="desc">Run 开始前可改写的初始状态（对齐 pi BeforeAgentStartResult）。 </td></tr>
+<tr id="row_0_31_" class="even"><td class="entry"><span style="width:32px;display:inline-block;">&#160;</span><span class="icona"><span class="icon">C</span></span><a class="el" href="structagent_1_1_runtime_model.html" target="_self">RuntimeModel</a></td><td class="desc">运行时注册的模型（全 std::string 自持）。 语义同 detail::BuiltinModel，字符串动态，由 <a class="el" href="classagent_1_1_model_registry.html" title="全局模型注册表。**纯静态类**：禁实例化，全 static 成员，进程生命周期。 独立于 API 调用层——只关心「有哪些模型、元数据是什么」，零协议概念。 内置表（生成器产物）+ 运行时注册 + 合...">ModelRegistry</a> 拥有生命周期。 </td></tr>
+<tr id="row_0_32_" class="odd"><td class="entry"><span style="width:32px;display:inline-block;">&#160;</span><span class="icona"><span class="icon">C</span></span><a class="el" href="classagent_1_1_stream_event.html" target="_self">StreamEvent</a></td><td class="desc">统一流事件。每个事件 = 类型判别 + 变体载荷，不用「一堆 optional 字段」。 </td></tr>
+<tr id="row_0_33_" class="even"><td class="entry"><span style="width:32px;display:inline-block;">&#160;</span><span class="icona"><span class="icon">C</span></span><a class="el" href="structagent_1_1_stream_options.html" target="_self">StreamOptions</a></td><td class="desc">流式/非流式调用的采样、缓存、传输与透传配置。 </td></tr>
+<tr id="row_0_34_" class="odd"><td class="entry"><span style="width:32px;display:inline-block;">&#160;</span><span class="icona"><span class="icon">C</span></span><a class="el" href="structagent_1_1_summary_request.html" target="_self">SummaryRequest</a></td><td class="desc">摘要请求构造（纯函数）。返回 nullopt = 未触发（估算未超限 / 无可压内容 / 切点在起点）。 </td></tr>
+<tr id="row_0_35_" class="even"><td class="entry"><span style="width:32px;display:inline-block;">&#160;</span><span class="icona"><span class="icon">C</span></span><a class="el" href="structagent_1_1_text.html" target="_self">Text</a></td><td class="desc">文本内容块 </td></tr>
+<tr id="row_0_36_" class="odd"><td class="entry"><span style="width:32px;display:inline-block;">&#160;</span><span class="icona"><span class="icon">C</span></span><a class="el" href="structagent_1_1_text_delta.html" target="_self">TextDelta</a></td><td class="desc">流式文本增量。 </td></tr>
+<tr id="row_0_37_" class="even"><td class="entry"><span style="width:32px;display:inline-block;">&#160;</span><span class="icona"><span class="icon">C</span></span><a class="el" href="structagent_1_1_thinking.html" target="_self">Thinking</a></td><td class="desc">思考链内容块 </td></tr>
+<tr id="row_0_38_" class="odd"><td class="entry"><span style="width:32px;display:inline-block;">&#160;</span><span class="icona"><span class="icon">C</span></span><a class="el" href="structagent_1_1_thinking_delta.html" target="_self">ThinkingDelta</a></td><td class="desc">流式思考内容增量。 </td></tr>
+<tr id="row_0_39_" class="even"><td class="entry"><span style="width:32px;display:inline-block;">&#160;</span><span class="icona"><span class="icon">C</span></span><a class="el" href="structagent_1_1_tool_base.html" target="_self">ToolBase</a></td><td class="desc">CRTP 自注册工具基类。 </td></tr>
+<tr id="row_0_39_0_" class="odd"><td class="entry"><span style="width:48px;display:inline-block;">&#160;</span><span class="icona"><span class="icon">C</span></span><a class="el" href="classagent_1_1_tool_base_1_1_registrar.html" target="_self">Registrar</a></td><td class="desc">注册器：构造函数在 main() 前调用 <a class="el" href="classagent_1_1_tools.html#ab636d3661377b55b327454d8082d63e9" title="运行时注册工具。">Tools::reg</a> 完成静态注册。 </td></tr>
+<tr id="row_0_40_" class="even"><td class="entry"><span style="width:32px;display:inline-block;">&#160;</span><span class="icona"><span class="icon">C</span></span><a class="el" href="structagent_1_1_tool_call.html" target="_self">ToolCall</a></td><td class="desc">工具调用内容块 </td></tr>
+<tr id="row_0_41_" class="odd"><td class="entry"><span style="width:32px;display:inline-block;">&#160;</span><span class="icona"><span class="icon">C</span></span><a class="el" href="structagent_1_1_tool_call_delta.html" target="_self">ToolCallDelta</a></td><td class="desc">工具参数增量。delta 阶段只给 JSON 字符串增量，不 parse—— 由 <a class="el" href="classagent_1_1_agent.html" title="高层 Agent：多轮对话 + 工具调用的驱动核心。">Agent</a> 层自行决定何时累积/解析。 </td></tr>
+<tr id="row_0_42_" class="even"><td class="entry"><span style="width:32px;display:inline-block;">&#160;</span><span class="icona"><span class="icon">C</span></span><a class="el" href="structagent_1_1_tool_call_end.html" target="_self">ToolCallEnd</a></td><td class="desc">工具调用完成：参数为完整解析后的 JSON 对象。 </td></tr>
+<tr id="row_0_43_" class="odd"><td class="entry"><span style="width:32px;display:inline-block;">&#160;</span><span class="icona"><span class="icon">C</span></span><a class="el" href="structagent_1_1_tool_exec_end.html" target="_self">ToolExecEnd</a></td><td class="desc">工具跑完 </td></tr>
+<tr id="row_0_44_" class="even"><td class="entry"><span style="width:32px;display:inline-block;">&#160;</span><span class="icona"><span class="icon">C</span></span><a class="el" href="structagent_1_1_tool_exec_start.html" target="_self">ToolExecStart</a></td><td class="desc">工具开跑（ToolCallDelta / <a class="el" href="structagent_1_1_tool_call_end.html" title="工具调用完成：参数为完整解析后的 JSON 对象。">ToolCallEnd</a> 复用 types.hpp，见文件头注释） </td></tr>
+<tr id="row_0_45_" class="odd"><td class="entry"><span style="width:32px;display:inline-block;">&#160;</span><span class="icona"><span class="icon">C</span></span><a class="el" href="structagent_1_1_tool_exec_update.html" target="_self">ToolExecUpdate</a></td><td class="desc">工具部分结果（当前同步工具执行不产生流式部分结果，此事件类型保留供流式工具使用） </td></tr>
+<tr id="row_0_46_" class="even"><td class="entry"><span style="width:32px;display:inline-block;">&#160;</span><span class="icona"><span class="icon">C</span></span><a class="el" href="structagent_1_1_tool_info.html" target="_self">ToolInfo</a></td><td class="desc">工具注册信息。包含名称、描述、参数 JSON Schema。 </td></tr>
+<tr id="row_0_47_" class="odd"><td class="entry"><span style="width:32px;display:inline-block;">&#160;</span><span class="icona"><span class="icon">C</span></span><a class="el" href="structagent_1_1_tool_result.html" target="_self">ToolResult</a></td><td class="desc">工具执行结果内容块 </td></tr>
+<tr id="row_0_48_" class="even"><td class="entry"><span style="width:32px;display:inline-block;">&#160;</span><span class="icona"><span class="icon">C</span></span><a class="el" href="classagent_1_1_tools.html" target="_self">Tools</a></td><td class="desc">工具注册中心。纯静态类，不可实例化。 </td></tr>
+<tr id="row_0_49_" class="odd"><td class="entry"><span style="width:32px;display:inline-block;">&#160;</span><span class="icona"><span class="icon">C</span></span><a class="el" href="structagent_1_1_turn_end.html" target="_self">TurnEnd</a></td><td class="desc">一轮结束 </td></tr>
+<tr id="row_0_50_" class="even"><td class="entry"><span style="width:32px;display:inline-block;">&#160;</span><span class="icona"><span class="icon">C</span></span><a class="el" href="structagent_1_1_turn_start.html" target="_self">TurnStart</a></td><td class="desc">一轮开始（纯信号；一轮 = 一次回复 + 其工具往返） </td></tr>
+<tr id="row_0_51_" class="odd"><td class="entry"><span style="width:32px;display:inline-block;">&#160;</span><span class="icona"><span class="icon">C</span></span><a class="el" href="structagent_1_1_usage.html" target="_self">Usage</a></td><td class="desc">一次调用的 token 用量。字段统一，各家引擎内部映射。 </td></tr>
+<tr id="row_0_52_" class="even"><td class="entry"><span style="width:32px;display:inline-block;">&#160;</span><span class="icona"><span class="icon">C</span></span><a class="el" href="structagent_1_1_usage_event.html" target="_self">UsageEvent</a></td><td class="desc">Token 用量事件。 </td></tr>
+</table>
+</div><!-- directory -->
+</div><!-- contents -->
+</div><!-- doc-content -->
+</div><!-- container -->
+<!-- start footer part -->
+<div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
+  <ul>
+    <li class="footer">制作者 <a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.17.0 </li>
+  </ul>
+</div>
+</body>
+</html>

@@ -1,0 +1,312 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "https://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="zh">
+<head>
+<meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=11"/>
+<meta name="generator" content="Doxygen 1.17.0"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>agent: types.hpp 源文件</title>
+<link href="tabs.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="codefolding.js"></script>
+<script type="text/javascript" src="clipboard.js"></script>
+<link href="navtree.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="navtreedata.js"></script>
+<script type="text/javascript" src="navtree.js"></script>
+<script type="text/javascript" src="cookie.js"></script>
+<link href="search/search.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="search/searchdata.js"></script>
+<script type="text/javascript" src="search/search.js"></script>
+<script type="module">
+import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.esm.min.mjs';
+const theme = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'default';
+mermaid.initialize({ startOnLoad: true, theme: theme });
+</script>
+<link href="doxygen.css" rel="stylesheet" type="text/css" />
+</head>
+<body>
+<div id="top"><!-- do not remove this div, it is closed by doxygen! -->
+<div id="titlearea">
+<table cellspacing="0" cellpadding="0">
+ <tbody>
+ <tr id="projectrow">
+  <td id="projectalign">
+   <div id="projectname">agent<span id="projectnumber">&#160;experimental</span>
+   </div>
+   <div id="projectbrief">C++26 实验性 LLM / Agent 库</div>
+  </td>
+ </tr>
+ </tbody>
+</table>
+</div>
+<!-- end header part -->
+<!-- 制作者 Doxygen 1.17.0 -->
+<script type="text/javascript">
+let searchBox = new SearchBox("searchBox", "search/",'.html');
+</script>
+<script type="text/javascript">
+document.addEventListener('DOMContentLoaded', codefold.init);
+</script>
+<script type="text/javascript" src="menudata.js"></script>
+<script type="text/javascript" src="menu.js"></script>
+<script type="text/javascript">
+document.addEventListener('DOMContentLoaded', () => {
+  initMenu('',true);
+  init_search();
+});
+</script>
+<div id="main-nav-mobile">
+<div class="sm sm-dox"><input id="main-menu-state" type="checkbox"/>
+<label class="main-menu-btn" for="main-menu-state">
+<span class="main-menu-btn-icon"></span> Toggle main menu visibility</label>
+<span id="searchBoxPos1" style="position:absolute;right:8px;top:8px;height:36px;"></span>
+</div>
+</div><!-- main-nav-mobile -->
+<div id="main-nav">
+  <ul class="sm sm-dox" id="main-menu">
+    <li id="searchBoxPos2" style="float:right">
+        <div id="MSearchBox" class="MSearchBoxInactive">
+        <span class="left">
+          <span id="MSearchSelect" class="search-icon" onmouseover="return searchBox.OnSearchSelectShow()" onmouseout="return searchBox.OnSearchSelectHide()"><span class="search-icon-dropdown"></span></span>
+          <input type="text" id="MSearchField" value="" placeholder="搜索" accesskey="S"
+               onfocus="searchBox.OnSearchFieldFocus(true)" 
+               onblur="searchBox.OnSearchFieldFocus(false)" 
+               onkeyup="searchBox.OnSearchFieldChange(event)"/>
+          </span><span class="right">
+            <a id="MSearchClose" href="javascript:searchBox.CloseResultsWindow()"><div id="MSearchCloseImg" class="close-icon"></div></a>
+          </span>
+        </div>
+    </li>
+  </ul>
+</div><!-- main-nav -->
+</div><!-- top -->
+<div id="side-nav" class="ui-resizable side-nav-resizable">
+  <div id="nav-tree">
+    <div id="nav-tree-contents">
+      <div id="nav-sync" class="sync"></div>
+    </div>
+  </div>
+  <div id="splitbar" style="-moz-user-select:none;" 
+       class="ui-resizable-handle">
+  </div>
+</div>
+<script type="text/javascript">
+document.addEventListener('DOMContentLoaded',() => { initNavTree('types_8hpp_source.html','',''); });
+</script>
+<div id="container">
+<div id="doc-content">
+<!-- window showing the filter options -->
+<div id="MSearchSelectWindow"
+     onmouseover="return searchBox.OnSearchSelectShow()"
+     onmouseout="return searchBox.OnSearchSelectHide()"
+     onkeydown="return searchBox.OnSearchSelectKey(event)">
+</div>
+
+<!-- iframe showing the search results (closed by default) -->
+<div id="MSearchResultsWindow">
+<div id="MSearchResults">
+<div class="SRPage">
+<div id="SRIndex">
+<div id="SRResults"></div>
+<div class="SRStatus" id="Loading">载入中...</div>
+<div class="SRStatus" id="Searching">搜索中...</div>
+<div class="SRStatus" id="NoMatches">未找到</div>
+</div>
+</div>
+</div>
+</div>
+
+<div class="header">
+  <div class="headertitle"><div class="title">types.hpp</div></div>
+</div><!--header-->
+<div class="contents">
+<div class="fragment"><div class="line"><a id="l00001" name="l00001"></a><span class="lineno">    1</span><span class="preprocessor">#pragma once</span></div>
+<div class="line"><a id="l00002" name="l00002"></a><span class="lineno">    2</span> </div>
+<div class="line"><a id="l00003" name="l00003"></a><span class="lineno">    3</span><span class="comment">// LLM 调用层统一类型层（L1）：枚举 / Usage / ChatResponse / StreamEvent。</span></div>
+<div class="line"><a id="l00004" name="l00004"></a><span class="lineno">    4</span><span class="comment">// 不包含模型表（model.hpp）、请求配置（llm_options.hpp）、异步通道（async_stream.hpp）、</span></div>
+<div class="line"><a id="l00005" name="l00005"></a><span class="lineno">    5</span><span class="comment">// 策略（llm_policy.hpp）、引擎/Provider（provider.hpp）。</span></div>
+<div class="line"><a id="l00006" name="l00006"></a><span class="lineno">    6</span> </div>
+<div class="line"><a id="l00007" name="l00007"></a><span class="lineno">    7</span><span class="preprocessor">#include &lt;agent/llm/content.hpp&gt;</span></div>
+<div class="line"><a id="l00008" name="l00008"></a><span class="lineno">    8</span><span class="preprocessor">#include &lt;agent/core/result.hpp&gt;</span></div>
+<div class="line"><a id="l00009" name="l00009"></a><span class="lineno">    9</span> </div>
+<div class="line"><a id="l00010" name="l00010"></a><span class="lineno">   10</span><span class="preprocessor">#include &lt;nlohmann/json.hpp&gt;</span></div>
+<div class="line"><a id="l00011" name="l00011"></a><span class="lineno">   11</span> </div>
+<div class="line"><a id="l00012" name="l00012"></a><span class="lineno">   12</span><span class="preprocessor">#include &lt;cstddef&gt;</span></div>
+<div class="line"><a id="l00013" name="l00013"></a><span class="lineno">   13</span><span class="preprocessor">#include &lt;string&gt;</span></div>
+<div class="line"><a id="l00014" name="l00014"></a><span class="lineno">   14</span><span class="preprocessor">#include &lt;variant&gt;</span></div>
+<div class="line"><a id="l00015" name="l00015"></a><span class="lineno">   15</span> </div>
+<div class="line"><a id="l00016" name="l00016"></a><span class="lineno">   16</span><span class="keyword">namespace </span>agent {</div>
+<div class="line"><a id="l00017" name="l00017"></a><span class="lineno">   17</span> </div>
+<div class="line"><a id="l00018" name="l00018"></a><span class="lineno">   18</span><span class="comment">// ─────────────────────────────────────────────────────────────</span></div>
+<div class="line"><a id="l00019" name="l00019"></a><span class="lineno">   19</span><span class="comment">// 统一枚举</span></div>
+<div class="line"><a id="l00020" name="l00020"></a><span class="lineno">   20</span><span class="comment">// ─────────────────────────────────────────────────────────────</span></div>
+<div class="line"><a id="l00021" name="l00021"></a><span class="lineno">   21</span></div>
+<div class="line"><a id="l00034" name="l00034"></a><span class="lineno">   34</span><span class="keyword">enum class</span> ThinkingLevel {</div>
+<div class="line"><a id="l00035" name="l00035"></a><span class="lineno">   35</span>    Off,       </div>
+<div class="line"><a id="l00036" name="l00036"></a><span class="lineno">   36</span>    Minimal,   </div>
+<div class="line"><a id="l00037" name="l00037"></a><span class="lineno">   37</span>    Low,       </div>
+<div class="line"><a id="l00038" name="l00038"></a><span class="lineno">   38</span>    Medium,    </div>
+<div class="line"><a id="l00039" name="l00039"></a><span class="lineno">   39</span>    High,      </div>
+<div class="line"><a id="l00040" name="l00040"></a><span class="lineno">   40</span>    XHigh,     </div>
+<div class="line"><a id="l00041" name="l00041"></a><span class="lineno">   41</span>    Max,       </div>
+<div class="line"><a id="l00042" name="l00042"></a><span class="lineno">   42</span>};</div>
+<div class="line"><a id="l00043" name="l00043"></a><span class="lineno">   43</span></div>
+<div class="line"><a id="l00047" name="l00047"></a><span class="lineno">   47</span><span class="keyword">inline</span> <span class="keyword">constexpr</span> std::size_t thinking_level_count = 7;</div>
+<div class="line"><a id="l00048" name="l00048"></a><span class="lineno">   48</span><span class="keyword">static_assert</span>(<span class="keyword">static_cast&lt;</span>std::size_t<span class="keyword">&gt;</span>(ThinkingLevel::Max) + 1 == thinking_level_count,</div>
+<div class="line"><a id="l00049" name="l00049"></a><span class="lineno">   49</span>              <span class="stringliteral">&quot;ThinkingLevel 枚举必须与 thinking_level_count 同步&quot;</span>);</div>
+<div class="line"><a id="l00050" name="l00050"></a><span class="lineno">   50</span></div>
+<div class="line"><a id="l00060" name="l00060"></a><span class="lineno">   60</span><span class="keyword">enum class</span> CacheRetention {</div>
+<div class="line"><a id="l00061" name="l00061"></a><span class="lineno">   61</span>    None,   </div>
+<div class="line"><a id="l00062" name="l00062"></a><span class="lineno">   62</span>    Short,  </div>
+<div class="line"><a id="l00063" name="l00063"></a><span class="lineno">   63</span>    Long,   </div>
+<div class="line"><a id="l00064" name="l00064"></a><span class="lineno">   64</span>};</div>
+<div class="line"><a id="l00065" name="l00065"></a><span class="lineno">   65</span></div>
+<div class="line"><a id="l00070" name="l00070"></a><span class="lineno">   70</span><span class="keyword">enum class</span> StopReason {</div>
+<div class="line"><a id="l00071" name="l00071"></a><span class="lineno">   71</span>    Stop,     </div>
+<div class="line"><a id="l00072" name="l00072"></a><span class="lineno">   72</span>    Length,   </div>
+<div class="line"><a id="l00073" name="l00073"></a><span class="lineno">   73</span>    ToolUse,  </div>
+<div class="line"><a id="l00074" name="l00074"></a><span class="lineno">   74</span>    <a class="code hl_struct" href="structagent_1_1_error.html">Error</a>,    </div>
+<div class="line"><a id="l00075" name="l00075"></a><span class="lineno">   75</span>    Aborted,  </div>
+<div class="line"><a id="l00076" name="l00076"></a><span class="lineno">   76</span>};</div>
+<div class="line"><a id="l00077" name="l00077"></a><span class="lineno">   77</span> </div>
+<div class="line"><a id="l00078" name="l00078"></a><span class="lineno">   78</span><span class="comment">// ─────────────────────────────────────────────────────────────</span></div>
+<div class="line"><a id="l00079" name="l00079"></a><span class="lineno">   79</span><span class="comment">// Usage — 统一用量</span></div>
+<div class="line"><a id="l00080" name="l00080"></a><span class="lineno">   80</span><span class="comment">// ─────────────────────────────────────────────────────────────</span></div>
+<div class="line"><a id="l00081" name="l00081"></a><span class="lineno">   81</span></div>
+<div class="foldopen" id="foldopen00083" data-start="{" data-end="};">
+<div class="line"><a id="l00083" name="l00083"></a><span class="lineno"><a class="line" href="structagent_1_1_usage.html">   83</a></span><span class="keyword">struct </span><a class="code hl_struct" href="structagent_1_1_usage.html">Usage</a> {</div>
+<div class="line"><a id="l00084" name="l00084"></a><span class="lineno"><a class="line" href="structagent_1_1_usage.html#aa4e17e5ee02f3da33ca623971b7ae177">   84</a></span>    <span class="keywordtype">int</span> <a class="code hl_variable" href="structagent_1_1_usage.html#aa4e17e5ee02f3da33ca623971b7ae177">input_tokens</a> = 0;          </div>
+<div class="line"><a id="l00085" name="l00085"></a><span class="lineno"><a class="line" href="structagent_1_1_usage.html#a3c7319f379a0d48e2a753b8d53955bae">   85</a></span>    <span class="keywordtype">int</span> <a class="code hl_variable" href="structagent_1_1_usage.html#a3c7319f379a0d48e2a753b8d53955bae">output_tokens</a> = 0;         </div>
+<div class="line"><a id="l00086" name="l00086"></a><span class="lineno"><a class="line" href="structagent_1_1_usage.html#a5bcebda9236ba82c24c0dcfe19b01835">   86</a></span>    <span class="keywordtype">int</span> <a class="code hl_variable" href="structagent_1_1_usage.html#a5bcebda9236ba82c24c0dcfe19b01835">cache_read_tokens</a> = 0;     </div>
+<div class="line"><a id="l00087" name="l00087"></a><span class="lineno"><a class="line" href="structagent_1_1_usage.html#abc481f498059c03f8d2044ef46583c23">   87</a></span>    <span class="keywordtype">int</span> <a class="code hl_variable" href="structagent_1_1_usage.html#abc481f498059c03f8d2044ef46583c23">cache_write_tokens</a> = 0;    </div>
+<div class="line"><a id="l00088" name="l00088"></a><span class="lineno"><a class="line" href="structagent_1_1_usage.html#a454a4c98bd91f13657009a1545889e5f">   88</a></span>    <span class="keywordtype">int</span> <a class="code hl_variable" href="structagent_1_1_usage.html#a454a4c98bd91f13657009a1545889e5f">total_tokens</a> = 0;          </div>
+<div class="line"><a id="l00089" name="l00089"></a><span class="lineno"><a class="line" href="structagent_1_1_usage.html#a36a62d88214c7b2f85e718960cb4ea98">   89</a></span>    <span class="keywordtype">double</span> <a class="code hl_variable" href="structagent_1_1_usage.html#a36a62d88214c7b2f85e718960cb4ea98">cost</a> = 0;               </div>
+<div class="line"><a id="l00090" name="l00090"></a><span class="lineno">   90</span>};</div>
+</div>
+<div class="line"><a id="l00091" name="l00091"></a><span class="lineno">   91</span> </div>
+<div class="line"><a id="l00092" name="l00092"></a><span class="lineno">   92</span><span class="comment">// ─────────────────────────────────────────────────────────────</span></div>
+<div class="line"><a id="l00093" name="l00093"></a><span class="lineno">   93</span><span class="comment">// ChatResponse — 完整响应</span></div>
+<div class="line"><a id="l00094" name="l00094"></a><span class="lineno">   94</span><span class="comment">// ─────────────────────────────────────────────────────────────</span></div>
+<div class="line"><a id="l00095" name="l00095"></a><span class="lineno">   95</span></div>
+<div class="foldopen" id="foldopen00097" data-start="{" data-end="};">
+<div class="line"><a id="l00097" name="l00097"></a><span class="lineno"><a class="line" href="structagent_1_1_chat_response.html">   97</a></span><span class="keyword">struct </span><a class="code hl_struct" href="structagent_1_1_chat_response.html">ChatResponse</a> {</div>
+<div class="line"><a id="l00098" name="l00098"></a><span class="lineno"><a class="line" href="structagent_1_1_chat_response.html#a9d92ae5e66839e3f0a2a4947d6d2b2e0">   98</a></span>    std::vector&lt;ContentBlock&gt; <a class="code hl_variable" href="structagent_1_1_chat_response.html#a9d92ae5e66839e3f0a2a4947d6d2b2e0">content</a>;        </div>
+<div class="line"><a id="l00099" name="l00099"></a><span class="lineno"><a class="line" href="structagent_1_1_chat_response.html#a8a4610f7a8622e550b7d6939bc990c6c">   99</a></span>    StopReason <a class="code hl_variable" href="structagent_1_1_chat_response.html#a8a4610f7a8622e550b7d6939bc990c6c">stop_reason</a> = StopReason::Stop;  </div>
+<div class="line"><a id="l00100" name="l00100"></a><span class="lineno"><a class="line" href="structagent_1_1_chat_response.html#a9de9c476b659da73c8b945bfff67cbe8">  100</a></span>    <a class="code hl_struct" href="structagent_1_1_usage.html">Usage</a> <a class="code hl_variable" href="structagent_1_1_chat_response.html#a9de9c476b659da73c8b945bfff67cbe8">usage</a>;                              </div>
+<div class="line"><a id="l00101" name="l00101"></a><span class="lineno"><a class="line" href="structagent_1_1_chat_response.html#a5cb3d26e93bc1cac312c49ad2c40146e">  101</a></span>    std::string <a class="code hl_variable" href="structagent_1_1_chat_response.html#a5cb3d26e93bc1cac312c49ad2c40146e">response_id</a>;                  </div>
+<div class="line"><a id="l00104" name="l00104"></a><span class="lineno"><a class="line" href="structagent_1_1_chat_response.html#a7f575c526bc2b2927d71293526cf34c9">  104</a></span>    nlohmann::json <a class="code hl_variable" href="structagent_1_1_chat_response.html#a7f575c526bc2b2927d71293526cf34c9">raw</a>;</div>
+<div class="line"><a id="l00105" name="l00105"></a><span class="lineno">  105</span>};</div>
+</div>
+<div class="line"><a id="l00106" name="l00106"></a><span class="lineno">  106</span> </div>
+<div class="line"><a id="l00107" name="l00107"></a><span class="lineno">  107</span><span class="comment">// ─────────────────────────────────────────────────────────────</span></div>
+<div class="line"><a id="l00108" name="l00108"></a><span class="lineno">  108</span><span class="comment">// StreamEvent — enum Type + variant（稳定、明确）</span></div>
+<div class="line"><a id="l00109" name="l00109"></a><span class="lineno">  109</span><span class="comment">// ─────────────────────────────────────────────────────────────</span></div>
+<div class="line"><a id="l00110" name="l00110"></a><span class="lineno">  110</span></div>
+<div class="foldopen" id="foldopen00114" data-start="{" data-end="};">
+<div class="line"><a id="l00114" name="l00114"></a><span class="lineno"><a class="line" href="structagent_1_1_text_delta.html">  114</a></span><span class="keyword">struct </span><a class="code hl_struct" href="structagent_1_1_text_delta.html">TextDelta</a> {</div>
+<div class="line"><a id="l00115" name="l00115"></a><span class="lineno"><a class="line" href="structagent_1_1_text_delta.html#a7273a484d0c4fd3476b5327a9600bef0">  115</a></span>    std::string <a class="code hl_variable" href="structagent_1_1_text_delta.html#a7273a484d0c4fd3476b5327a9600bef0">text</a>;   </div>
+<div class="line"><a id="l00116" name="l00116"></a><span class="lineno">  116</span>};</div>
+</div>
+<div class="line"><a id="l00117" name="l00117"></a><span class="lineno">  117</span></div>
+<div class="foldopen" id="foldopen00122" data-start="{" data-end="};">
+<div class="line"><a id="l00122" name="l00122"></a><span class="lineno"><a class="line" href="structagent_1_1_thinking_delta.html">  122</a></span><span class="keyword">struct </span><a class="code hl_struct" href="structagent_1_1_thinking_delta.html">ThinkingDelta</a> {</div>
+<div class="line"><a id="l00123" name="l00123"></a><span class="lineno"><a class="line" href="structagent_1_1_thinking_delta.html#a7b363f3e367c3f2346d2490f39e761bc">  123</a></span>    std::string <a class="code hl_variable" href="structagent_1_1_thinking_delta.html#a7b363f3e367c3f2346d2490f39e761bc">text</a>;   </div>
+<div class="line"><a id="l00124" name="l00124"></a><span class="lineno">  124</span>};</div>
+</div>
+<div class="line"><a id="l00125" name="l00125"></a><span class="lineno">  125</span></div>
+<div class="foldopen" id="foldopen00131" data-start="{" data-end="};">
+<div class="line"><a id="l00131" name="l00131"></a><span class="lineno"><a class="line" href="structagent_1_1_tool_call_delta.html">  131</a></span><span class="keyword">struct </span><a class="code hl_struct" href="structagent_1_1_tool_call_delta.html">ToolCallDelta</a> {</div>
+<div class="line"><a id="l00132" name="l00132"></a><span class="lineno"><a class="line" href="structagent_1_1_tool_call_delta.html#aa45cfcdc48d4503343969213de0f8d2b">  132</a></span>    std::string <a class="code hl_variable" href="structagent_1_1_tool_call_delta.html#aa45cfcdc48d4503343969213de0f8d2b">id</a>;                </div>
+<div class="line"><a id="l00133" name="l00133"></a><span class="lineno"><a class="line" href="structagent_1_1_tool_call_delta.html#aa3109c307df9e5527d599dbb60e0e95c">  133</a></span>    std::string <a class="code hl_variable" href="structagent_1_1_tool_call_delta.html#aa3109c307df9e5527d599dbb60e0e95c">name</a>;              </div>
+<div class="line"><a id="l00134" name="l00134"></a><span class="lineno"><a class="line" href="structagent_1_1_tool_call_delta.html#a72f8a36aa4b32e15584cd4f9ba33c5f3">  134</a></span>    std::string <a class="code hl_variable" href="structagent_1_1_tool_call_delta.html#a72f8a36aa4b32e15584cd4f9ba33c5f3">arguments_delta</a>;   </div>
+<div class="line"><a id="l00135" name="l00135"></a><span class="lineno">  135</span>};</div>
+</div>
+<div class="line"><a id="l00136" name="l00136"></a><span class="lineno">  136</span></div>
+<div class="foldopen" id="foldopen00141" data-start="{" data-end="};">
+<div class="line"><a id="l00141" name="l00141"></a><span class="lineno"><a class="line" href="structagent_1_1_tool_call_end.html">  141</a></span><span class="keyword">struct </span><a class="code hl_struct" href="structagent_1_1_tool_call_end.html">ToolCallEnd</a> {</div>
+<div class="line"><a id="l00142" name="l00142"></a><span class="lineno"><a class="line" href="structagent_1_1_tool_call_end.html#a5808c07fc4cf15dcd09e2e04a2928c77">  142</a></span>    std::string <a class="code hl_variable" href="structagent_1_1_tool_call_end.html#a5808c07fc4cf15dcd09e2e04a2928c77">id</a>;                 </div>
+<div class="line"><a id="l00143" name="l00143"></a><span class="lineno"><a class="line" href="structagent_1_1_tool_call_end.html#a70eb15e5fd53ec73120aa7ee4680263c">  143</a></span>    std::string <a class="code hl_variable" href="structagent_1_1_tool_call_end.html#a70eb15e5fd53ec73120aa7ee4680263c">name</a>;               </div>
+<div class="line"><a id="l00144" name="l00144"></a><span class="lineno"><a class="line" href="structagent_1_1_tool_call_end.html#abc7ce36cd14f8a80eacd197380b24ec8">  144</a></span>    nlohmann::json <a class="code hl_variable" href="structagent_1_1_tool_call_end.html#abc7ce36cd14f8a80eacd197380b24ec8">arguments</a>;       </div>
+<div class="line"><a id="l00145" name="l00145"></a><span class="lineno">  145</span>};</div>
+</div>
+<div class="line"><a id="l00146" name="l00146"></a><span class="lineno">  146</span></div>
+<div class="foldopen" id="foldopen00151" data-start="{" data-end="};">
+<div class="line"><a id="l00151" name="l00151"></a><span class="lineno"><a class="line" href="structagent_1_1_usage_event.html">  151</a></span><span class="keyword">struct </span><a class="code hl_struct" href="structagent_1_1_usage_event.html">UsageEvent</a> {</div>
+<div class="line"><a id="l00152" name="l00152"></a><span class="lineno"><a class="line" href="structagent_1_1_usage_event.html#afb4d3ab30e34dc367720452224e47750">  152</a></span>    <a class="code hl_struct" href="structagent_1_1_usage.html">Usage</a> <a class="code hl_variable" href="structagent_1_1_usage_event.html#afb4d3ab30e34dc367720452224e47750">usage</a>;   </div>
+<div class="line"><a id="l00153" name="l00153"></a><span class="lineno">  153</span>};</div>
+</div>
+<div class="line"><a id="l00154" name="l00154"></a><span class="lineno">  154</span></div>
+<div class="foldopen" id="foldopen00159" data-start="{" data-end="};">
+<div class="line"><a id="l00159" name="l00159"></a><span class="lineno"><a class="line" href="structagent_1_1_done_event.html">  159</a></span><span class="keyword">struct </span><a class="code hl_struct" href="structagent_1_1_done_event.html">DoneEvent</a> {</div>
+<div class="line"><a id="l00160" name="l00160"></a><span class="lineno"><a class="line" href="structagent_1_1_done_event.html#a290aacba9f1024500331892738727351">  160</a></span>    <a class="code hl_struct" href="structagent_1_1_chat_response.html">ChatResponse</a> <a class="code hl_variable" href="structagent_1_1_done_event.html#a290aacba9f1024500331892738727351">response</a>;   </div>
+<div class="line"><a id="l00161" name="l00161"></a><span class="lineno">  161</span>};</div>
+</div>
+<div class="line"><a id="l00162" name="l00162"></a><span class="lineno">  162</span></div>
+<div class="foldopen" id="foldopen00171" data-start="{" data-end="};">
+<div class="line"><a id="l00171" name="l00171"></a><span class="lineno"><a class="line" href="classagent_1_1_stream_event.html">  171</a></span><span class="keyword">class </span><a class="code hl_class" href="classagent_1_1_stream_event.html">StreamEvent</a> {</div>
+<div class="line"><a id="l00172" name="l00172"></a><span class="lineno">  172</span><span class="keyword">public</span>:</div>
+<div class="foldopen" id="foldopen00175" data-start="{" data-end="};">
+<div class="line"><a id="l00175" name="l00175"></a><span class="lineno"><a class="line" href="classagent_1_1_stream_event.html#aa2205ff29252d8c819fcea8a425ac2fb">  175</a></span>    <span class="keyword">enum class</span> <a class="code hl_enumeration" href="classagent_1_1_stream_event.html#aa2205ff29252d8c819fcea8a425ac2fb">Type</a> {</div>
+<div class="line"><a id="l00176" name="l00176"></a><span class="lineno">  176</span>        <a class="code hl_struct" href="structagent_1_1_text_delta.html">TextDelta</a>,</div>
+<div class="line"><a id="l00177" name="l00177"></a><span class="lineno">  177</span>        <a class="code hl_struct" href="structagent_1_1_thinking_delta.html">ThinkingDelta</a>,</div>
+<div class="line"><a id="l00178" name="l00178"></a><span class="lineno">  178</span>        <a class="code hl_struct" href="structagent_1_1_tool_call_delta.html">ToolCallDelta</a>,</div>
+<div class="line"><a id="l00179" name="l00179"></a><span class="lineno">  179</span>        <a class="code hl_struct" href="structagent_1_1_tool_call_end.html">ToolCallEnd</a>,</div>
+<div class="line"><a id="l00180" name="l00180"></a><span class="lineno">  180</span>        <a class="code hl_struct" href="structagent_1_1_usage.html">Usage</a>,</div>
+<div class="line"><a id="l00181" name="l00181"></a><span class="lineno">  181</span>        Done,</div>
+<div class="line"><a id="l00182" name="l00182"></a><span class="lineno">  182</span>        <a class="code hl_struct" href="structagent_1_1_error.html">Error</a>,</div>
+<div class="line"><a id="l00183" name="l00183"></a><span class="lineno">  183</span>    };</div>
+</div>
+<div class="line"><a id="l00184" name="l00184"></a><span class="lineno">  184</span></div>
+<div class="line"><a id="l00185" name="l00185"></a><span class="lineno"><a class="line" href="classagent_1_1_stream_event.html#a7138ca0076a6506298bc1c727730ee14">  185</a></span>    std::variant&lt;TextDelta, ThinkingDelta, ToolCallDelta, ToolCallEnd, UsageEvent, DoneEvent, Error&gt; <a class="code hl_variable" href="classagent_1_1_stream_event.html#a7138ca0076a6506298bc1c727730ee14">data</a>;</div>
+<div class="line"><a id="l00188" name="l00188"></a><span class="lineno"><a class="line" href="classagent_1_1_stream_event.html#aa9fd55ea274e400b8a3a00550f093077">  188</a></span>    <a class="code hl_enumeration" href="classagent_1_1_stream_event.html#aa2205ff29252d8c819fcea8a425ac2fb">Type</a> <a class="code hl_function" href="classagent_1_1_stream_event.html#aa9fd55ea274e400b8a3a00550f093077">type</a>()<span class="keyword"> const </span>{ <span class="keywordflow">return</span> <span class="keyword">static_cast&lt;</span><a class="code hl_enumeration" href="classagent_1_1_stream_event.html#aa2205ff29252d8c819fcea8a425ac2fb">Type</a><span class="keyword">&gt;</span>(<a class="code hl_variable" href="classagent_1_1_stream_event.html#a7138ca0076a6506298bc1c727730ee14">data</a>.index()); }</div>
+<div class="line"><a id="l00189" name="l00189"></a><span class="lineno">  189</span>};</div>
+</div>
+<div class="line"><a id="l00190" name="l00190"></a><span class="lineno">  190</span><span class="keyword">static_assert</span>(std::variant_size_v&lt;<span class="keyword">decltype</span>(<a class="code hl_variable" href="classagent_1_1_stream_event.html#a7138ca0076a6506298bc1c727730ee14">StreamEvent::data</a>)&gt; == 7,</div>
+<div class="line"><a id="l00191" name="l00191"></a><span class="lineno">  191</span>              <span class="stringliteral">&quot;StreamEvent 载荷类型数与 Type 枚举必须一致&quot;</span>);</div>
+<div class="line"><a id="l00192" name="l00192"></a><span class="lineno">  192</span> </div>
+<div class="line"><a id="l00193" name="l00193"></a><span class="lineno">  193</span>}  <span class="comment">// namespace agent</span></div>
+<div class="ttc" id="aclassagent_1_1_stream_event_html"><div class="ttname"><a href="classagent_1_1_stream_event.html">agent::StreamEvent</a></div><div class="ttdoc">统一流事件。每个事件 = 类型判别 + 变体载荷，不用「一堆 optional 字段」。</div><div class="ttdef"><b>定义</b> <a href="#l00171">types.hpp:171</a></div></div>
+<div class="ttc" id="aclassagent_1_1_stream_event_html_a7138ca0076a6506298bc1c727730ee14"><div class="ttname"><a href="classagent_1_1_stream_event.html#a7138ca0076a6506298bc1c727730ee14">agent::StreamEvent::data</a></div><div class="ttdeci">std::variant&lt; TextDelta, ThinkingDelta, ToolCallDelta, ToolCallEnd, UsageEvent, DoneEvent, Error &gt; data</div><div class="ttdoc">事件载荷（variant 风格，聚合初始化如 StreamEvent{ TextDelta{ &quot;hi&quot; } }）。</div><div class="ttdef"><b>定义</b> <a href="#l00185">types.hpp:185</a></div></div>
+<div class="ttc" id="aclassagent_1_1_stream_event_html_aa2205ff29252d8c819fcea8a425ac2fb"><div class="ttname"><a href="classagent_1_1_stream_event.html#aa2205ff29252d8c819fcea8a425ac2fb">agent::StreamEvent::Type</a></div><div class="ttdeci">Type</div><div class="ttdoc">事件类型枚举。顺序必须与 data variant 的载荷声明顺序严格一致 （type() 直接强转 variant index，顺序错则判别错位）。</div><div class="ttdef"><b>定义</b> <a href="#l00175">types.hpp:175</a></div></div>
+<div class="ttc" id="aclassagent_1_1_stream_event_html_aa9fd55ea274e400b8a3a00550f093077"><div class="ttname"><a href="classagent_1_1_stream_event.html#aa9fd55ea274e400b8a3a00550f093077">agent::StreamEvent::type</a></div><div class="ttdeci">Type type() const</div><div class="ttdoc">类型判别从 variant 下标推导——单一真相源，不存冗余字段 （存独立 type 字段会出现 type 与 data 失同步的双源真相）。</div><div class="ttdef"><b>定义</b> <a href="#l00188">types.hpp:188</a></div></div>
+<div class="ttc" id="astructagent_1_1_chat_response_html"><div class="ttname"><a href="structagent_1_1_chat_response.html">agent::ChatResponse</a></div><div class="ttdoc">一次完整（非流式或流式收尾）的模型响应。</div><div class="ttdef"><b>定义</b> <a href="#l00097">types.hpp:97</a></div></div>
+<div class="ttc" id="astructagent_1_1_chat_response_html_a5cb3d26e93bc1cac312c49ad2c40146e"><div class="ttname"><a href="structagent_1_1_chat_response.html#a5cb3d26e93bc1cac312c49ad2c40146e">agent::ChatResponse::response_id</a></div><div class="ttdeci">std::string response_id</div><div class="ttdoc">上游响应 id（幂等 / 追踪用）</div><div class="ttdef"><b>定义</b> <a href="#l00101">types.hpp:101</a></div></div>
+<div class="ttc" id="astructagent_1_1_chat_response_html_a7f575c526bc2b2927d71293526cf34c9"><div class="ttname"><a href="structagent_1_1_chat_response.html#a7f575c526bc2b2927d71293526cf34c9">agent::ChatResponse::raw</a></div><div class="ttdeci">nlohmann::json raw</div><div class="ttdoc">原始上游响应 JSON。仅 StreamOptions::capture_raw_response 开启时填充 （流式 = 最终累积的原始对象；非流式 = 完整 body），否则为空对象。</div><div class="ttdef"><b>定义</b> <a href="#l00104">types.hpp:104</a></div></div>
+<div class="ttc" id="astructagent_1_1_chat_response_html_a8a4610f7a8622e550b7d6939bc990c6c"><div class="ttname"><a href="structagent_1_1_chat_response.html#a8a4610f7a8622e550b7d6939bc990c6c">agent::ChatResponse::stop_reason</a></div><div class="ttdeci">StopReason stop_reason</div><div class="ttdoc">停止原因</div><div class="ttdef"><b>定义</b> <a href="#l00099">types.hpp:99</a></div></div>
+<div class="ttc" id="astructagent_1_1_chat_response_html_a9d92ae5e66839e3f0a2a4947d6d2b2e0"><div class="ttname"><a href="structagent_1_1_chat_response.html#a9d92ae5e66839e3f0a2a4947d6d2b2e0">agent::ChatResponse::content</a></div><div class="ttdeci">std::vector&lt; ContentBlock &gt; content</div><div class="ttdoc">响应内容块（文本 / 思考 / 工具调用）</div><div class="ttdef"><b>定义</b> <a href="#l00098">types.hpp:98</a></div></div>
+<div class="ttc" id="astructagent_1_1_chat_response_html_a9de9c476b659da73c8b945bfff67cbe8"><div class="ttname"><a href="structagent_1_1_chat_response.html#a9de9c476b659da73c8b945bfff67cbe8">agent::ChatResponse::usage</a></div><div class="ttdeci">Usage usage</div><div class="ttdoc">token 用量统计</div><div class="ttdef"><b>定义</b> <a href="#l00100">types.hpp:100</a></div></div>
+<div class="ttc" id="astructagent_1_1_done_event_html"><div class="ttname"><a href="structagent_1_1_done_event.html">agent::DoneEvent</a></div><div class="ttdoc">流结束事件，携带完整响应。</div><div class="ttdef"><b>定义</b> <a href="#l00159">types.hpp:159</a></div></div>
+<div class="ttc" id="astructagent_1_1_done_event_html_a290aacba9f1024500331892738727351"><div class="ttname"><a href="structagent_1_1_done_event.html#a290aacba9f1024500331892738727351">agent::DoneEvent::response</a></div><div class="ttdeci">ChatResponse response</div><div class="ttdoc">聚合好的完整响应</div><div class="ttdef"><b>定义</b> <a href="#l00160">types.hpp:160</a></div></div>
+<div class="ttc" id="astructagent_1_1_error_html"><div class="ttname"><a href="structagent_1_1_error.html">agent::Error</a></div><div class="ttdoc">错误信息</div><div class="ttdef"><b>定义</b> <a href="result_8hpp_source.html#l00043">result.hpp:43</a></div></div>
+<div class="ttc" id="astructagent_1_1_text_delta_html"><div class="ttname"><a href="structagent_1_1_text_delta.html">agent::TextDelta</a></div><div class="ttdoc">流式文本增量。</div><div class="ttdef"><b>定义</b> <a href="#l00114">types.hpp:114</a></div></div>
+<div class="ttc" id="astructagent_1_1_text_delta_html_a7273a484d0c4fd3476b5327a9600bef0"><div class="ttname"><a href="structagent_1_1_text_delta.html#a7273a484d0c4fd3476b5327a9600bef0">agent::TextDelta::text</a></div><div class="ttdeci">std::string text</div><div class="ttdoc">本次增量的文本片段</div><div class="ttdef"><b>定义</b> <a href="#l00115">types.hpp:115</a></div></div>
+<div class="ttc" id="astructagent_1_1_thinking_delta_html"><div class="ttname"><a href="structagent_1_1_thinking_delta.html">agent::ThinkingDelta</a></div><div class="ttdoc">流式思考内容增量。</div><div class="ttdef"><b>定义</b> <a href="#l00122">types.hpp:122</a></div></div>
+<div class="ttc" id="astructagent_1_1_thinking_delta_html_a7b363f3e367c3f2346d2490f39e761bc"><div class="ttname"><a href="structagent_1_1_thinking_delta.html#a7b363f3e367c3f2346d2490f39e761bc">agent::ThinkingDelta::text</a></div><div class="ttdeci">std::string text</div><div class="ttdoc">本次增量的思考片段</div><div class="ttdef"><b>定义</b> <a href="#l00123">types.hpp:123</a></div></div>
+<div class="ttc" id="astructagent_1_1_tool_call_delta_html"><div class="ttname"><a href="structagent_1_1_tool_call_delta.html">agent::ToolCallDelta</a></div><div class="ttdoc">工具参数增量。delta 阶段只给 JSON 字符串增量，不 parse—— 由 Agent 层自行决定何时累积/解析。</div><div class="ttdef"><b>定义</b> <a href="#l00131">types.hpp:131</a></div></div>
+<div class="ttc" id="astructagent_1_1_tool_call_delta_html_a72f8a36aa4b32e15584cd4f9ba33c5f3"><div class="ttname"><a href="structagent_1_1_tool_call_delta.html#a72f8a36aa4b32e15584cd4f9ba33c5f3">agent::ToolCallDelta::arguments_delta</a></div><div class="ttdeci">std::string arguments_delta</div><div class="ttdoc">参数 JSON 的字符串增量（逐段累加）</div><div class="ttdef"><b>定义</b> <a href="#l00134">types.hpp:134</a></div></div>
+<div class="ttc" id="astructagent_1_1_tool_call_delta_html_aa3109c307df9e5527d599dbb60e0e95c"><div class="ttname"><a href="structagent_1_1_tool_call_delta.html#aa3109c307df9e5527d599dbb60e0e95c">agent::ToolCallDelta::name</a></div><div class="ttdeci">std::string name</div><div class="ttdoc">工具名（首次出现时非空，后续可能为空）</div><div class="ttdef"><b>定义</b> <a href="#l00133">types.hpp:133</a></div></div>
+<div class="ttc" id="astructagent_1_1_tool_call_delta_html_aa45cfcdc48d4503343969213de0f8d2b"><div class="ttname"><a href="structagent_1_1_tool_call_delta.html#aa45cfcdc48d4503343969213de0f8d2b">agent::ToolCallDelta::id</a></div><div class="ttdeci">std::string id</div><div class="ttdoc">工具调用 id（首次出现时非空，后续可能为空）</div><div class="ttdef"><b>定义</b> <a href="#l00132">types.hpp:132</a></div></div>
+<div class="ttc" id="astructagent_1_1_tool_call_end_html"><div class="ttname"><a href="structagent_1_1_tool_call_end.html">agent::ToolCallEnd</a></div><div class="ttdoc">工具调用完成：参数为完整解析后的 JSON 对象。</div><div class="ttdef"><b>定义</b> <a href="#l00141">types.hpp:141</a></div></div>
+<div class="ttc" id="astructagent_1_1_tool_call_end_html_a5808c07fc4cf15dcd09e2e04a2928c77"><div class="ttname"><a href="structagent_1_1_tool_call_end.html#a5808c07fc4cf15dcd09e2e04a2928c77">agent::ToolCallEnd::id</a></div><div class="ttdeci">std::string id</div><div class="ttdoc">工具调用 id</div><div class="ttdef"><b>定义</b> <a href="#l00142">types.hpp:142</a></div></div>
+<div class="ttc" id="astructagent_1_1_tool_call_end_html_a70eb15e5fd53ec73120aa7ee4680263c"><div class="ttname"><a href="structagent_1_1_tool_call_end.html#a70eb15e5fd53ec73120aa7ee4680263c">agent::ToolCallEnd::name</a></div><div class="ttdeci">std::string name</div><div class="ttdoc">工具名</div><div class="ttdef"><b>定义</b> <a href="#l00143">types.hpp:143</a></div></div>
+<div class="ttc" id="astructagent_1_1_tool_call_end_html_abc7ce36cd14f8a80eacd197380b24ec8"><div class="ttname"><a href="structagent_1_1_tool_call_end.html#abc7ce36cd14f8a80eacd197380b24ec8">agent::ToolCallEnd::arguments</a></div><div class="ttdeci">nlohmann::json arguments</div><div class="ttdoc">完整解析后的参数对象</div><div class="ttdef"><b>定义</b> <a href="#l00144">types.hpp:144</a></div></div>
+<div class="ttc" id="astructagent_1_1_usage_event_html"><div class="ttname"><a href="structagent_1_1_usage_event.html">agent::UsageEvent</a></div><div class="ttdoc">token 用量事件。</div><div class="ttdef"><b>定义</b> <a href="#l00151">types.hpp:151</a></div></div>
+<div class="ttc" id="astructagent_1_1_usage_event_html_afb4d3ab30e34dc367720452224e47750"><div class="ttname"><a href="structagent_1_1_usage_event.html#afb4d3ab30e34dc367720452224e47750">agent::UsageEvent::usage</a></div><div class="ttdeci">Usage usage</div><div class="ttdoc">本次请求累计用量</div><div class="ttdef"><b>定义</b> <a href="#l00152">types.hpp:152</a></div></div>
+<div class="ttc" id="astructagent_1_1_usage_html"><div class="ttname"><a href="structagent_1_1_usage.html">agent::Usage</a></div><div class="ttdoc">一次调用的 token 用量。字段统一，各家引擎内部映射。</div><div class="ttdef"><b>定义</b> <a href="#l00083">types.hpp:83</a></div></div>
+<div class="ttc" id="astructagent_1_1_usage_html_a36a62d88214c7b2f85e718960cb4ea98"><div class="ttname"><a href="structagent_1_1_usage.html#a36a62d88214c7b2f85e718960cb4ea98">agent::Usage::cost</a></div><div class="ttdeci">double cost</div><div class="ttdoc">美元；引擎 parse_usage 不填（默认 0），Agent 算好后填；向后兼容</div><div class="ttdef"><b>定义</b> <a href="#l00089">types.hpp:89</a></div></div>
+<div class="ttc" id="astructagent_1_1_usage_html_a3c7319f379a0d48e2a753b8d53955bae"><div class="ttname"><a href="structagent_1_1_usage.html#a3c7319f379a0d48e2a753b8d53955bae">agent::Usage::output_tokens</a></div><div class="ttdeci">int output_tokens</div><div class="ttdoc">输出 token</div><div class="ttdef"><b>定义</b> <a href="#l00085">types.hpp:85</a></div></div>
+<div class="ttc" id="astructagent_1_1_usage_html_a454a4c98bd91f13657009a1545889e5f"><div class="ttname"><a href="structagent_1_1_usage.html#a454a4c98bd91f13657009a1545889e5f">agent::Usage::total_tokens</a></div><div class="ttdeci">int total_tokens</div><div class="ttdoc">总计</div><div class="ttdef"><b>定义</b> <a href="#l00088">types.hpp:88</a></div></div>
+<div class="ttc" id="astructagent_1_1_usage_html_a5bcebda9236ba82c24c0dcfe19b01835"><div class="ttname"><a href="structagent_1_1_usage.html#a5bcebda9236ba82c24c0dcfe19b01835">agent::Usage::cache_read_tokens</a></div><div class="ttdeci">int cache_read_tokens</div><div class="ttdoc">缓存命中读取</div><div class="ttdef"><b>定义</b> <a href="#l00086">types.hpp:86</a></div></div>
+<div class="ttc" id="astructagent_1_1_usage_html_aa4e17e5ee02f3da33ca623971b7ae177"><div class="ttname"><a href="structagent_1_1_usage.html#aa4e17e5ee02f3da33ca623971b7ae177">agent::Usage::input_tokens</a></div><div class="ttdeci">int input_tokens</div><div class="ttdoc">输入 token</div><div class="ttdef"><b>定义</b> <a href="#l00084">types.hpp:84</a></div></div>
+<div class="ttc" id="astructagent_1_1_usage_html_abc481f498059c03f8d2044ef46583c23"><div class="ttname"><a href="structagent_1_1_usage.html#abc481f498059c03f8d2044ef46583c23">agent::Usage::cache_write_tokens</a></div><div class="ttdeci">int cache_write_tokens</div><div class="ttdoc">缓存写入（Anthropic 有）</div><div class="ttdef"><b>定义</b> <a href="#l00087">types.hpp:87</a></div></div>
+</div><!-- fragment --></div><!-- contents -->
+</div><!-- doc-content -->
+</div><!-- container -->
+<!-- start footer part -->
+<div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
+  <ul>
+    <li class="navelem"><b>agent</b></li><li class="navelem"><b>llm</b></li><li class="navelem"><b>types.hpp</b></li>
+    <li class="footer">制作者 <a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.17.0 </li>
+  </ul>
+</div>
+</body>
+</html>

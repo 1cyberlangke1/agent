@@ -1,0 +1,262 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "https://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="zh">
+<head>
+<meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=11"/>
+<meta name="generator" content="Doxygen 1.17.0"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>agent: agent::AgentEvent类 参考</title>
+<link href="tabs.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="codefolding.js"></script>
+<script type="text/javascript" src="clipboard.js"></script>
+<link href="navtree.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="navtreedata.js"></script>
+<script type="text/javascript" src="navtree.js"></script>
+<script type="text/javascript" src="cookie.js"></script>
+<link href="search/search.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="search/searchdata.js"></script>
+<script type="text/javascript" src="search/search.js"></script>
+<script type="module">
+import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.esm.min.mjs';
+const theme = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'default';
+mermaid.initialize({ startOnLoad: true, theme: theme });
+</script>
+<link href="doxygen.css" rel="stylesheet" type="text/css" />
+</head>
+<body>
+<div id="top"><!-- do not remove this div, it is closed by doxygen! -->
+<div id="titlearea">
+<table cellspacing="0" cellpadding="0">
+ <tbody>
+ <tr id="projectrow">
+  <td id="projectalign">
+   <div id="projectname">agent<span id="projectnumber">&#160;experimental</span>
+   </div>
+   <div id="projectbrief">C++26 实验性 LLM / Agent 库</div>
+  </td>
+ </tr>
+ </tbody>
+</table>
+</div>
+<!-- end header part -->
+<!-- 制作者 Doxygen 1.17.0 -->
+<script type="text/javascript">
+let searchBox = new SearchBox("searchBox", "search/",'.html');
+</script>
+<script type="text/javascript">
+document.addEventListener('DOMContentLoaded', codefold.init);
+</script>
+<script type="text/javascript" src="menudata.js"></script>
+<script type="text/javascript" src="menu.js"></script>
+<script type="text/javascript">
+document.addEventListener('DOMContentLoaded', () => {
+  initMenu('',true);
+  init_search();
+});
+</script>
+<div id="main-nav-mobile">
+<div class="sm sm-dox"><input id="main-menu-state" type="checkbox"/>
+<label class="main-menu-btn" for="main-menu-state">
+<span class="main-menu-btn-icon"></span> Toggle main menu visibility</label>
+<span id="searchBoxPos1" style="position:absolute;right:8px;top:8px;height:36px;"></span>
+</div>
+</div><!-- main-nav-mobile -->
+<div id="main-nav">
+  <ul class="sm sm-dox" id="main-menu">
+    <li id="searchBoxPos2" style="float:right">
+        <div id="MSearchBox" class="MSearchBoxInactive">
+        <span class="left">
+          <span id="MSearchSelect" class="search-icon" onmouseover="return searchBox.OnSearchSelectShow()" onmouseout="return searchBox.OnSearchSelectHide()"><span class="search-icon-dropdown"></span></span>
+          <input type="text" id="MSearchField" value="" placeholder="搜索" accesskey="S"
+               onfocus="searchBox.OnSearchFieldFocus(true)" 
+               onblur="searchBox.OnSearchFieldFocus(false)" 
+               onkeyup="searchBox.OnSearchFieldChange(event)"/>
+          </span><span class="right">
+            <a id="MSearchClose" href="javascript:searchBox.CloseResultsWindow()"><div id="MSearchCloseImg" class="close-icon"></div></a>
+          </span>
+        </div>
+    </li>
+  </ul>
+</div><!-- main-nav -->
+</div><!-- top -->
+<div id="side-nav" class="ui-resizable side-nav-resizable">
+  <div id="nav-tree">
+    <div id="nav-tree-contents">
+      <div id="nav-sync" class="sync"></div>
+    </div>
+  </div>
+  <div id="splitbar" style="-moz-user-select:none;" 
+       class="ui-resizable-handle">
+  </div>
+</div>
+<script type="text/javascript">
+document.addEventListener('DOMContentLoaded',() => { initNavTree('classagent_1_1_agent_event.html','','classagent_1_1_agent_event-members'); });
+</script>
+<div id="container">
+<div id="doc-content">
+<!-- window showing the filter options -->
+<div id="MSearchSelectWindow"
+     onmouseover="return searchBox.OnSearchSelectShow()"
+     onmouseout="return searchBox.OnSearchSelectHide()"
+     onkeydown="return searchBox.OnSearchSelectKey(event)">
+</div>
+
+<!-- iframe showing the search results (closed by default) -->
+<div id="MSearchResultsWindow">
+<div id="MSearchResults">
+<div class="SRPage">
+<div id="SRIndex">
+<div id="SRResults"></div>
+<div class="SRStatus" id="Loading">载入中...</div>
+<div class="SRStatus" id="Searching">搜索中...</div>
+<div class="SRStatus" id="NoMatches">未找到</div>
+</div>
+</div>
+</div>
+</div>
+
+<div class="header">
+  <div class="headertitle"><div class="title">agent::AgentEvent类 参考</div></div>
+</div><!--header-->
+<div class="contents">
+
+<p>统一事件（variant 风格，对齐 StreamEvent）。聚合初始化： <span class="tt"><a class="el" href="classagent_1_1_agent_event.html" title="统一事件（variant 风格，对齐 StreamEvent）。聚合初始化： AgentEvent{ MessageStart{ msg } } 直接初始化 data。">AgentEvent</a>{ <a class="el" href="structagent_1_1_message_start.html" title="一条消息出现（user / assistant / toolResult 都发）">MessageStart</a>{ msg } }</span> 直接初始化 data。  
+ <a href="#details">更多...</a></p>
+
+<p><code>#include &lt;<a class="el" href="agent__event_8hpp_source.html">agent_event.hpp</a>&gt;</code></p>
+<table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 id="header-pub-types" class="groupheader"><a id="pub-types" name="pub-types"></a>
+Public 类型</h2></td></tr>
+<tr class="memitem:a211cfeb92b075ab02e7b14cc56affe1c" id="r_a211cfeb92b075ab02e7b14cc56affe1c"><td class="memItemLeft">enum class &#160;</td><td class="memItemRight"><a class="el" href="#a211cfeb92b075ab02e7b14cc56affe1c">Type</a> { <br />
+&#160;&#160;<b>AgentStart</b>
+, <b>AgentEnd</b>
+, <b>TurnStart</b>
+, <b>TurnEnd</b>
+, <br />
+&#160;&#160;<b>MessageStart</b>
+, <b>MessageUpdate</b>
+, <b>MessageEnd</b>
+, <b>ToolCallDelta</b>
+, <br />
+&#160;&#160;<b>ToolCallEnd</b>
+, <b>ToolExecStart</b>
+, <b>ToolExecUpdate</b>
+, <b>ToolExecEnd</b>
+, <br />
+&#160;&#160;<b>AgentError</b>
+<br />
+ }</td></tr>
+<tr class="memdesc:a211cfeb92b075ab02e7b14cc56affe1c"><td class="mdescLeft">&#160;</td><td class="mdescRight">事件种类，与 data 的 variant 下标严格一一对应（type() 直接强转 index）。  <a href="#a211cfeb92b075ab02e7b14cc56affe1c">更多...</a><br /></td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 id="header-pub-methods" class="groupheader"><a id="pub-methods" name="pub-methods"></a>
+Public 成员函数</h2></td></tr>
+<tr class="memitem:a78db563dbd8086641cc6f3713d0b43ba" id="r_a78db563dbd8086641cc6f3713d0b43ba"><td class="memItemLeft"><a class="el" href="#a211cfeb92b075ab02e7b14cc56affe1c">Type</a>&#160;</td><td class="memItemRight"><a class="el" href="#a78db563dbd8086641cc6f3713d0b43ba">type</a> () const</td></tr>
+<tr class="memdesc:a78db563dbd8086641cc6f3713d0b43ba"><td class="mdescLeft">&#160;</td><td class="mdescRight">类型判别从 variant 下标推导——单一真相源，不存冗余 type 字段。  <br /></td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 id="header-pub-attribs" class="groupheader"><a id="pub-attribs" name="pub-attribs"></a>
+Public 属性</h2></td></tr>
+<tr class="memitem:a6e0bc3ef24a4465f79475c2f461e6966" id="r_a6e0bc3ef24a4465f79475c2f461e6966"><td class="memItemLeft">std::variant&lt; <a class="el" href="structagent_1_1_agent_start.html">AgentStart</a>, <a class="el" href="structagent_1_1_agent_end.html">AgentEnd</a>, <a class="el" href="structagent_1_1_turn_start.html">TurnStart</a>, <a class="el" href="structagent_1_1_turn_end.html">TurnEnd</a>, <a class="el" href="structagent_1_1_message_start.html">MessageStart</a>, <a class="el" href="structagent_1_1_message_update.html">MessageUpdate</a>, <a class="el" href="structagent_1_1_message_end.html">MessageEnd</a>, <a class="el" href="structagent_1_1_tool_call_delta.html">ToolCallDelta</a>, <a class="el" href="structagent_1_1_tool_call_end.html">ToolCallEnd</a>, <a class="el" href="structagent_1_1_tool_exec_start.html">ToolExecStart</a>, <a class="el" href="structagent_1_1_tool_exec_update.html">ToolExecUpdate</a>, <a class="el" href="structagent_1_1_tool_exec_end.html">ToolExecEnd</a>, <a class="el" href="structagent_1_1_agent_error.html">AgentError</a> &gt;&#160;</td><td class="memItemRight"><a class="el" href="#a6e0bc3ef24a4465f79475c2f461e6966">data</a></td></tr>
+<tr class="memdesc:a6e0bc3ef24a4465f79475c2f461e6966"><td class="mdescLeft">&#160;</td><td class="mdescRight">事件载荷（variant 风格，聚合初始化如 <span class="tt"><a class="el" href="classagent_1_1_agent_event.html" title="统一事件（variant 风格，对齐 StreamEvent）。聚合初始化： AgentEvent{ MessageStart{ msg } } 直接初始化 data。">AgentEvent</a>{ <a class="el" href="structagent_1_1_message_start.html" title="一条消息出现（user / assistant / toolResult 都发）">MessageStart</a>{ msg } }</span>）。  <br /></td></tr>
+</table>
+<a name="details" id="details"></a><h2 id="header-details" class="groupheader">详细描述</h2>
+<div class="textblock"><p>统一事件（variant 风格，对齐 StreamEvent）。聚合初始化： <span class="tt"><a class="el" href="classagent_1_1_agent_event.html" title="统一事件（variant 风格，对齐 StreamEvent）。聚合初始化： AgentEvent{ MessageStart{ msg } } 直接初始化 data。">AgentEvent</a>{ <a class="el" href="structagent_1_1_message_start.html" title="一条消息出现（user / assistant / toolResult 都发）">MessageStart</a>{ msg } }</span> 直接初始化 data。 </p>
+
+<p class="definition">在文件 <a class="el" href="agent__event_8hpp_source.html">agent_event.hpp</a> 第 <a class="el" href="agent__event_8hpp_source.html#l00084">84</a> 行定义.</p>
+</div><a name="doc-enum-members" id="doc-enum-members"></a><h2 id="header-doc-enum-members" class="groupheader">成员枚举类型说明</h2>
+<a id="a211cfeb92b075ab02e7b14cc56affe1c" name="a211cfeb92b075ab02e7b14cc56affe1c"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a211cfeb92b075ab02e7b14cc56affe1c">&#9670;&#160;</a></span>Type</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">enum class <a class="el" href="#a211cfeb92b075ab02e7b14cc56affe1c">agent::AgentEvent::Type</a></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel strong">strong</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>事件种类，与 data 的 variant 下标严格一一对应（type() 直接强转 index）。 </p>
+
+<p class="definition">在文件 <a class="el" href="agent__event_8hpp_source.html">agent_event.hpp</a> 第 <a class="el" href="agent__event_8hpp_source.html#l00087">87</a> 行定义.</p>
+
+</div>
+</div>
+<a name="doc-func-members" id="doc-func-members"></a><h2 id="header-doc-func-members" class="groupheader">成员函数说明</h2>
+<a id="a78db563dbd8086641cc6f3713d0b43ba" name="a78db563dbd8086641cc6f3713d0b43ba"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a78db563dbd8086641cc6f3713d0b43ba">&#9670;&#160;</a></span>type()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="#a211cfeb92b075ab02e7b14cc56affe1c">Type</a> agent::AgentEvent::type </td>
+          <td>(</td>
+          <td class="paramname"><span class="paramname"><em></em></span></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel inline">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>类型判别从 variant 下标推导——单一真相源，不存冗余 type 字段。 </p>
+
+<p class="definition">在文件 <a class="el" href="agent__event_8hpp_source.html">agent_event.hpp</a> 第 <a class="el" href="agent__event_8hpp_source.html#l00099">99</a> 行定义.</p>
+
+</div>
+</div>
+<a name="doc-variable-members" id="doc-variable-members"></a><h2 id="header-doc-variable-members" class="groupheader">类成员变量说明</h2>
+<a id="a6e0bc3ef24a4465f79475c2f461e6966" name="a6e0bc3ef24a4465f79475c2f461e6966"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a6e0bc3ef24a4465f79475c2f461e6966">&#9670;&#160;</a></span>data</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::variant&lt;<a class="el" href="structagent_1_1_agent_start.html">AgentStart</a>, <a class="el" href="structagent_1_1_agent_end.html">AgentEnd</a>, <a class="el" href="structagent_1_1_turn_start.html">TurnStart</a>, <a class="el" href="structagent_1_1_turn_end.html">TurnEnd</a>, <a class="el" href="structagent_1_1_message_start.html">MessageStart</a>, <a class="el" href="structagent_1_1_message_update.html">MessageUpdate</a>, <a class="el" href="structagent_1_1_message_end.html">MessageEnd</a>, <a class="el" href="structagent_1_1_tool_call_delta.html">ToolCallDelta</a>, <a class="el" href="structagent_1_1_tool_call_end.html">ToolCallEnd</a>, <a class="el" href="structagent_1_1_tool_exec_start.html">ToolExecStart</a>, <a class="el" href="structagent_1_1_tool_exec_update.html">ToolExecUpdate</a>, <a class="el" href="structagent_1_1_tool_exec_end.html">ToolExecEnd</a>, <a class="el" href="structagent_1_1_agent_error.html">AgentError</a>&gt; agent::AgentEvent::data</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>事件载荷（variant 风格，聚合初始化如 <span class="tt"><a class="el" href="classagent_1_1_agent_event.html" title="统一事件（variant 风格，对齐 StreamEvent）。聚合初始化： AgentEvent{ MessageStart{ msg } } 直接初始化 data。">AgentEvent</a>{ <a class="el" href="structagent_1_1_message_start.html" title="一条消息出现（user / assistant / toolResult 都发）">MessageStart</a>{ msg } }</span>）。 </p>
+
+<p class="definition">在文件 <a class="el" href="agent__event_8hpp_source.html">agent_event.hpp</a> 第 <a class="el" href="agent__event_8hpp_source.html#l00096">96</a> 行定义.</p>
+
+</div>
+</div>
+<hr/>该类的文档由以下文件生成:<ul>
+<li><a class="el" href="agent__event_8hpp_source.html">agent_event.hpp</a></li>
+</ul>
+</div><!-- contents -->
+</div><!-- doc-content -->
+<div id="page-nav" class="page-nav-panel">
+<div id="page-nav-resize-handle"></div>
+<div id="page-nav-tree">
+<div id="page-nav-contents">
+</div><!-- page-nav-contents -->
+</div><!-- page-nav-tree -->
+</div><!-- page-nav -->
+</div><!-- container -->
+<!-- start footer part -->
+<div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
+  <ul>
+    <li class="navelem"><b>agent</b></li><li class="navelem"><a href="classagent_1_1_agent_event.html">AgentEvent</a></li>
+    <li class="footer">制作者 <a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.17.0 </li>
+  </ul>
+</div>
+</body>
+</html>
