@@ -17,6 +17,18 @@
 
 ---
 
+## 📖 文档
+
+**[API 文档（Doxygen 全量：类 / 成员 / 头文件 / 源码浏览）→ `docs/html/index.html`](docs/html/index.html)**
+
+仓库自带生成产物，克隆下来直接点开即看，无需装 doxygen。改动公共 API 后重新生成：
+
+```powershell
+cmake --build --preset default --target doc
+```
+
+---
+
 ## 简介
 
 一个 C++26 编写的统一多 provider LLM SDK **外加**高层 Agent 封装：从「裸调用各家 LLM API」到
@@ -184,6 +196,7 @@ include/agent/
   agent/     高层 Agent（agent_event / agent / compaction）
 examples/    可运行示例（agent_chat / deepseek_chat / agnes_chat）
 tests/       T0/T1 测试 + fixtures + contract（T2）
+docs/        Doxygen API 文档（提交 git，[点开即看](docs/html/index.html)）
 ```
 
 ## 已知限制（实验性质的部分诚实交代）
