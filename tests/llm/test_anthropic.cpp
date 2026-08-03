@@ -635,10 +635,18 @@ TEST_CASE("Anthropic 难样例：流中断流 → Error 事件")
     ensure_claude_sonnet();
     auto model = ModelRegistry::find_model("claude-sonnet-4-5");
     REQUIRE(model.has_value());
-    // 完整响应发一半就 RST 断连 → 传输层错误 → Error 事件，绝不静默成功
+    // 完整响应发一半就 RST 断连 → 传输层错误 → Error 事件，绝不静默成功。
+    // ⚠️ 时序缓冲：头 + 开头一点 → 停 250ms（确保 curl 已读完响应头、open 成功）→
+    //   再发剩余 → RST。否则 RST 撞在读头阶段会被 curl 当「首字节前失败」重试 →
+    //   mock 无第二个剧本 → server.errors() 非空（同 test_http_client 断流测试的做法）。
     std::string body = load_fixture("anthropic_tool_round2.sse");
+    std::string head = "HTTP/1.1 200 OK\r\nContent-Type: text/event-stream\r\nConnection: close\r\n\r\n";
+    std::size_t half = body.size() / 2;
     agent::test::MockServer::Exchange exchange;
-    exchange.chunks = sse_response(body.substr(0, body.size() / 2));
+    exchange.chunks = {
+        { head + body.substr(0, 64), 250 },        // 头 + 开头一点，停顿让 curl 读完头
+        { body.substr(64, half - 64), 0 },          // 剩余前半截（后半截不发，RST 断连）
+    };
     exchange.close_abruptly = true;
     agent::test::MockServer server;
     server.enqueue(std::move(exchange));
