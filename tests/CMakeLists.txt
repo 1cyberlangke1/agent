@@ -26,6 +26,9 @@ if(AGENT_BUILD_TESTS)
         llm/test_multimodal.cpp
         llm/test_llm_concurrency.cpp
         llm/test_contract_response.cpp
+        agent/test_agent_event.cpp
+        agent/test_compaction.cpp
+        agent/test_agent.cpp
         ${CMAKE_SOURCE_DIR}/src/tools/tools.cpp
         ${CMAKE_SOURCE_DIR}/src/llm/model_registry.cpp
         ${CMAKE_SOURCE_DIR}/src/core/http_client.cpp

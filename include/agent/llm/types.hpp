@@ -87,6 +87,7 @@ struct Usage {
     int cache_read_tokens = 0;     // 缓存命中读取
     int cache_write_tokens = 0;    // 缓存写入（Anthropic 有）
     int total_tokens = 0;          // 总计
+    double cost = 0;               // 美元；引擎 parse_usage 不填（默认 0），Agent 算好后填；向后兼容
 };
 
 // ─────────────────────────────────────────────────────────────

@@ -27,6 +27,10 @@ enum class Errc {
     ProviderError,
     /// MCP 服务器未连接
     ServerNotConnected,
+    /// 压缩失败（摘要响应调工具 / 流中断 / 空摘要 / 请求超限），message 写明具体原因
+    CompactionFailed,
+    /// 用户取消 / 超时中止（abort() 触发，AgentError 用它区分取消与失败）
+    Aborted,
 };
 
 /// @brief 错误信息

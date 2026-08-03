@@ -119,7 +119,7 @@ public:
 
     /// 同步非流式：跑 complete_async 直到返回完整结果。
     template<typename... Args>
-    Result<typename Engine::result_type> complete(Args const&... args);
+    Result<typename Engine::result_type> complete(Args const&... args) const;
 
     /// 异步流式：生产协程推入调用方提供的 sink。按值移动进入，生命周期由引擎保证。
     template<typename... Args>
@@ -130,10 +130,12 @@ public:
 
     /// 异步非流式：建内部 sink + co_spawn 核心 + 收集 Done/Error。
     template<typename... Args>
-    asio::awaitable<Result<typename Engine::result_type>> complete_async(Args const&... args);
+    asio::awaitable<Result<typename Engine::result_type>> complete_async(Args const&... args) const;
 
 private:
-    Engine engine_;
+    /// mutable：complete / complete_async 为 const（Agent 的 Behaviors 钩子拿 Provider const&，
+    /// 压缩要在 const 上调用 provider）。引擎 stream_async 非 const，靠 mutable 放行。
+    mutable Engine engine_;
 };
 
 // ───────────────────── 实现 ─────────────────────
@@ -163,7 +165,7 @@ std::generator<typename Engine::event_type> StreamFacade<Engine>::stream(Args co
 
 template<StreamEngine Engine>
 template<typename... Args>
-Result<typename Engine::result_type> StreamFacade<Engine>::complete(Args const&... args)
+Result<typename Engine::result_type> StreamFacade<Engine>::complete(Args const&... args) const
 {
     using ResultType = typename Engine::result_type;
     asio::io_context io;
@@ -180,7 +182,7 @@ Result<typename Engine::result_type> StreamFacade<Engine>::complete(Args const&.
 template<StreamEngine Engine>
 template<typename... Args>
 asio::awaitable<Result<typename Engine::result_type>> StreamFacade<Engine>::complete_async(
-    Args const&... args)
+    Args const&... args) const
 {
     using Event = typename Engine::event_type;
     using ResultType = typename Engine::result_type;
