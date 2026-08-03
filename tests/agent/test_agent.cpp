@@ -170,6 +170,7 @@ TEST_CASE("工具往返闭环：事件顺序 + 二次请求带工具结果 + mes
     auto st = reset_mock("t-tool");
     st->stream_script = weather_tool_roundtrip;
     Agent<MockProvider> agent(EndpointConfig{ .name = "t-tool", .api_key = "k" }, test_model());
+    agent.set_tools({ "agent_weather" });   // 显式开放工具（默认不开放）
 
     std::vector<AgentEvent> events = run_all(agent, { user("查天气杭州") });
 
@@ -221,6 +222,7 @@ TEST_CASE("before_tool_call 拒绝 → 模型收到被拒错误")
     st->stream_script = weather_tool_roundtrip;
     Agent<MockProvider, BlockingBehaviors> agent(EndpointConfig{ .name = "t-block" }, test_model(),
                                                  BlockingBehaviors{});
+    agent.set_tools({ "agent_weather" });
 
     std::vector<AgentEvent> events = run_all(agent, { user("查天气") });
 
@@ -240,6 +242,7 @@ TEST_CASE("should_stop 提前停 → 无第二次请求")
     st->stream_script = weather_tool_roundtrip;
     Agent<MockProvider, StopAfterFirstBehaviors> agent(EndpointConfig{ .name = "t-stop" }, test_model(),
                                                        StopAfterFirstBehaviors{});
+    agent.set_tools({ "agent_weather" });
 
     std::vector<AgentEvent> events = run_all(agent, { user("查天气") });
 
@@ -309,6 +312,7 @@ TEST_CASE("prepare_next_turn 换模型")
     behaviors.next = next;
     Agent<MockProvider, SwitchModelBehaviors> agent(EndpointConfig{ .name = "t-pnt" }, test_model(),
                                                     std::move(behaviors));
+    agent.set_tools({ "agent_weather" });
 
     std::vector<AgentEvent> events = run_all(agent, { user("查天气") });
 
@@ -370,6 +374,7 @@ TEST_CASE("abort 并发取消 → Aborted")
     st->stream_script = weather_tool_roundtrip;
     st->stream_delay_ms = 1000;   // 剧本阻塞：让 loop 卡在 receive 上（取消不生效时最坏 1s 兜底）
     Agent<MockProvider> agent(EndpointConfig{ .name = "t-abort" }, test_model());
+    agent.set_tools({ "agent_weather" });
 
     // 测试允许 try/catch；捕获到异常 → 直接测试失败（不静默吞）
     std::exception_ptr thread_error;
@@ -491,7 +496,7 @@ TEST_CASE("默认压缩：mock complete 摘要 + 请求构造断言")
     REQUIRE(!st->complete_contexts[0].messages.empty());
     Message const& instruction = st->complete_contexts[0].messages.back();
     CHECK(instruction.role == Role::User);
-    CHECK(message_text(instruction).find("压缩成一个简洁的会话摘要") != std::string::npos);
+    CHECK(message_text(instruction).find("Please compress the conversation above") != std::string::npos);
     REQUIRE(st->complete_opts.size() == 1);
     REQUIRE(st->complete_opts[0].reasoning.has_value());
     CHECK(*st->complete_opts[0].reasoning == ThinkingLevel::Off);
@@ -580,6 +585,89 @@ TEST_CASE("has_queued_messages / clear_queues")
     CHECK(agent.has_queued_messages());
     agent.clear_queues();
     CHECK(!agent.has_queued_messages());
+}
+
+TEST_CASE("默认不开放任何工具：tools() 空 + 请求 ctx.tools 空")
+{
+    auto st = reset_mock("t-no-tools");
+    st->stream_script = [](Context const&, int) { return std::vector<StreamEvent>{ done_text("ok") }; };
+    Agent<MockProvider> agent(EndpointConfig{ .name = "t-no-tools" }, test_model());
+
+    CHECK(agent.tools().empty());
+    std::vector<AgentEvent> events = run_all(agent, { user("你好") });
+    REQUIRE(!st->seen_contexts.empty());
+    CHECK(st->seen_contexts[0].tools.empty());   // 默认不广告任何工具
+}
+
+TEST_CASE("set_tools 指定子集 → 请求 ctx.tools 只含指定")
+{
+    ensure_weather_tool();
+    auto st = reset_mock("t-set-tools");
+    st->stream_script = [](Context const&, int) { return std::vector<StreamEvent>{ done_text("ok") }; };
+    Agent<MockProvider> agent(EndpointConfig{ .name = "t-set-tools" }, test_model());
+    agent.set_tools({ "agent_weather" });
+
+    std::vector<AgentEvent> events = run_all(agent, { user("你好") });
+    REQUIRE(!st->seen_contexts.empty());
+    CHECK(st->seen_contexts[0].tools == std::vector<std::string>{ "agent_weather" });
+}
+
+TEST_CASE("执行门控：未开放工具被拒且不真执行")
+{
+    ensure_weather_tool();
+    auto st = reset_mock("t-gate");
+    st->stream_script = weather_tool_roundtrip;   // 剧本调用 agent_weather，但未 set_tools
+    Agent<MockProvider> agent(EndpointConfig{ .name = "t-gate" }, test_model());
+
+    std::vector<AgentEvent> events = run_all(agent, { user("查天气") });
+
+    ToolExecEnd const* exec_end = first_of<ToolExecEnd>(events);
+    REQUIRE(exec_end != nullptr);
+    CHECK(exec_end->result.is_error);
+    CHECK(exec_end->result.output.find("未开放") != std::string::npos);
+    // 工具 fn 未被真调用（否则结果会是「杭州 30°C 晴」）→ 拒绝原因回传模型
+    REQUIRE(st->seen_contexts.size() == 2);
+    CHECK(has_tool_result_with(st->seen_contexts[1].messages, "未开放"));
+}
+
+TEST_CASE("执行门控：开放的执行、未开放的被拒（同批）")
+{
+    ensure_weather_tool();
+    auto st = reset_mock("t-gate2");
+    st->stream_script = [](Context const&, int index) {
+        if (index != 0)
+            return std::vector<StreamEvent>{ text_delta("ok"), done_text("ok") };
+        ChatResponse response;
+        response.content.push_back(ToolCall{ "c1", "agent_weather", {{"location", "杭州"}} });
+        response.content.push_back(ToolCall{ "c2", "secret_tool", nlohmann::json::object() });
+        response.stop_reason = StopReason::ToolUse;
+        return std::vector<StreamEvent>{
+            tool_call_end("c1", "agent_weather", {{"location", "杭州"}}),
+            tool_call_end("c2", "secret_tool", nlohmann::json::object()),
+            StreamEvent{ DoneEvent{ std::move(response) } },
+        };
+    };
+    Agent<MockProvider> agent(EndpointConfig{ .name = "t-gate2" }, test_model());
+    agent.set_tools({ "agent_weather" });   // secret_tool 未开放
+
+    std::vector<AgentEvent> events = run_all(agent, { user("干活") });
+
+    std::vector<ToolExecEnd const*> exec_ends;
+    for (auto const& e : events)
+        if (auto* te = std::get_if<ToolExecEnd>(&e.data))
+            exec_ends.push_back(te);
+    REQUIRE(exec_ends.size() == 2);
+    bool weather_executed = false;
+    bool secret_rejected = false;
+    for (auto const* te : exec_ends) {
+        if (te->name == "agent_weather")
+            weather_executed = !te->result.is_error;
+        if (te->name == "secret_tool")
+            secret_rejected = te->result.is_error
+                && te->result.output.find("未开放") != std::string::npos;
+    }
+    CHECK(weather_executed);      // 开放的工具正常执行
+    CHECK(secret_rejected);       // 未开放的被拒回传
 }
 
 TEST_CASE("Agent 不可拷贝 / 移动（编译期拒绝）")

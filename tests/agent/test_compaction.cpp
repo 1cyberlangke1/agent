@@ -146,12 +146,12 @@ TEST_CASE("is_compaction_summary / extract_summary_text")
 TEST_CASE("build_summary_instruction：含 previous-summary 增量段")
 {
     std::string instruction = build_summary_instruction("");
-    CHECK(instruction.find("压缩成一个简洁的会话摘要") != std::string::npos);
-    CHECK(instruction.find("之前的摘要") == std::string::npos);
+    CHECK(instruction.find("Please compress the conversation above") != std::string::npos);
+    CHECK(instruction.find("previous summary") == std::string::npos);
 
-    std::string with_prev = build_summary_instruction("旧摘要");
-    CHECK(with_prev.find("之前的摘要") != std::string::npos);
-    CHECK(with_prev.find("旧摘要") != std::string::npos);
+    std::string with_prev = build_summary_instruction("old summary");
+    CHECK(with_prev.find("previous summary") != std::string::npos);
+    CHECK(with_prev.find("old summary") != std::string::npos);
 }
 
 TEST_CASE("build_summary_request：未触发 → nullopt")
@@ -190,7 +190,7 @@ TEST_CASE("build_summary_request：触发 → 摘要请求构造正确")
     // 摘要段 = [0,2) + 尾部 user 指令；tools 留空；system 不变
     CHECK(request->ctx.messages.size() == 3);
     CHECK(request->ctx.messages[2].role == Role::User);
-    CHECK(message_text(request->ctx.messages[2]).find("压缩成一个简洁的会话摘要") != std::string::npos);
+    CHECK(message_text(request->ctx.messages[2]).find("Please compress the conversation above") != std::string::npos);
     CHECK(request->ctx.tools.empty());
     CHECK(request->ctx.system_prompt == "sys");
     // 摘要请求采样：max_tokens = min(4096,4096)、thinking 关、温度 0

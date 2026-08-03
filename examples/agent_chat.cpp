@@ -245,7 +245,8 @@ int main(int argc, char* argv[])
         return 1;
     }
 
-    // 先注册运行时工具，再构造 Agent——Agent 构造时快照 Tools::names() 作为工具子集
+    // 先注册运行时工具（编译时 weather_now 静态注册），再构造 Agent。
+    // Agent 默认不开放任何工具——须 set_tools 显式指定允许集（广告 + 执行门控双重生效）。
     Result<void> reg_report = register_send_report();
     Result<void> reg_trip = register_plan_trip();
     if (!reg_report)
@@ -258,9 +259,10 @@ int main(int argc, char* argv[])
         *model_opt,
         {},
         "你是一个会使用工具的助手。请根据用户请求调用合适的工具满足需求，用中文回答。");
+    agent.set_tools({ "weather_now", "send_report", "plan_trip" });   // 手动指定允许的工具
 
     std::cout << "已连接 DeepSeek（deepseek-v4-flash），Agent 自动工具往返。\n";
-    std::cout << "工具：weather_now（查天气·真实 API）、send_report（发报告·嵌套参数）、"
+    std::cout << "已开放工具：weather_now（查天气·真实 API）、send_report（发报告·嵌套参数）、"
                  "plan_trip（规划行程·嵌套参数）。\n";
     std::cout << "命令：/compact（手动压缩）、/help、exit（退出）\n\n";
 

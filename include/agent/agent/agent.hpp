@@ -32,6 +32,7 @@
 
 #include <nlohmann/json.hpp>
 
+#include <algorithm>
 #include <atomic>
 #include <chrono>
 #include <cstddef>
@@ -115,48 +116,50 @@ public:
     }
 
     // ── 钩子：每次发请求前改写消息列表（对齐 pi transformContext）──
+    /// 改写发给模型的消息列表（可注入检索结果 / 拼 skills / 删敏感消息 / 截断历史）。
+    /// 返回的列表就是模型这次请求看到的内容；不覆盖则原样返回 snap.messages。
     template<typename Provider>
     Result<std::vector<Message>> transform_context(Provider const& provider,
                                                    ContextSnapshot const& snap) const
     { (void)provider; return snap.messages; }
-    // 每个工具执行前拦截（对齐 pi beforeToolCall）；false = 拒绝执行，模型收到「工具被拒」
+    /// 每个工具执行前拦截（对齐 pi beforeToolCall）；false = 拒绝执行，模型收到「工具被拒」。
     template<typename Provider>
     Result<bool> before_tool_call(Provider const& provider, ToolCall const& tool_call,
                                   ContextSnapshot const& snap) const
     { (void)provider; (void)tool_call; (void)snap; return true; }
-    // 每个工具执行后改写结果（对齐 pi afterToolCall，字段级覆盖）
+    /// 每个工具执行后改写结果（对齐 pi afterToolCall，字段级覆盖，模型信什么你说了算）。
     template<typename Provider>
     Result<ToolResult> after_tool_call(Provider const& provider, ToolCall const& tool_call,
                                        ToolResult result) const
     { (void)provider; (void)tool_call; return result; }
-    // 每轮结束换模型 / 改上下文（对齐 pi prepareNextTurn）；nullopt = 保持现状 —— 多模型编排
+    /// 每轮结束换模型 / 改上下文（对齐 pi prepareNextTurn）；nullopt = 保持现状 —— 多模型编排。
     template<typename Provider>
     Result<std::optional<NextTurnUpdate>> prepare_next_turn(
         Provider const& provider, Message const& assistant_message,
         std::vector<ToolResult> const& tool_results) const
     { (void)provider; (void)assistant_message; (void)tool_results; return std::nullopt; }
-    // 每轮结束提前停止（对齐 pi shouldStopAfterTurn）—— 成本/上下文控制
+    /// 每轮结束提前停止（对齐 pi shouldStopAfterTurn）—— 成本/上下文控制。
     template<typename Provider>
     Result<bool> should_stop(Provider const& provider, Message const& assistant_message) const
     { (void)provider; (void)assistant_message; return false; }
-    // 动态取 API key（对齐 pi getApiKey）—— 保持原名，只要 provider 名
+    /// 动态取 API key（对齐 pi getApiKey）—— 短时 OAuth token 场景；非空则覆盖本次请求 key。
     Result<std::optional<std::string>> get_api_key(std::string_view provider_name) const
     { (void)provider_name; return std::nullopt; }
 
     // ── 低层时机点（对齐 pi before_agent_start / before_provider_request）──
-    // run 开始前：改写初始消息 + 系统提示；nullopt = 不改
+    /// run 开始前：改写初始消息 + 系统提示；nullopt = 不改。
     template<typename Provider>
     Result<std::optional<RunStartPatch>> run_start(
         Provider const& provider, std::vector<Message> const& user_messages,
         std::string const& system_prompt) const
     { (void)provider; (void)user_messages; (void)system_prompt; return std::nullopt; }
-    // 每次发请求前：改写 StreamOptions；nullopt = 不改
+    /// 每次发请求前：改写 StreamOptions（max_tokens / 超时 / 头等）；nullopt = 不改。
     template<typename Provider>
     Result<std::optional<StreamOptions>> before_request(
         Provider const& provider, StreamOptions const& options) const
     { (void)provider; (void)options; return std::nullopt; }
-    // 每次发请求前：改写请求体 body（对齐 pi beforeProviderPayload）。
-    // 收的是引擎 build_params 生成的完整 body，在其上改写（其余字段保留）；nullopt = 不改。
+    /// 每次发请求前：改写请求体 body（对齐 pi beforeProviderPayload）。
+    /// 收的是引擎 build_params 生成的完整 body，在其上改写（其余字段保留）；nullopt = 不改。
     template<typename Provider>
     Result<std::optional<nlohmann::json>> before_payload(
         Provider const& provider, nlohmann::json const& body) const
@@ -167,7 +170,8 @@ template<typename Provider, typename Behaviors = DefaultBehaviors>
 class Agent {
 public:
     /// 构造：连接配置 + 模型 + 行为（钩子 + 压缩策略一体）+ 系统提示。
-    /// 默认工具集 = 全局 Tools 注册表全部工具（零配置自动工具往返；可用 set_tools 收窄）。
+    /// 默认不开放任何工具——模型看不到也不会执行任何工具，须 set_tools 显式指定
+    ///（广告子集 + 执行门控双重生效，未开放的调用会被拒绝回传）。
     Agent(EndpointConfig config, ModelView model,
           Behaviors behaviors = {}, std::string system_prompt = {})
         : provider_name_(config.name)
@@ -175,7 +179,6 @@ public:
         , model_(model)
         , system_prompt_(std::move(system_prompt))
         , behaviors_(std::move(behaviors))
-        , tools_(Tools::names())
     {
     }
 
@@ -275,7 +278,8 @@ public:
     std::vector<std::string> pending_tools() const { return pending_tools_; }
     /// 最近失败/中止错误（无则 nullopt）。
     std::optional<Error> last_error() const { return last_error_; }
-    /// 传给模型的工具子集（默认全部已注册工具）。
+    /// 传给模型的工具子集（**默认空 = 不开放任何工具**；指定后广告 + 执行门控同时生效，
+    /// 未开放的工具调用会被拒绝回传给模型）。
     void set_tools(std::vector<std::string> tools) { tools_ = std::move(tools); }
     std::vector<std::string> const& tools() const { return tools_; }
 
@@ -532,7 +536,13 @@ private:
         }
     }
 
-    /// 执行一批工具：before 钩子全部先跑（拦截/拒绝）→ 执行（Parallel 用 std::async）→
+    /// 工具是否在允许集（tools_）内——执行门控：不在集内的调用被拒绝回传。
+    bool is_tool_allowed(std::string const& name) const
+    {
+        return std::find(tools_.begin(), tools_.end(), name) != tools_.end();
+    }
+
+    /// 执行一批工具：**先门控**（tools_ 允许集 + before 钩子）→ 执行（Parallel 用 std::async）→
     /// after 钩子 → ToolExecStart/End 事件 → 回传 ToolResult 消息。同步工具无部分结果，
     /// 不发 ToolExecUpdate。
     asio::awaitable<std::vector<ToolResult>> execute_tools(std::vector<ToolCall> const& calls,
@@ -552,7 +562,13 @@ private:
             ToolResult result;
             result.tool_call_id = tc.id;
             bool rejected = false;
-            if (!before) {
+            // 执行门控：不在 tools_ 允许集的工具直接拒绝（须 set_tools 显式指定），
+            // 不真执行，把「未开放」原因回传给模型让它调整。
+            if (!is_tool_allowed(tc.name)) {
+                rejected = true;
+                result.is_error = true;
+                result.output = "工具「" + tc.name + "」未开放（须 set_tools 显式指定）";
+            } else if (!before) {
                 rejected = true;
                 result.is_error = true;
                 result.output = before.error().message;

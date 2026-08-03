@@ -271,6 +271,7 @@ TEST_CASE("容错：prepare_next_turn 返回 Error → run 终止")
     st->stream_script = weather_tool_roundtrip;
     Agent<MockProvider, PntErrorBehaviors> agent(EndpointConfig{ .name = "rt-pnt" }, test_model(),
                                                  PntErrorBehaviors{});
+    agent.set_tools({ "agent_weather" });
     std::vector<AgentEvent> events = run_all(agent, { user("查天气") });
 
     REQUIRE(agent.last_error().has_value());
@@ -286,6 +287,7 @@ TEST_CASE("容错：before_tool_call 返回 Error → 工具结果 is_error")
     st->stream_script = weather_tool_roundtrip;
     Agent<MockProvider, BeforeToolErrorBehaviors> agent(EndpointConfig{ .name = "rt-btool" },
                                                         test_model(), BeforeToolErrorBehaviors{});
+    agent.set_tools({ "agent_weather" });
     std::vector<AgentEvent> events = run_all(agent, { user("查天气") });
 
     ToolExecEnd const* exec_end = first_of<ToolExecEnd>(events);
@@ -314,6 +316,7 @@ TEST_CASE("容错：工具 exec 失败 → ToolResult 错误回传")
         };
     };
     Agent<MockProvider> agent(EndpointConfig{ .name = "rt-boom" }, test_model());
+    agent.set_tools({ "boom_tool" });
     std::vector<AgentEvent> events = run_all(agent, { user("触发爆炸") });
 
     ToolExecEnd const* exec_end = first_of<ToolExecEnd>(events);
@@ -393,6 +396,7 @@ TEST_CASE("功能：after_tool_call 改写结果")
     st->stream_script = weather_tool_roundtrip;
     Agent<MockProvider, RewriteAfterBehaviors> agent(EndpointConfig{ .name = "rt-after" }, test_model(),
                                                      RewriteAfterBehaviors{});
+    agent.set_tools({ "agent_weather" });
     std::vector<AgentEvent> events = run_all(agent, { user("查天气") });
 
     ToolExecEnd const* exec_end = first_of<ToolExecEnd>(events);
@@ -481,6 +485,7 @@ TEST_CASE("功能：多工具一轮 Parallel（std::async 真并行）")
     auto st = reset_mock("rt-2tool");
     st->stream_script = two_tools_script;
     Agent<MockProvider> agent(EndpointConfig{ .name = "rt-2tool" }, test_model());
+    agent.set_tools({ "agent_weather" });
 
     std::vector<AgentEvent> events = run_all(agent, { user("查两个城市") });
 
@@ -501,6 +506,7 @@ TEST_CASE("功能：工具 Sequential 模式")
     auto st = reset_mock("rt-seq");
     st->stream_script = two_tools_script;
     Agent<MockProvider> agent(EndpointConfig{ .name = "rt-seq" }, test_model());
+    agent.set_tools({ "agent_weather" });
     agent.set_tool_execution_mode(ToolExecutionMode::Sequential);
 
     std::vector<AgentEvent> events = run_all(agent, { user("查两个城市") });
@@ -626,6 +632,7 @@ TEST_CASE("功能：wait_for_idle 等 run 结束")
     st->stream_script = weather_tool_roundtrip;
     st->stream_delay_ms = 500;   // 让 run 持续一段时间
     Agent<MockProvider> agent(EndpointConfig{ .name = "rt-wfi" }, test_model());
+    agent.set_tools({ "agent_weather" });
 
     std::thread runner([&] {
         for (AgentEvent const& ev : agent.run({ user("查天气") })) {
@@ -706,6 +713,7 @@ TEST_CASE("功能：工具 Default 模式（回退顺序执行）")
     auto st = reset_mock("rt-tooldef");
     st->stream_script = two_tools_script;
     Agent<MockProvider> agent(EndpointConfig{ .name = "rt-tooldef" }, test_model());
+    agent.set_tools({ "agent_weather" });
     agent.set_tool_execution_mode(ToolExecutionMode::Default);
 
     std::vector<AgentEvent> events = run_all(agent, { user("查两个城市") });
@@ -736,6 +744,7 @@ TEST_CASE("容错：run_async 中途 abort → Aborted")
     st->stream_script = weather_tool_roundtrip;
     st->stream_delay_ms = 2000;   // 阻塞生产协程，给 abort 窗口（取消不生效最坏 2s 兜底）
     Agent<MockProvider> agent(EndpointConfig{ .name = "rt-asabort" }, test_model());
+    agent.set_tools({ "agent_weather" });
 
     asio::io_context io;
     bool completed = false;

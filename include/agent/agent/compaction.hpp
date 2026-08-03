@@ -38,7 +38,7 @@ struct CompactionSettings {
 };
 
 /// 摘要消息前缀（按此前缀可识别摘要消息）。
-inline constexpr std::string_view kCompactionSummaryPrefix = "[会话摘要]\n";
+inline constexpr std::string_view kCompactionSummaryPrefix = "[Conversation Summary]\n";
 
 /// 判断是否为摘要消息（Role::User 且首个 Text 块带前缀）。
 bool is_compaction_summary(Message const& message);
@@ -226,13 +226,14 @@ inline std::size_t find_cut_point(std::vector<Message> const& messages, Compacti
 inline std::string build_summary_instruction(std::string_view previous_summary)
 {
     std::string instruction =
-        "请把上面的对话压缩成一个简洁的会话摘要，必须保留：\n"
-        "- 用户的目标与已完成的事项\n"
-        "- 关键决策与结论\n"
-        "- 待办 / 未完成事项\n"
-        "- 重要的事实与上下文\n";
+        "Please compress the conversation above into a concise summary, preserving:\n"
+        "- The user's goals and completed items\n"
+        "- Key decisions and conclusions\n"
+        "- Pending / unfinished items\n"
+        "- Important facts and context\n";
     if (!previous_summary.empty()) {
-        instruction += "\n这是之前的摘要，请在此基础上合并更新（不要重复已有内容）：\n";
+        instruction += "\nThis is the previous summary; merge and update it on top of it "
+                       "(do not repeat already-covered content):\n";
         instruction += previous_summary;
         instruction += "\n";
     }
