@@ -126,7 +126,7 @@ std::shared_ptr<detail::ToolsSnapshot> Tools::load_snapshot()
 
 Result<void> Tools::reg(ToolInfo info,
     std::function<Result<std::string>(nlohmann::json)> fn,
-    ArgsCheck check)
+    ArgsCheck check, ToolExecutionMode mode)
 {
     // 校验链全部在锁外完成，持锁窗口只覆盖查重 + COW 替换
     if (info.name.empty())
@@ -141,7 +141,7 @@ Result<void> Tools::reg(ToolInfo info,
 
     // 先构造完成条目再插入：key 从条目内部引用，规避 std::move(info) 的评估顺序陷阱
     auto tool = std::make_shared<detail::RegisteredTool const>(
-        detail::RegisteredTool{std::move(info), std::move(fn), check});
+        detail::RegisteredTool{std::move(info), std::move(fn), check, mode});
 
     State& st = state();
     std::lock_guard lock(st.write_mutex);
@@ -161,7 +161,7 @@ Result<void> Tools::reg(ToolInfo info,
 
 Result<void> Tools::reg(ToolInfo info,
     std::function<asio::awaitable<Result<std::string>>(nlohmann::json)> async_fn,
-    ArgsCheck check)
+    ArgsCheck check, ToolExecutionMode mode)
 {
     // 异步工具 → 同步包装：exec 时 io_context 桥接等协程完成（同步壳包异步核心）
     std::function<Result<std::string>(nlohmann::json)> sync_fn;
@@ -179,7 +179,7 @@ Result<void> Tools::reg(ToolInfo info,
         };
     }
     // 复用同步注册（校验链一致）
-    return reg(std::move(info), std::move(sync_fn), check);
+    return reg(std::move(info), std::move(sync_fn), check, mode);
 }
 
 Result<std::string> Tools::exec(std::string_view name, nlohmann::json args)
@@ -234,6 +234,16 @@ Result<ToolInfo> Tools::get(std::string_view name)
         return std::unexpected(Error{Errc::NotFound,
             "tool '" + std::string(name) + "' not found"});
     return it->second->info;
+}
+
+Result<ToolExecutionMode> Tools::mode(std::string_view name)
+{
+    std::shared_ptr<detail::ToolsSnapshot> snap = load_snapshot();
+    auto it = snap->map.find(name);
+    if (it == snap->map.end())
+        return std::unexpected(Error{Errc::NotFound,
+            "tool '" + std::string(name) + "' not found"});
+    return it->second->mode;
 }
 
 Result<std::vector<ToolInfo>> Tools::resolve(std::vector<std::string> const& names)

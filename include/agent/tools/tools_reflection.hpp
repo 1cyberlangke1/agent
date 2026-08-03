@@ -509,6 +509,9 @@ Result<T> assign_from_json(nlohmann::json const& j)
 /// 工具名取 struct 标识符，描述取 struct 头的 [[= Desc("...")]] 注解，
 /// 参数 schema 从 params_type 反射自动生成——三者都不需要手写。
 ///
+/// 可选：`static constexpr ToolExecutionMode execution_mode` —— 该工具的
+/// 执行模式（per-tool，覆盖 Agent 全局）；缺省 = Default（跟随全局）。
+///
 /// 在定义工具的 .cpp 中显式实例化触发静态注册（缺了链接器会丢弃注册代码）：
 ///   template struct agent::ToolBase<MyTool>;
 /// inline static Registrar reg{} 的构造函数在 main() 前运行完成注册。
@@ -522,6 +525,26 @@ struct ToolBase
     };
     inline static Registrar reg{};
 };
+
+namespace detail {
+
+/// 检测工具类是否声明了 static constexpr ToolExecutionMode execution_mode。
+template<typename T, typename = void>
+struct has_execution_mode : std::false_type {};
+template<typename T>
+struct has_execution_mode<T, std::void_t<decltype(T::execution_mode)>> : std::true_type {};
+
+/// 取工具类声明的执行模式；未声明 → Default（跟随 Agent 全局）。
+template<typename T>
+constexpr ToolExecutionMode tool_execution_mode()
+{
+    if constexpr (has_execution_mode<T>::value)
+        return T::execution_mode;
+    else
+        return ToolExecutionMode::Default;
+}
+
+} // namespace detail
 
 template<typename T>
 ToolBase<T>::Registrar::Registrar()
@@ -538,6 +561,8 @@ ToolBase<T>::Registrar::Registrar()
     // ArgsCheck::Tool：assign_from_json 已全量校验，跳过 exec 的 schema 预校验。
     // 工具类若定义 `static asio::awaitable<Result<std::string>> invoke_async(params_type const&)`
     // → 异步注册（exec 内部桥接）；否则用同步 invoke（两种工具并存）。
+    // 执行模式：工具类若声明 `static constexpr ToolExecutionMode execution_mode` → per-tool 生效。
+    constexpr ToolExecutionMode mode = detail::tool_execution_mode<T>();
     Result<void> registered;
     if constexpr (requires(Params const& p) {
                       { T::invoke_async(p) } -> std::same_as<asio::awaitable<Result<std::string>>>;
@@ -549,7 +574,7 @@ ToolBase<T>::Registrar::Registrar()
                     co_return std::unexpected(params.error());
                 co_return co_await T::invoke_async(std::move(*params));
             },
-            ArgsCheck::Tool);
+            ArgsCheck::Tool, mode);
     } else {
         registered = Tools::reg(std::move(info),
             [](nlohmann::json args) -> Result<std::string> {
@@ -558,7 +583,7 @@ ToolBase<T>::Registrar::Registrar()
                     return std::unexpected(params.error());
                 return T::invoke(std::move(*params));
             },
-            ArgsCheck::Tool);
+            ArgsCheck::Tool, mode);
     }
 
     // 静态初始化阶段无处返回错误，stderr 警告是唯一可靠通道

@@ -63,9 +63,6 @@ struct RunStartPatch {
 /// 队列模式（对齐 pi QueueMode）：steer / follow_up 注入时的取法。
 enum class QueueMode { OneAtATime, All };
 
-/// 工具执行模式（对齐 pi ToolExecutionMode）。
-enum class ToolExecutionMode { Default, Sequential, Parallel };
-
 /// 上下文快照：Agent 打包的当前上下文信息，统一传给所有 Behaviors 方法
 ///（钩子 / 压缩判断都能拿到 usage / 上下文窗口 / 上次摘要 / 当前对话 / 模型）。
 /// ⚠️ messages 是引用：压缩会丢弃旧段，要旧上下文请在压缩前自行读取。
@@ -542,6 +539,15 @@ private:
         return std::find(tools_.begin(), tools_.end(), name) != tools_.end();
     }
 
+    /// 工具有效执行模式：per-tool（注册时指定，!= Default）覆盖 Agent 全局默认。
+    ToolExecutionMode effective_tool_mode(std::string const& name) const
+    {
+        Result<ToolExecutionMode> mode = Tools::mode(name);
+        if (mode && *mode != ToolExecutionMode::Default)
+            return *mode;
+        return tool_execution_mode_;
+    }
+
     /// 执行一批工具：**先门控**（tools_ 允许集 + before 钩子）→ 执行（Parallel 用 std::async）→
     /// after 钩子 → ToolExecStart/End 事件 → 回传 ToolResult 消息。同步工具无部分结果，
     /// 不发 ToolExecUpdate。
@@ -580,41 +586,35 @@ private:
             planned.push_back({ tc, std::move(result), rejected });
         }
 
-        if (tool_execution_mode_ == ToolExecutionMode::Parallel && !planned.empty()) {
-            // 真并行：std::async 全部启动后逐个取回（Tools 注册表线程安全）
-            std::vector<std::future<Result<std::string>>> futures;
-            futures.reserve(planned.size());
-            for (auto const& p : planned)
-                futures.push_back(std::async(std::launch::async, [&p]() {
+        // 每个工具的有效执行模式：per-tool（!= Default）覆盖 Agent 全局默认。
+        // 执行：Parallel 用 std::async 并发（先全部启动，后台跑），Sequential 按序内联，
+        // 结果按 planned 原顺序收集（每个工具结果带自己的 tool_call_id）。
+        std::vector<ToolExecutionMode> modes;
+        modes.reserve(planned.size());
+        for (auto const& p : planned)
+            modes.push_back(effective_tool_mode(p.call.name));
+
+        std::vector<std::future<Result<std::string>>> futures(planned.size());
+        for (std::size_t i = 0; i < planned.size(); ++i)
+            if (!planned[i].rejected && modes[i] == ToolExecutionMode::Parallel)
+                futures[i] = std::async(std::launch::async, [&p = planned[i]]() {
                     return Tools::exec(p.call.name, p.call.arguments);
-                }));
-            for (std::size_t i = 0; i < planned.size(); ++i) {
-                Planned& p = planned[i];
-                if (p.rejected)
-                    continue;
-                Result<std::string> r = futures[i].get();
-                apply_exec_result(p.result, p.call, r);
-                Result<ToolResult> after = behaviors_.after_tool_call(provider_, p.call, p.result);
-                if (after)
-                    p.result = *after;
-                else {
-                    p.result.is_error = true;
-                    p.result.output = after.error().message;
-                }
-            }
-        } else {
-            for (Planned& p : planned) {
-                if (p.rejected)
-                    continue;
-                Result<std::string> r = Tools::exec(p.call.name, p.call.arguments);
-                apply_exec_result(p.result, p.call, r);
-                Result<ToolResult> after = behaviors_.after_tool_call(provider_, p.call, p.result);
-                if (after)
-                    p.result = *after;
-                else {
-                    p.result.is_error = true;
-                    p.result.output = after.error().message;
-                }
+                });
+
+        for (std::size_t i = 0; i < planned.size(); ++i) {
+            Planned& p = planned[i];
+            if (p.rejected)
+                continue;
+            Result<std::string> r = (modes[i] == ToolExecutionMode::Parallel)
+                ? futures[i].get()
+                : Tools::exec(p.call.name, p.call.arguments);
+            apply_exec_result(p.result, p.call, r);
+            Result<ToolResult> after = behaviors_.after_tool_call(provider_, p.call, p.result);
+            if (after)
+                p.result = *after;
+            else {
+                p.result.is_error = true;
+                p.result.output = after.error().message;
             }
         }
 

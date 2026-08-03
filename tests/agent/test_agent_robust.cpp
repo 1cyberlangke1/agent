@@ -836,3 +836,68 @@ TEST_CASE("功能：before_payload nullopt → 不改（构建原样交还引擎
     CHECK((*st->seen_opts[0].prebuilt_body)["mock"] == true);
     CHECK(!(*st->seen_opts[0].prebuilt_body).contains("temperature"));
 }
+
+
+// ───────────────────── per-tool 工具执行模式 ─────────────────────
+
+TEST_CASE("功能：Tools::mode 查询 per-tool 执行模式")
+{
+    (void)Tools::reg(ToolInfo{ "mode_seq", "串行工具", {{"type", "object"}} },
+                     [](nlohmann::json) -> Result<std::string> { return "seq"; },
+                     ArgsCheck::Schema, ToolExecutionMode::Sequential);
+    (void)Tools::reg(ToolInfo{ "mode_default", "默认工具", {{"type", "object"}} },
+                     [](nlohmann::json) -> Result<std::string> { return "default"; });
+
+    Result<ToolExecutionMode> seq = Tools::mode("mode_seq");
+    REQUIRE(seq.has_value());
+    CHECK(*seq == ToolExecutionMode::Sequential);
+
+    Result<ToolExecutionMode> dflt = Tools::mode("mode_default");
+    REQUIRE(dflt.has_value());
+    CHECK(*dflt == ToolExecutionMode::Default);
+
+    Result<ToolExecutionMode> missing = Tools::mode("no_such_tool");
+    REQUIRE_FALSE(missing.has_value());
+    CHECK(missing.error().code == Errc::NotFound);
+}
+
+TEST_CASE("功能：per-tool 执行模式覆盖 Agent 全局")
+{
+    // para_tool 强制 Parallel；agent_weather 默认（跟随全局）
+    (void)Tools::reg(ToolInfo{ "para_tool", "强制并行", {{"type", "object"}} },
+                     [](nlohmann::json) -> Result<std::string> { return "para"; },
+                     ArgsCheck::Schema, ToolExecutionMode::Parallel);
+    ensure_weather_tool();
+    auto st = reset_mock("rt-permode");
+    st->stream_script = [](Context const&, int index) {
+        if (index != 0)
+            return std::vector<StreamEvent>{ text_delta("ok"), done_text("ok") };
+        ChatResponse response;
+        response.content.push_back(ToolCall{ "c1", "para_tool", nlohmann::json::object() });
+        response.content.push_back(ToolCall{ "c2", "agent_weather", {{"location", "杭州"}} });
+        response.stop_reason = StopReason::ToolUse;
+        return std::vector<StreamEvent>{
+            tool_call_end("c1", "para_tool", nlohmann::json::object()),
+            tool_call_end("c2", "agent_weather", {{"location", "杭州"}}),
+            StreamEvent{ DoneEvent{ std::move(response) } },
+        };
+    };
+    Agent<MockProvider> agent(EndpointConfig{ .name = "rt-permode" }, test_model());
+    agent.set_tools({ "para_tool", "agent_weather" });
+    agent.set_tool_execution_mode(ToolExecutionMode::Sequential);   // 全局串行
+
+    std::vector<AgentEvent> events = run_all(agent, { user("干活") });
+
+    // 两个工具都执行成功：para_tool 被 per-tool Parallel 覆盖（走并发分支）、
+    // agent_weather 默认跟随全局 Sequential（走内联分支）
+    std::vector<ToolExecEnd const*> exec_ends;
+    for (auto const& e : events)
+        if (auto* te = std::get_if<ToolExecEnd>(&e.data))
+            exec_ends.push_back(te);
+    REQUIRE(exec_ends.size() == 2);
+    for (auto const* te : exec_ends) {
+        CHECK(!te->result.is_error);
+        if (te->name == "para_tool")
+            CHECK(te->result.output == "para");
+    }
+}

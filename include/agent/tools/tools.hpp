@@ -47,6 +47,11 @@ enum class ArgsCheck
     Tool,
 };
 
+/// @brief 工具执行模式（对齐 pi ToolExecutionMode）。
+///        工具定义自带（per-tool），覆盖 Agent 全局默认：
+///        Default = 跟随 Agent 全局（set_tool_execution_mode）；Sequential / Parallel = 强制该工具。
+enum class ToolExecutionMode { Default, Sequential, Parallel };
+
 /// @brief 内部实现。不视为 API，用户不应直接使用。
 namespace detail {
 
@@ -68,6 +73,7 @@ struct RegisteredTool
     ToolInfo                                            info;
     std::function<Result<std::string>(nlohmann::json)>  fn;
     ArgsCheck                                           check;
+    ToolExecutionMode                                   mode = ToolExecutionMode::Default;
 };
 
 /// @brief 注册表不可变快照（COW 写一次读多次）：读路径只 atomic load 快照，零锁。
@@ -249,18 +255,22 @@ public:
     /// @param info  工具信息（name/description/parameters）
     /// @param fn    工具函数，接收 JSON 参数返回 Result
     /// @param check exec 前参数预校验策略，默认按 schema 校验
+    /// @param mode  该工具的**执行模式**（per-tool，覆盖 Agent 全局；Default = 跟随全局）
     static Result<void> reg(ToolInfo info,
         std::function<Result<std::string>(nlohmann::json)> fn,
-        ArgsCheck check = ArgsCheck::Schema);
+        ArgsCheck check = ArgsCheck::Schema,
+        ToolExecutionMode mode = ToolExecutionMode::Default);
 
     /// @brief 注册异步工具：fn 是协程（内部可 co_await async_http_get 等）。
     ///        exec 仍同步返回 Result——库在 exec 时用 io_context 桥接等协程完成。
     /// @param info  工具信息
     /// @param fn    异步工具函数，返回 asio 协程
     /// @param check exec 前参数预校验策略
+    /// @param mode  该工具的执行模式（per-tool，覆盖 Agent 全局）
     static Result<void> reg(ToolInfo info,
         std::function<asio::awaitable<Result<std::string>>(nlohmann::json)> fn,
-        ArgsCheck check = ArgsCheck::Schema);
+        ArgsCheck check = ArgsCheck::Schema,
+        ToolExecutionMode mode = ToolExecutionMode::Default);
 
     /// @brief 列出所有已注册工具（副本）。
     ///
@@ -270,6 +280,9 @@ public:
 
     /// @brief 按名称查询工具信息。不存在返回 Errc::NotFound。
     static Result<ToolInfo> get(std::string_view name);
+
+    /// @brief 查询工具的执行模式（per-tool，Default = 跟随 Agent 全局）。不存在返回 Errc::NotFound。
+    static Result<ToolExecutionMode> mode(std::string_view name);
 
     /// @brief 批量按名解析工具定义（一次 shared_lock，避免逐个 get 反复加锁）。
     ///        按传入名字顺序返回；遇到未注册的名字 → Result 错误（NotFound）。
