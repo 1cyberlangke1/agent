@@ -113,6 +113,14 @@ public:
     {
     }
 
+    /// 构建请求体（引擎原生生成 body 的纯函数，提升为公共 API）。
+    /// before_payload 钩子链路：build_params 生成 → 钩子改写 → StreamOptions.prebuilt_body 交还引擎。
+    static Result<nlohmann::json> build_params(ModelView const& model, Context const& ctx,
+                                               StreamOptions const& opts)
+    {
+        return Engine::build_params(model, ctx, opts);
+    }
+
     /// 同步流式。generator 每次 resume 驱动 io_context（见 SyncStreamBridge）。
     template<typename... Args>
     std::generator<typename Engine::event_type> stream(Args const&... args);

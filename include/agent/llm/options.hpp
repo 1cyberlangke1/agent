@@ -87,6 +87,12 @@ struct StreamOptions {
     /// 用户塞 store / metadata / provider 特有字段。
     /// 引擎不解释、不推断，原样并入请求体（provider 不认识的字段自行忽略或报错）。
     nlohmann::json extra;
+
+    // ── 请求体预置（Agent 的 before_payload 钩子落地）──
+    /// 非空时引擎**跳过 build_params** 直接用这个 body 发请求。
+    /// 用途：上层（Agent）先调 provider.build_params 拿到请求体 → 应用 before_payload
+    /// 改写 → 塞回来，实现「每次请求前改 body」。普通调用方不需要。
+    std::optional<nlohmann::json> prebuilt_body;
 };
 
 }  // namespace agent

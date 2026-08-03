@@ -155,7 +155,12 @@ public:
     Result<std::optional<StreamOptions>> before_request(
         Provider const& provider, StreamOptions const& options) const
     { (void)provider; (void)options; return std::nullopt; }
-    // ⚠️ before_payload 钩子延后实现（PLAN_3.md 五.5.4）：请求体在引擎内部构建，v1 循环不调用。
+    // 每次发请求前：改写请求体 body（对齐 pi beforeProviderPayload）。
+    // 收的是引擎 build_params 生成的完整 body，在其上改写（其余字段保留）；nullopt = 不改。
+    template<typename Provider>
+    Result<std::optional<nlohmann::json>> before_payload(
+        Provider const& provider, nlohmann::json const& body) const
+    { (void)provider; (void)body; return std::nullopt; }
 };
 
 template<typename Provider, typename Behaviors = DefaultBehaviors>
@@ -265,7 +270,7 @@ public:
     /// 换思考档（下一轮生效）。
     void set_reasoning(ThinkingLevel level) { reasoning_ = level; }
     /// 当前是否在 run（async 调用期间）。
-    bool is_streaming() const { return streaming_; }
+    bool is_streaming() const { return streaming_.load(); }
     /// 正在执行的工具 id（外部/UI 查询）。
     std::vector<std::string> pending_tools() const { return pending_tools_; }
     /// 最近失败/中止错误（无则 nullopt）。
@@ -286,7 +291,7 @@ public:
     asio::awaitable<void> wait_for_idle()
     {
         auto ex = co_await asio::this_coro::executor;
-        while (streaming_) {
+        while (streaming_.load()) {
             asio::steady_timer timer(ex, std::chrono::milliseconds(5));
             // as_tuple：本项目生产零异常，裸 use_awaitable 在取消时会抛 operation_aborted
             co_await timer.async_wait(asio::as_tuple(asio::use_awaitable));
@@ -418,7 +423,7 @@ private:
     asio::awaitable<void> fail_run(AsyncStream<AgentEvent>& sink, Error const& error)
     {
         last_error_ = error;
-        streaming_ = false;
+        streaming_.store(false);
         co_await emit(sink, AgentEvent{ AgentError{ error } });
         co_await emit(sink, AgentEvent{ AgentEnd{ messages_ } });
     }
@@ -619,7 +624,7 @@ private:
                                      StreamOptions opts)
     {
         auto ex = co_await asio::this_coro::executor;
-        streaming_ = true;
+        streaming_.store(true);
         last_error_.reset();
 
         // 任何退出路径（正常 / fail_run / 取消 unwind）都关闭事件通道——
@@ -714,6 +719,20 @@ private:
                 }
                 if (*key)
                     effective.api_key = **key;
+
+                // before_payload：引擎生成请求体 → 钩子改写 → 塞回 prebuilt_body 交还引擎。
+                // 钩子 nullopt（不改）→ 也用构建原样，避免引擎二次 build_params。
+                Result<nlohmann::json> built = provider_.build_params(model_, ctx, effective);
+                if (!built) {
+                    co_await fail_run(sink, built.error());
+                    co_return;
+                }
+                Result<std::optional<nlohmann::json>> payload = behaviors_.before_payload(provider_, *built);
+                if (!payload) {
+                    co_await fail_run(sink, payload.error());
+                    co_return;
+                }
+                effective.prebuilt_body = *payload ? **payload : *built;
 
                 // LLM 流：生产协程绑定取消信号（abort() → 干净中断）。
                 // ⚠️ lambda 按值捕获 ctx / effective：生产协程可能晚于 loop 局部析构
@@ -857,7 +876,7 @@ private:
         }
 
         co_await emit(sink, AgentEvent{ AgentEnd{ messages_ } });
-        streaming_ = false;
+        streaming_.store(false);
     }
 
     std::string provider_name_;
@@ -873,7 +892,7 @@ private:
     std::optional<asio::cancellation_signal> cancel_;  ///< 每次 run 重建（可重置取消语义）
     std::atomic<bool> aborted_ = false;                ///< abort() 置位（每次 run 清标志）
     Behaviors behaviors_;                              ///< 钩子 + 压缩策略一体（编译期绑定）
-    bool streaming_ = false;                           ///< 是否正在 run
+    std::atomic<bool> streaming_ = false;                  ///< 是否正在 run
     std::vector<std::string> pending_tools_;           ///< 正在执行的工具 id
     std::optional<Error> last_error_;                  ///< 最近失败/中止错误
     mutable std::mutex queue_mutex_;                   ///< 保护 steer/follow_up 队列

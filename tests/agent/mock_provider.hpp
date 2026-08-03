@@ -126,6 +126,22 @@ struct MockProvider {
         }
         return agent::ChatResponse{};
     }
+
+    /// compact_async 走 provider.complete_async：复用同步 complete 的实现。
+    asio::awaitable<agent::Result<agent::ChatResponse>> complete_async(
+        agent::ModelView const& model, agent::Context const& ctx,
+        agent::StreamOptions const& opts) const
+    {
+        co_return complete(model, ctx, opts);
+    }
+
+    /// Agent loop 每请求都调 provider_.build_params → 钩子改写 → prebuilt_body 交还。
+    /// mock 不真发 HTTP，返回罐头 body 即可（before_payload 测试在它上面改写）。
+    static agent::Result<nlohmann::json> build_params(
+        agent::ModelView const&, agent::Context const& ctx, agent::StreamOptions const&)
+    {
+        return nlohmann::json{ { "mock", true }, { "tools", ctx.tools } };
+    }
 };
 
 // ───────────────────── 事件构造小工具 ─────────────────────
@@ -241,6 +257,20 @@ inline bool has_role(std::vector<agent::Message> const& messages, agent::Role ro
     for (agent::Message const& m : messages)
         if (m.role == role)
             return true;
+    return false;
+}
+
+/// 消息列表里是否有 Role::ToolResult 消息（含给定输出子串）。
+inline bool has_tool_result_with(std::vector<agent::Message> const& messages, std::string const& output_hint)
+{
+    for (agent::Message const& m : messages) {
+        if (m.role != agent::Role::ToolResult)
+            continue;
+        for (auto const& block : m.content)
+            if (auto tr = std::get_if<agent::ToolResult>(&block))
+                if (tr->output.find(output_hint) != std::string::npos)
+                    return true;
+    }
     return false;
 }
 

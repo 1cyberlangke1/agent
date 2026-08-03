@@ -97,20 +97,6 @@ std::vector<AgentEvent> run_all(AgentT& agent, std::vector<Message> msgs = {},
     return out;
 }
 
-/// 消息列表里是否有 Role::ToolResult 消息（含给定输出子串）。
-bool has_tool_result_with(std::vector<Message> const& messages, std::string const& output_hint)
-{
-    for (Message const& m : messages) {
-        if (m.role != Role::ToolResult)
-            continue;
-        for (auto const& block : m.content)
-            if (auto tr = std::get_if<ToolResult>(&block))
-                if (tr->output.find(output_hint) != std::string::npos)
-                    return true;
-    }
-    return false;
-}
-
 }  // namespace
 
 TEST_CASE("基础 run：事件序列 + messages + usage/cost")

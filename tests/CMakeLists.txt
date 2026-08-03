@@ -29,6 +29,7 @@ if(AGENT_BUILD_TESTS)
         agent/test_agent_event.cpp
         agent/test_compaction.cpp
         agent/test_agent.cpp
+        agent/test_agent_robust.cpp
         ${CMAKE_SOURCE_DIR}/src/tools/tools.cpp
         ${CMAKE_SOURCE_DIR}/src/llm/model_registry.cpp
         ${CMAKE_SOURCE_DIR}/src/core/http_client.cpp

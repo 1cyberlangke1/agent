@@ -358,8 +358,11 @@ asio::awaitable<void> GeminiGenerateContentEngine::stream_async(
     if (opts.cancel)
         req.cancel = opts.cancel->slot();
 
-    // 构建请求体：工具名未注册 → 请求构建失败（Result 错误），发 Error 终结
-    Result<nlohmann::json> body_result = build_params(model, ctx, opts);
+    // 构建请求体：工具名未注册 → 请求构建失败（Result 错误），发 Error 终结。
+    // prebuilt_body 非空 = 上层（Agent before_payload）已生成并改写好的 body，直接发送。
+    Result<nlohmann::json> body_result = opts.prebuilt_body
+        ? Result<nlohmann::json>{ *opts.prebuilt_body }
+        : build_params(model, ctx, opts);
     if (!body_result) {
         co_await sink.send(StreamEvent{ Error{ body_result.error().code, body_result.error().message } });
         sink.close();
