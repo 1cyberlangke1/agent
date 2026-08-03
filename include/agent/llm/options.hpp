@@ -25,9 +25,9 @@ namespace agent {
 
 /// @brief 厂商连接信息。不绑定 model（model 是请求参数）。
 struct EndpointConfig {
-    std::string name;                   // "deepseek"
+    std::string name;                   ///< "deepseek"
     std::string api_key;
-    std::string base_url;               // "https://api.deepseek.com"
+    std::string base_url;               ///< "https://api.deepseek.com"
     /// 该厂商固定默认头：如 Anthropic 的 `anthropic-version`、
     /// 企业代理的 `Organization`/`Project`。StreamOptions.headers 在此之上覆盖。
     std::vector<std::pair<std::string, std::string>> default_headers;
@@ -54,41 +54,41 @@ struct Context {
 /// @brief 流式/非流式调用的采样、缓存、传输与透传配置。
 struct StreamOptions {
     // ── 采样参数（公约数，三家都有）──
-    std::optional<double> temperature;                 // 不传 → 不上传
-    std::optional<int> max_tokens;                     // 不传 → 用 Model.max_output_tokens
-    std::optional<ThinkingLevel> reasoning;            // 统一思考等级 → 各引擎映射
+    std::optional<double> temperature;                 ///< 不传 → 不上传
+    std::optional<int> max_tokens;                     ///< 不传 → 用 Model.max_output_tokens
+    std::optional<ThinkingLevel> reasoning;            ///< 统一思考等级 → 各引擎映射
 
     // ── 缓存（公约数归一化，各引擎内部实现）──
-    std::optional<CacheRetention> cache_retention;     // 映射到各家缓存机制
-    std::optional<std::string> session_id;             // 会话关联，跨轮复用缓存
+    std::optional<CacheRetention> cache_retention;     ///< 映射到各家缓存机制
+    std::optional<std::string> session_id;             ///< 会话关联，跨轮复用缓存
 
     // ── 传输层（都有）──
-    std::optional<std::string> api_key;                // 覆盖 EndpointConfig.api_key
-    std::optional<std::string> base_url;               // 覆盖 EndpointConfig.base_url
-    std::vector<std::pair<std::string, std::string>> headers;     // 追加/覆盖请求头
-    std::vector<std::string> suppress_headers;                     // 抑制默认头
+    std::optional<std::string> api_key;                ///< 覆盖 EndpointConfig.api_key
+    std::optional<std::string> base_url;               ///< 覆盖 EndpointConfig.base_url
+    std::vector<std::pair<std::string, std::string>> headers;     ///< 追加/覆盖请求头
+    std::vector<std::string> suppress_headers;                     ///< 抑制默认头
     /// @brief 超时分层：单一整体超时会误杀合法长流（流式可跑数分钟）。
-    int connect_timeout_ms = 30000;                    // 连接建立 + 收到首字节
-    int idle_timeout_ms = 120000;                      // 流式块间静默上限（0 = 不限）
-    int total_timeout_ms = 600000;                     // 整体上限，兜底（0 = 不限）
-    int max_retries = 2;                               // HTTP 层重试（429/5xx）
-    int max_retry_delay_ms = 60000;                    // Retry-After 超此值立即失败
+    int connect_timeout_ms = 30000;                    ///< 连接建立 + 收到首字节
+    int idle_timeout_ms = 120000;                      ///< 流式块间静默上限（0 = 不限）
+    int total_timeout_ms = 600000;                     ///< 整体上限，兜底（0 = 不限）
+    int max_retries = 2;                               ///< HTTP 层重试（429/5xx）
+    int max_retry_delay_ms = 60000;                    ///< Retry-After 超此值立即失败
     /// 取消信号。生命周期约定：指针指向的 signal 必须在本次调用完全结束
     /// （generator 析构 / awaitable 完成）之前保持有效，由调用方保证。
     asio::cancellation_signal* cancel = nullptr;
 
-    // ── 原始响应捕获（可选，默认不存，零开销）──
+    ///< ── 原始响应捕获（可选，默认不存，零开销）──
     /// true 时 ChatResponse.raw 填充上游原始响应。
     bool capture_raw_response = false;
     /// capture_raw_response 开启时的原始响应字节上限（默认 1MB），超出丢弃 raw。
     size_t max_raw_bytes = 1 << 20;
 
-    // ── 非公约数：透传接口，用户自己决定 ──
+    ///< ── 非公约数：透传接口，用户自己决定 ──
     /// 用户塞 store / metadata / provider 特有字段。
     /// 引擎不解释、不推断，原样并入请求体（provider 不认识的字段自行忽略或报错）。
     nlohmann::json extra;
 
-    // ── 请求体预置（Agent 的 before_payload 钩子落地）──
+    ///< ── 请求体预置（Agent 的 before_payload 钩子落地）──
     /// 非空时引擎**跳过 build_params** 直接用这个 body 发请求。
     /// 用途：上层（Agent）先调 provider.build_params 拿到请求体 → 应用 before_payload
     /// 改写 → 塞回来，实现「每次请求前改 body」。普通调用方不需要。

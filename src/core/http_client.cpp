@@ -1106,7 +1106,7 @@ asio::awaitable<Result<HttpResponse>> HttpClient::async_request(
         ex_, request, std::move(options), static_cast<MultiCtx*>(ctx_),
         static_cast<CURLM*>(multi_), easy);
 
-    // easy 还池（暂时不清 option 以测试连接复用是否受 reset 影响）
+    // easy 还池：复用连接靠共享 multi 的连接池（easy 每次重建，option 无残留问题）
     if (easy != nullptr)
         easy_pool_.push_back(easy);
 

@@ -56,20 +56,20 @@ struct MultipartPart {
 
 /// 一次 HTTP 请求「发什么 + 怎么发」。
 struct HttpRequest {
-    std::string method = "GET";                         // GET/POST/PUT/PATCH/DELETE/HEAD/OPTIONS/任意
+    std::string method = "GET";                         ///< GET/POST/PUT/PATCH/DELETE/HEAD/OPTIONS/任意
     std::string url;
-    std::vector<std::pair<std::string, std::string>> query;    // 自动 url_encode 拼接
+    std::vector<std::pair<std::string, std::string>> query;    ///< 自动 url_encode 拼接
     std::vector<std::pair<std::string, std::string>> headers;
 
-    // body 三选一：字符串（+ content_type）/ multipart / 大文件流式上传
+    ///< body 三选一：字符串（+ content_type）/ multipart / 大文件流式上传
     std::optional<std::string> body;
     std::optional<std::string> content_type;
     std::vector<MultipartPart> multipart;
     std::optional<std::string> upload_file;
 
-    // 认证
+    ///< 认证
     HttpAuth auth = HttpAuth::None;
-    std::optional<std::string> auth_credentials;        // "user:pass"（Basic/Digest/Ntlm/Negotiate）
+    std::optional<std::string> auth_credentials;        ///< "user:pass"（Basic/Digest/Ntlm/Negotiate）
 
     // TLS
     bool verify_tls = true;
@@ -78,20 +78,20 @@ struct HttpRequest {
     std::optional<std::string> client_key;
     std::optional<std::string> client_key_password;
 
-    // 重定向
+    ///< 重定向
     bool follow_redirects = false;
     int max_redirects = 5;
     bool auto_referer = false;
 
-    // 代理
+    ///< 代理
     std::optional<std::string> proxy;
     HttpProxyType proxy_type = HttpProxyType::Http;
     std::optional<std::string> proxy_auth;
 
-    // Cookie
-    std::optional<std::string> cookie;                  // 一次性 "k=v; k2=v2"
-    std::optional<std::string> cookie_file;             // 读 jar 文件（空串 = 内存 jar）
-    std::optional<std::string> cookie_jar;              // 响应后写 jar 文件
+    ///< Cookie
+    std::optional<std::string> cookie;                  ///< 一次性 "k=v; k2=v2"
+    std::optional<std::string> cookie_file;             ///< 读 jar 文件（空串 = 内存 jar）
+    std::optional<std::string> cookie_jar;              ///< 响应后写 jar 文件
     bool cookie_session = false;
 };
 
@@ -104,8 +104,8 @@ public:
     int status = 0;
     std::string body;
     std::vector<std::pair<std::string, std::string>> headers;
-    std::string effective_url;          // 重定向后最终 URL（CURLINFO_EFFECTIVE_URL）
-    double total_time_seconds = 0;      // 本次传输耗时（CURLINFO_TOTAL_TIME）
+    std::string effective_url;          ///< 重定向后最终 URL（CURLINFO_EFFECTIVE_URL）
+    double total_time_seconds = 0;      ///< 本次传输耗时（CURLINFO_TOTAL_TIME）
 
     /// 头取值（大小写不敏感）；不存在返回空。
     std::string_view header(std::string_view name) const
@@ -183,7 +183,7 @@ std::string url_encode(std::string_view s);
 std::string append_query(std::string url,
                          std::vector<std::pair<std::string, std::string>> params);
 
-// ───────────────────── 非流式 POST / GET（向后兼容）─────────────────────
+///< ───────────────────── 非流式 POST / GET（向后兼容）─────────────────────
 
 asio::awaitable<Result<HttpResponse>> async_http_post(
     asio::any_io_executor ex, std::string_view url,
@@ -224,10 +224,10 @@ public:
 private:
     asio::any_io_executor ex_;
     bool has_executor_ = false;
-    void* multi_ = nullptr;        // 常驻 CURLM*（连接池 CURLMOPT_MAXCONNECTS）
-    void* ctx_ = nullptr;          // detail::MultiCtx*（单活跃请求槽）
-    std::deque<void*> easy_pool_;  // easy 句柄池（curl_easy_reset 清 option、保留连接——连接在 multi）
-    std::string cookie_string_;    // 客户端维护的 cookie jar（响应 Set-Cookie 累积）
+    void* multi_ = nullptr;        ///< 常驻 CURLM*（连接池 CURLMOPT_MAXCONNECTS）
+    void* ctx_ = nullptr;          ///< detail::MultiCtx*（单活跃请求槽）
+    std::deque<void*> easy_pool_;  ///< easy 句柄池（curl_easy_reset 清 option、保留连接——连接在 multi）
+    std::string cookie_string_;    ///< 客户端维护的 cookie jar（响应 Set-Cookie 累积）
 };
 
 // ───────────────────── 流式响应读取器（保留）─────────────────────

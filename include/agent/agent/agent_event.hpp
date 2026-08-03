@@ -59,7 +59,7 @@ struct ToolExecStart {
     nlohmann::json arguments;
 };
 
-/// 工具部分结果（同步工具不发此事件，流式工具 future work）
+/// 工具部分结果（当前同步工具执行不产生流式部分结果，此事件类型保留供流式工具使用）
 struct ToolExecUpdate {
     std::string id;
     std::string name;

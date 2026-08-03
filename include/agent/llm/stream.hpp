@@ -47,7 +47,7 @@ public:
     {
     }
 
-    AsyncStream(AsyncStream const&) noexcept = default;   // 共享同一 channel
+    AsyncStream(AsyncStream const&) noexcept = default;   ///< 共享同一 channel
     AsyncStream& operator=(AsyncStream const&) noexcept = default;
     AsyncStream(AsyncStream&&) noexcept = default;
     AsyncStream& operator=(AsyncStream&&) noexcept = default;

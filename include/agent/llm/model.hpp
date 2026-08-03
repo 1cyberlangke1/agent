@@ -34,11 +34,11 @@ namespace detail {
 ///        由 scripts/update_models.py 生成到 include/agent/models/generated.hpp，
 ///        放 detail 命名空间，非 API，重新生成不通知。
 struct BuiltinModel {
-    std::string_view id;                    // "deepseek-chat"
-    int context_window = 0;                 // 总上下文窗口
-    int max_output_tokens = 0;              // 最大输出 token
-    bool reasoning = false;                 // 支持思维链
-    bool supports_image_input = false;      // 视觉能力
+    std::string_view id;                    ///< "deepseek-chat"
+    int context_window = 0;                 ///< 总上下文窗口
+    int max_output_tokens = 0;              ///< 最大输出 token
+    bool reasoning = false;                 ///< 支持思维链
+    bool supports_image_input = false;      ///< 视觉能力
     /// 统一 ThinkingLevel → 厂商原生值映射。值唯一语义，无混用：
     ///   nullopt → 模型无思考能力（reasoning=false）；
     ///   "off"   → Off 档：关闭思考（引擎不发 thinking 参数）；
@@ -78,7 +78,7 @@ struct RuntimeModel {
     bool supports_image_input = false;
     std::array<std::optional<std::string>, thinking_level_count> thinking_level_map;
     std::string thinking_field;
-    double price_input = 0;          // 美元/百万 token；0 = 未知或免费
+    double price_input = 0;          ///< 美元/百万 token；0 = 未知或免费
     double price_output = 0;
     double price_cache_read = 0;
     double price_cache_write = 0;
@@ -96,7 +96,7 @@ struct ModelView {
     bool supports_image_input = false;
     std::array<std::optional<std::string_view>, thinking_level_count> thinking_level_map;
     std::string_view thinking_field;
-    double price_input = 0;          // 美元/百万 token；0 = 未知或免费
+    double price_input = 0;          ///< 美元/百万 token；0 = 未知或免费
     double price_output = 0;
     double price_cache_read = 0;
     double price_cache_write = 0;
@@ -155,7 +155,7 @@ public:
         std::shared_ptr<detail::RegistrySnapshot> snap = load_snapshot();
         for (std::string_view id : snap->static_order) {
             if (snap->dynamic_ids.contains(id))
-                continue;   // 被动态覆盖 → 在动态序里输出新视图
+                continue;   ///< 被动态覆盖 → 在动态序里输出新视图
             auto it = snap->index.find(id);
             if (it != snap->index.end())
                 f(it->second);

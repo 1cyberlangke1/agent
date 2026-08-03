@@ -34,14 +34,14 @@ namespace detail {
 /// @brief 流式解析状态（parse_chunk 的累积状态，跨 chunk 保留）。
 ///        供 T0 测试与引擎 stream_async 共用。
 struct AnthropicStreamState {
-    std::string response_id;              // message_start.message.id
-    Usage usage;                          // message_start 输入 + message_delta 累积
-    StopReason stop_reason = StopReason::Stop;   // message_delta.delta.stop_reason
-    std::string error_message;            // refusal / sensitive 等终止原因
-    std::string text;                     // text_delta 累积
-    std::string thinking;                 // thinking_delta 累积
-    std::string thinking_signature;       // signature_delta 累积（thinking 块签名）
-    bool redacted = false;                // redacted_thinking 块
+    std::string response_id;              ///< message_start.message.id
+    Usage usage;                          ///< message_start 输入 + message_delta 累积
+    StopReason stop_reason = StopReason::Stop;   ///< message_delta.delta.stop_reason
+    std::string error_message;            ///< refusal / sensitive 等终止原因
+    std::string text;                     ///< text_delta 累积
+    std::string thinking;                 ///< thinking_delta 累积
+    std::string thinking_signature;       ///< signature_delta 累积（thinking 块签名）
+    bool redacted = false;                ///< redacted_thinking 块
     /// 工具调用按 content_block index 归组：id/name 在 content_block_start 补齐，
     /// partial_args 由 input_json_delta 逐段累积，content_block_stop 收尾。
     struct ToolSlot {
