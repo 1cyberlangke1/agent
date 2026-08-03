@@ -31,6 +31,8 @@ enum class Errc {
     CompactionFailed,
     /// 用户取消 / 超时中止（abort() 触发，AgentError 用它区分取消与失败）
     Aborted,
+    /// 响应/数据解析失败（如 HTTP body 不是期望的 JSON）
+    ParseError,
 };
 
 /// @brief 错误信息

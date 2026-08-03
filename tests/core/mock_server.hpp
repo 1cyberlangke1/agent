@@ -72,6 +72,7 @@ public:
         std::function<void(RequestView const&)> expect;   // 可空
         std::vector<Chunk> chunks;      // 状态行+头+body 全部自己写
         bool close_abruptly = false;    // 发完后 RST（SO_LINGER=0）而非优雅关闭
+        bool close_after = true;        // 响应后关闭连接（false = keep-alive，继续读下一请求）
     };
 
     MockServer()
@@ -88,6 +89,11 @@ public:
         acceptor_.close(ignored);
         if (server_thread_.joinable())
             server_thread_.join();
+        // 等全部连接线程退出（keep-alive 连接靠客户端关闭解阻塞）
+        std::lock_guard<std::mutex> lock(thread_mutex_);
+        for (std::thread& t : connection_threads_)
+            if (t.joinable())
+                t.join();
     }
 
     MockServer(MockServer const&) = delete;
@@ -110,6 +116,9 @@ public:
     /// 已收到的请求数（重试断言用）。
     int request_count() const { return request_count_.load(); }
 
+    /// 已接受的 TCP 连接数（keep-alive 连接复用断言用：多次请求应落在同一连接）。
+    int connection_count() const { return connection_count_.load(); }
+
     /// server 线程收集的断言失败（主线程末尾统一 CHECK 为空）。
     std::vector<std::string> errors() const
     {
@@ -126,50 +135,61 @@ private:
             acceptor_.accept(socket, ec);
             if (ec)
                 return;   // acceptor 关闭 = 停止
-            handle_connection(socket);
+            connection_count_.fetch_add(1);
+            // 每连接一个线程：keep-alive 连接会长时间空闲，不能让单 accept 线程被占住
+            std::lock_guard<std::mutex> lock(thread_mutex_);
+            connection_threads_.emplace_back([this, socket = std::move(socket)]() mutable {
+                handle_connection(socket);
+            });
         }
     }
 
     void handle_connection(asio::ip::tcp::socket& socket)
     {
-        std::optional<RequestView> request = read_request(socket);
-        if (!request.has_value())
-            return;   // 连接被对端放弃（如取消测试），不消耗剧本
-        request_count_.fetch_add(1);
+        // keep-alive：同一连接循环处理多个请求（响应 close_after=false），
+        // 读失败（客户端关闭）或剧本响应要求关闭连接则退出。
+        while (true) {
+            std::optional<RequestView> request = read_request(socket);
+            if (!request.has_value())
+                return;   // 连接被对端放弃（如取消测试），不消耗剧本
+            request_count_.fetch_add(1);
 
-        Exchange exchange;
-        {
-            std::lock_guard<std::mutex> lock(mutex_);
-            if (pending_.empty()) {
-                errors_.push_back("unexpected request (no scripted exchange): "
-                                  + request->method + " " + request->target);
-                return;
+            Exchange exchange;
+            {
+                std::lock_guard<std::mutex> lock(mutex_);
+                if (pending_.empty()) {
+                    errors_.push_back("unexpected request (no scripted exchange): "
+                                      + request->method + " " + request->target);
+                    return;
+                }
+                exchange = std::move(pending_.front());
+                pending_.pop_front();
             }
-            exchange = std::move(pending_.front());
-            pending_.pop_front();
-        }
 
-        if (exchange.expect) {
-            exchange.expect(*request);   // 内部失败经 record_error 报告
-        }
+            if (exchange.expect) {
+                exchange.expect(*request);   // 内部失败经 record_error 报告
+            }
 
-        for (Chunk const& chunk : exchange.chunks) {
-            asio::error_code write_ec;
-            asio::write(socket, asio::buffer(chunk.bytes), write_ec);
-            if (write_ec)
-                return;   // 对端提前断开（取消/超时测试的正常路径）
-            if (chunk.delay_ms > 0)
-                std::this_thread::sleep_for(std::chrono::milliseconds(chunk.delay_ms));
-        }
+            for (Chunk const& chunk : exchange.chunks) {
+                asio::error_code write_ec;
+                asio::write(socket, asio::buffer(chunk.bytes), write_ec);
+                if (write_ec)
+                    return;   // 对端提前断开（取消/超时测试的正常路径）
+                if (chunk.delay_ms > 0)
+                    std::this_thread::sleep_for(std::chrono::milliseconds(chunk.delay_ms));
+            }
 
-        asio::error_code ignored;
-        if (exchange.close_abruptly) {
-            // SO_LINGER=0：close 发 RST 而非 FIN，模拟粗暴断连
-            socket.set_option(asio::socket_base::linger(true, 0), ignored);
-        } else {
-            socket.shutdown(asio::ip::tcp::socket::shutdown_both, ignored);
+            asio::error_code ignored;
+            if (exchange.close_abruptly) {
+                socket.set_option(asio::socket_base::linger(true, 0), ignored);
+            } else if (!exchange.close_after) {
+                continue;   // keep-alive：留在同一连接读下一请求
+            } else {
+                socket.shutdown(asio::ip::tcp::socket::shutdown_both, ignored);
+            }
+            socket.close(ignored);
+            return;
         }
-        socket.close(ignored);
     }
 
     /// 阻塞读一个完整请求：头至 \r\n\r\n，body 按 Content-Length。
@@ -184,6 +204,8 @@ private:
             std::size_t n = socket.read_some(asio::buffer(buffer), ec);
             if (ec)
                 return std::nullopt;
+            if (n == 0)
+                return std::nullopt;   // 对端优雅关闭（EOF），无错误
             data.append(buffer, n);
             if (data.size() > (std::size_t{8} << 20))
                 return std::nullopt;   // 防失控
@@ -255,6 +277,9 @@ private:
     std::thread server_thread_;
     std::atomic<bool> stopping_{false};
     std::atomic<int> request_count_{0};
+    std::atomic<int> connection_count_{0};
+    mutable std::mutex thread_mutex_;        // 保护 connection_threads_
+    std::vector<std::thread> connection_threads_;
     mutable std::mutex mutex_;
     std::deque<Exchange> pending_;
     std::vector<std::string> errors_;

@@ -21,3 +21,12 @@ target_link_libraries(agnes_chat PRIVATE agent_core)
 target_compile_options(agnes_chat PRIVATE -freflection)
 
 set_target_properties(agnes_chat PROPERTIES FOLDER Examples)
+
+add_executable(agent_chat
+    agent_chat.cpp
+)
+
+target_link_libraries(agent_chat PRIVATE agent_core)
+target_compile_options(agent_chat PRIVATE -freflection)
+
+set_target_properties(agent_chat PROPERTIES FOLDER Examples)
