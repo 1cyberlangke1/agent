@@ -3,9 +3,10 @@
 #include <cmath>
 #include <cstddef>
 #include <cstdint>
+#include <atomic>
 #include <functional>
 #include <memory>
-#include <shared_mutex>
+#include <mutex>
 #include <string>
 #include <string_view>
 #include <unordered_map>
@@ -49,15 +50,6 @@ enum class ArgsCheck
 /// @brief 内部实现。不视为 API，用户不应直接使用。
 namespace detail {
 
-/// @brief 注册表条目。注册后不可变（const 共享），exec 复制 shared_ptr 出锁后调用，
-///        避免持锁期间执行用户代码（防死锁、防 rehash 失效迭代器）。
-struct RegisteredTool
-{
-    ToolInfo                                            info;
-    std::function<Result<std::string>(nlohmann::json)>  fn;
-    ArgsCheck                                           check;
-};
-
 /// @brief 透明哈希：unordered_map 支持 string_view 直接查找，免临时 std::string 分配。
 class StringHash
 {
@@ -67,6 +59,24 @@ public:
     {
         return std::hash<std::string_view>{}(s);
     }
+};
+
+/// @brief 注册表条目。注册后不可变（const 共享），exec 复制 shared_ptr 出锁后调用，
+///        避免持锁期间执行用户代码（防死锁、防 rehash 失效迭代器）。
+struct RegisteredTool
+{
+    ToolInfo                                            info;
+    std::function<Result<std::string>(nlohmann::json)>  fn;
+    ArgsCheck                                           check;
+};
+
+/// @brief 注册表不可变快照（COW 写一次读多次）：读路径只 atomic load 快照，零锁。
+///        reg 重建快照原子替换；旧快照由 shared_ptr 保活，并发读看到一致（可能略旧）视图。
+struct ToolsSnapshot
+{
+    using RegistryMap = std::unordered_map<std::string,
+        std::shared_ptr<RegisteredTool const>, StringHash, std::equal_to<>>;
+    RegistryMap map;
 };
 
 /// @brief 判断 JSON 值是否可按 integer 接受。
@@ -210,8 +220,9 @@ inline void validate_args(
 ///           （见 tools_reflection.hpp，schema 自动从反射生成）
 ///   运行时: Tools::reg(ToolInfo{...}, lambda);
 ///
-/// 线程安全：shared_mutex 保护注册表，读操作共享锁，写操作独占锁。
-/// exec 复制 shared_ptr 出锁后调用工具函数，不在持锁状态执行用户代码。
+/// 线程安全：**COW 不可变快照**——写路径（reg）持 write_mutex_ 重建快照原子替换；
+/// 读路径（exec/list/get/resolve/names）只 atomic load 快照，**零锁**（单线程热路径零开销）。
+/// exec 复制 shared_ptr<RegisteredTool> 后调用工具函数，不在持锁状态执行用户代码。
 class Tools
 {
     Tools() = delete;
@@ -271,13 +282,13 @@ public:
 private:
     struct State
     {
-        std::shared_mutex mtx;
-        std::unordered_map<std::string,
-            std::shared_ptr<detail::RegisteredTool const>,
-            detail::StringHash, std::equal_to<>> registry;
+        std::mutex write_mutex;                                       ///< 写锁（reg，罕见）
+        std::atomic<std::shared_ptr<detail::ToolsSnapshot>> snapshot;  ///< 不可变快照
     };
     /// function-local static：C++11 保证初始化线程安全，静态注册阶段即可用
     static State& state();
+    /// 取当前快照；首次调用建空快照。读路径入口，无锁。
+    static std::shared_ptr<detail::ToolsSnapshot> load_snapshot();
 };
 
 } // namespace agent

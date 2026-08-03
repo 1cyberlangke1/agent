@@ -111,11 +111,24 @@ Tools::State& Tools::state()
     return s;
 }
 
+std::shared_ptr<detail::ToolsSnapshot> Tools::load_snapshot()
+{
+    State& st = state();
+    if (std::shared_ptr<detail::ToolsSnapshot> snap = st.snapshot.load())
+        return snap;
+    std::lock_guard lock(st.write_mutex);   // 首次建空快照
+    if (std::shared_ptr<detail::ToolsSnapshot> snap = st.snapshot.load())
+        return snap;
+    auto snap = std::make_shared<detail::ToolsSnapshot>();
+    st.snapshot.store(std::move(snap));
+    return st.snapshot.load();
+}
+
 Result<void> Tools::reg(ToolInfo info,
     std::function<Result<std::string>(nlohmann::json)> fn,
     ArgsCheck check)
 {
-    // 校验链全部在锁外完成，持锁窗口只覆盖查重 + 插入
+    // 校验链全部在锁外完成，持锁窗口只覆盖查重 + COW 替换
     if (info.name.empty())
         return std::unexpected(Error{Errc::InvalidArgs, "tool name is empty"});
     if (!fn)
@@ -131,11 +144,18 @@ Result<void> Tools::reg(ToolInfo info,
         detail::RegisteredTool{std::move(info), std::move(fn), check});
 
     State& st = state();
-    std::unique_lock lock(st.mtx);
-    if (st.registry.contains(tool->info.name))
+    std::lock_guard lock(st.write_mutex);
+    std::shared_ptr<detail::ToolsSnapshot> current = st.snapshot.load();
+    if (!current)
+        current = std::make_shared<detail::ToolsSnapshot>();
+    if (current->map.contains(tool->info.name))
         return std::unexpected(Error{Errc::Duplicate,
             "tool '" + tool->info.name + "' already registered"});
-    st.registry.emplace(tool->info.name, std::move(tool));
+    // COW：复制旧快照 → 插入 → 原子替换
+    std::shared_ptr<detail::ToolsSnapshot> snap = std::make_shared<detail::ToolsSnapshot>();
+    snap->map = current->map;
+    snap->map.emplace(tool->info.name, std::move(tool));
+    st.snapshot.store(std::move(snap));
     return {};
 }
 
@@ -164,18 +184,14 @@ Result<void> Tools::reg(ToolInfo info,
 
 Result<std::string> Tools::exec(std::string_view name, nlohmann::json args)
 {
-    State& st = state();
-    std::shared_ptr<detail::RegisteredTool const> tool;
-
-    {
-        std::shared_lock lock(st.mtx);
-        // 透明哈希异构查找：string_view 直接查，无临时 string 分配
-        auto it = st.registry.find(name);
-        if (it == st.registry.end())
-            return std::unexpected(Error{Errc::NotFound,
-                "tool '" + std::string(name) + "' not found"});
-        tool = it->second;
-    }
+    std::shared_ptr<detail::ToolsSnapshot> snap = load_snapshot();
+    // 透明哈希异构查找：string_view 直接查，无临时 string 分配。
+    // 快照不可变，it->second 在 fn 调用期间稳定（无需出锁复制——根本没锁）。
+    auto it = snap->map.find(name);
+    if (it == snap->map.end())
+        return std::unexpected(Error{Errc::NotFound,
+            "tool '" + std::string(name) + "' not found"});
+    std::shared_ptr<detail::RegisteredTool const> tool = it->second;
 
     // ArgsCheck::Tool（反射注册）时跳过：assign_from_json 会做全量校验，
     // 这里再跑一遍 schema 校验是纯冗余
@@ -199,17 +215,12 @@ Result<std::string> Tools::exec(std::string_view name, nlohmann::json args)
 
 std::vector<ToolInfo> Tools::list()
 {
-    State& st = state();
+    std::shared_ptr<detail::ToolsSnapshot> snap = load_snapshot();
     std::vector<ToolInfo> result;
-
-    {
-        std::shared_lock lock(st.mtx);
-        result.reserve(st.registry.size());
-        for (auto const& [name, tool] : st.registry)
-            result.push_back(tool->info);
-    }
-
-    // 锁外按名排序：输出确定性（不随 rehash 变化），利于 LLM 端 prompt cache
+    result.reserve(snap->map.size());
+    for (auto const& [name, tool] : snap->map)
+        result.push_back(tool->info);
+    // 按名排序：输出确定性（不随 rehash 变化），利于 LLM 端 prompt cache
     std::sort(result.begin(), result.end(),
         [](ToolInfo const& a, ToolInfo const& b) { return a.name < b.name; });
     return result;
@@ -217,10 +228,9 @@ std::vector<ToolInfo> Tools::list()
 
 Result<ToolInfo> Tools::get(std::string_view name)
 {
-    State& st = state();
-    std::shared_lock lock(st.mtx);
-    auto it = st.registry.find(name);
-    if (it == st.registry.end())
+    std::shared_ptr<detail::ToolsSnapshot> snap = load_snapshot();
+    auto it = snap->map.find(name);
+    if (it == snap->map.end())
         return std::unexpected(Error{Errc::NotFound,
             "tool '" + std::string(name) + "' not found"});
     return it->second->info;
@@ -228,13 +238,12 @@ Result<ToolInfo> Tools::get(std::string_view name)
 
 Result<std::vector<ToolInfo>> Tools::resolve(std::vector<std::string> const& names)
 {
-    State& st = state();
-    std::shared_lock lock(st.mtx);
+    std::shared_ptr<detail::ToolsSnapshot> snap = load_snapshot();
     std::vector<ToolInfo> result;
     result.reserve(names.size());
     for (auto const& name : names) {
-        auto it = st.registry.find(name);
-        if (it == st.registry.end())
+        auto it = snap->map.find(name);
+        if (it == snap->map.end())
             return std::unexpected(Error{Errc::NotFound,
                 "tool '" + name + "' not registered"});
         result.push_back(it->second->info);
@@ -244,11 +253,10 @@ Result<std::vector<ToolInfo>> Tools::resolve(std::vector<std::string> const& nam
 
 std::vector<std::string> Tools::names()
 {
-    State& st = state();
-    std::shared_lock lock(st.mtx);
+    std::shared_ptr<detail::ToolsSnapshot> snap = load_snapshot();
     std::vector<std::string> result;
-    result.reserve(st.registry.size());
-    for (auto const& [name, tool] : st.registry)
+    result.reserve(snap->map.size());
+    for (auto const& [name, tool] : snap->map)
         result.push_back(name);
     return result;
 }

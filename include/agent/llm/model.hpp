@@ -7,8 +7,10 @@
 #include <agent/llm/types.hpp>
 
 #include <array>
+#include <atomic>
 #include <cstddef>
 #include <deque>
+#include <memory>
 #include <mutex>
 #include <optional>
 #include <shared_mutex>
@@ -100,6 +102,20 @@ struct ModelView {
     double price_cache_write = 0;
 };
 
+namespace detail {
+
+/// @brief 注册表不可变快照（COW 写一次读多次）：读路径只 atomic load 这个指针，零锁。
+///        快照的 ModelView 指向静态字面量 / runtime_models_ deque（地址稳定、只追加），
+///        跨快照仍有效；register 重建新快照原子替换，旧快照由 shared_ptr 保活。
+struct RegistrySnapshot {
+    std::unordered_map<std::string_view, ModelView> index;        ///< id → 当前 ModelView
+    std::unordered_set<std::string_view> dynamic_ids;             ///< 被动态覆盖/注册的 id
+    std::vector<std::string_view> static_order;                   ///< 内置表 id 顺序
+    std::vector<std::string_view> dynamic_order;                  ///< 运行时注册 id 顺序（插入序）
+};
+
+}  // namespace detail
+
 // ─────────────────────────────────────────────────────────────
 // ModelRegistry — 全局模型注册表（纯静态类，多线程安全）
 // ─────────────────────────────────────────────────────────────
@@ -107,8 +123,9 @@ struct ModelView {
 /// @brief 全局模型注册表。**纯静态类**：禁实例化，全 static 成员，进程生命周期。
 ///        独立于 API 调用层——只关心「有哪些模型、元数据是什么」，零协议概念。
 ///        内置表（生成器产物）+ 运行时注册 + 合并索引；动态覆盖静态。
-///        线程安全：shared_mutex（register 唯一锁 / find、for_each 共享锁）+
-///        call_once 惰性加载内置表。
+///        线程安全：**COW 不可变快照**——写路径（register）持 write_mutex_ 重建快照
+///        原子替换；读路径（find/for_each）只 atomic load 快照，**零锁**（单线程热路径
+///        零开销）。旧快照由 shared_ptr 保活，并发读看到一致（可能略旧）视图。
 class ModelRegistry {
 public:
     ModelRegistry() = delete;
@@ -116,7 +133,7 @@ public:
     /// @brief 运行时注册/覆盖模型（同 id 覆盖内置或已有动态项）。线程安全。
     ///        覆盖实现约束：deque 只追加新条目、旧条目永不改写/删除——
     ///        原地改写会使已发出的 ModelView 的 string_view 悬空。
-    ///        index_ 改指新条目；for_each 输出以 index_ 当前指向为准（旧重复条目跳过）。
+    ///        新快照把 id 指向最新条目；旧快照引用旧条目仍有效（地址稳定）。
     ///        注册支持思考的模型：须填 reasoning=true 且按新语义填 thinking_level_map
     ///        （"off"/"on"/effort 值/budget 值）；thinking_level_map 全 nullopt = 无思考能力，
     ///        thinking 静默失效——非推理模型才应留空。
@@ -124,51 +141,39 @@ public:
     /// @return true = 新增 id，false = 覆盖已有 id
     static bool register_model(RuntimeModel model);
 
-    /// @brief 统一查找（动态覆盖静态）。O(1) 哈希索引。线程安全。
+    /// @brief 统一查找（动态覆盖静态）。O(1) 哈希索引。线程安全（锁自由读）。
     /// @param id 模型 id
     /// @return 匹配的 ModelView；未找到返回 nullopt
     static std::optional<ModelView> find_model(std::string_view id);
 
     /// @brief 遍历全部可用模型（稳定顺序：静态表顺序 → 动态首次注册序，动态覆盖不重复）。
-    ///        内部先持共享锁快照再回调 → 回调内可安全再调 register_model，无重入死锁。
+    ///        读锁自由（COW 快照）；回调内可安全再调 register_model（快照不可变，无重入问题）。
     /// @param f 回调，接收 const ModelView&
     template<typename F>
     static void for_each_model(F&& f)
     {
-        std::shared_lock lock(mutex_);
-        init();
-        std::vector<ModelView> snapshot;
-        snapshot.reserve(index_.size());
-        std::unordered_set<std::string_view> emitted;
-        for (std::string_view id : static_order_) {
-            if (dynamic_ids_.contains(id)) continue;   // 被动态覆盖 → 跳过静态项
-            auto it = index_.find(id);
-            if (it != index_.end()) {
-                snapshot.push_back(it->second);
-                emitted.insert(id);
-            }
+        std::shared_ptr<detail::RegistrySnapshot> snap = load_snapshot();
+        for (std::string_view id : snap->static_order) {
+            if (snap->dynamic_ids.contains(id))
+                continue;   // 被动态覆盖 → 在动态序里输出新视图
+            auto it = snap->index.find(id);
+            if (it != snap->index.end())
+                f(it->second);
         }
-        for (RuntimeModel const& rtm : runtime_models_) {
-            // 首次注册位置输出，内容取 index_ 当前指向（最新注册）
-            if (emitted.insert(rtm.id).second)
-                snapshot.push_back(index_.at(rtm.id));
-        }
-        lock.unlock();
-        for (ModelView const& mv : snapshot)
-            f(mv);
+        for (std::string_view id : snap->dynamic_order)
+            f(snap->index.at(id));
     }
 
 private:
-    static void init();                                   // call_once 惰性加载内置表
+    /// init（懒加载内置表）与 register 共用：假定已持 write_mutex_，幂等。
+    static void init();
     static ModelView to_view(detail::BuiltinModel const& m);
     static ModelView to_view(RuntimeModel const& m);
-
-    inline static std::once_flag init_flag_;
-    inline static std::shared_mutex mutex_;               // 多线程安全
-    inline static std::deque<RuntimeModel> runtime_models_;   // 动态表（地址稳定，只追加）
-    inline static std::unordered_map<std::string_view, ModelView> index_;  // 合并索引
-    inline static std::unordered_set<std::string_view> dynamic_ids_;       // 动态覆盖的 id
-    inline static std::vector<std::string_view> static_order_;             // 静态表遍历顺序
+    /// 取当前快照；首次调用触发 init（持写锁建初始快照）。读路径入口，无锁。
+    static std::shared_ptr<detail::RegistrySnapshot> load_snapshot();
+    inline static std::mutex write_mutex_;                              ///< 写锁（register/init，罕见）
+    inline static std::deque<RuntimeModel> runtime_models_;             ///< 地址稳定、只追加
+    inline static std::atomic<std::shared_ptr<detail::RegistrySnapshot>> snapshot_;   ///< 不可变快照
 };
 
 /// @brief 把用户请求的思考等级收敛到模型支持的范围内（从低向高找最近支持档）。
