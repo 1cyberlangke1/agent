@@ -21,7 +21,7 @@
 
 **[API 文档（Doxygen 全量：类 / 成员 / 头文件 / 源码浏览）→ 在线渲染版](https://raw.githack.com/1cyberlangke1/agent/master/docs/html/index.html)**
 
-- 在线渲染版走 raw.githack 代理（GitHub 本身不渲染 HTML，点 blob 看到的是源码）
+- 在线渲染版走 raw.githack 代理
 - 本地离线：`docs/html/index.html`（仓库自带产物，无需 doxygen）
 - 改动公共 API 后重新生成并提交：
 
@@ -83,14 +83,14 @@ HTTP 传输层  完整 libcurl 封装（方法/body 形态/认证/TLS/代理/coo
 
 ## 支持的 Provider
 
-| Provider | 引擎 | 验证程度 |
-|---|---|---|
-| OpenAI 官方 | OpenAI Completions | T0 + T1 官方快照 + T2 官方 SDK 契约 |
-| DeepSeek | OpenAI Completions（DeepSeekThinking） | ✅ 真实 API 端到端（文本/思考/工具） |
-| 第三方 OpenAI 兼容（vLLM / Ollama / NVIDIA NIM / 网关） | OpenAI Completions（Compatible） | ✅ NVIDIA NIM 真实 API 端到端 |
-| Anthropic Messages | Anthropic Messages | T0 + T1 官方格式 + T2 官方 anthropic SDK 契约 + DeepSeek anthropic 兼容端点真实验证 |
-| Gemini | Gemini GenerateContent | ✅ 真实 API（gemma）端到端（文本/思考/工具） |
-| Agnes（sglang） | OpenAI Completions（AgnesThinking） | ✅ 真实 API 端到端（文本/思考/多模态看图） |
+| Provider                                                | 引擎                                   | 验证程度                                                                            |
+| ------------------------------------------------------- | -------------------------------------- | ----------------------------------------------------------------------------------- |
+| OpenAI 官方                                             | OpenAI Completions                     | T0 + T1 官方快照 + T2 官方 SDK 契约                                                 |
+| DeepSeek                                                | OpenAI Completions（DeepSeekThinking） | ✅ 真实 API 端到端（文本/思考/工具）                                                 |
+| 第三方 OpenAI 兼容（vLLM / Ollama / NVIDIA NIM / 网关） | OpenAI Completions（Compatible）       | ✅ NVIDIA NIM 真实 API 端到端                                                        |
+| Anthropic Messages                                      | Anthropic Messages                     | T0 + T1 官方格式 + T2 官方 anthropic SDK 契约 + DeepSeek anthropic 兼容端点真实验证 |
+| Gemini                                                  | Gemini GenerateContent                 | ✅ 真实 API（gemma）端到端（文本/思考/工具）                                         |
+| Agnes（sglang）                                         | OpenAI Completions（AgnesThinking）    | ✅ 真实 API 端到端（文本/思考/多模态看图）                                           |
 
 ## 快速开始
 
@@ -141,15 +141,15 @@ for (auto& ev : deepseek.stream(model, ctx, { .reasoning = ThinkingLevel::High }
 
 ## 核心概念速览
 
-| 概念 | 一句话 |
-|---|---|
-| `Agent<Provider, Behaviors>` | 会自己调工具的对话引擎，消费事件流驱动 |
-| `DefaultBehaviors` | 钩子 + 压缩策略一体；override 用模板方法（非虚名字隐藏） |
-| `AgentEvent` | 13 种事件（AgentStart/End、Turn、Message、ToolExec、AgentError…） |
-| `ToolBase<T>` / `Tools::reg` | 反射 / 运行时注册工具 |
-| `Tools` 注册表 | 全局、COW 快照读路径零锁、per-tool 执行模式 |
-| `HttpRequest` / `HttpClient` | 完整 curl 能力 / 连接复用 |
-| `ModelRegistry` | 全局模型表（内置 + 运行时注册，多线程安全） |
+| 概念                         | 一句话                                                            |
+| ---------------------------- | ----------------------------------------------------------------- |
+| `Agent<Provider, Behaviors>` | 会自己调工具的对话引擎，消费事件流驱动                            |
+| `DefaultBehaviors`           | 钩子 + 压缩策略一体；override 用模板方法（非虚名字隐藏）          |
+| `AgentEvent`                 | 13 种事件（AgentStart/End、Turn、Message、ToolExec、AgentError…） |
+| `ToolBase<T>` / `Tools::reg` | 反射 / 运行时注册工具                                             |
+| `Tools` 注册表               | 全局、COW 快照读路径零锁、per-tool 执行模式                       |
+| `HttpRequest` / `HttpClient` | 完整 curl 能力 / 连接复用                                         |
+| `ModelRegistry`              | 全局模型表（内置 + 运行时注册，多线程安全）                       |
 
 ## 构建
 
@@ -165,11 +165,11 @@ cmake --build --preset default
 
 ## 示例（真实 API 跑通）
 
-| 示例 | 演示 |
-|---|---|
-| `agent_chat` | Agent 自动工具往返 + set_tools 门控 + 手动压缩 + 真实查天气 API |
-| `deepseek_chat` | LLM 层四接口 + 思考/缓存 + 反射工具闭环 |
-| `agnes_chat` | Agnes provider 文本/思考/多模态看图（需 agnes key） |
+| 示例            | 演示                                                            |
+| --------------- | --------------------------------------------------------------- |
+| `agent_chat`    | Agent 自动工具往返 + set_tools 门控 + 手动压缩 + 真实查天气 API |
+| `deepseek_chat` | LLM 层四接口 + 思考/缓存 + 反射工具闭环                         |
+| `agnes_chat`    | Agnes provider 文本/思考/多模态看图（需 agnes key）             |
 
 ```powershell
 cmake --build --preset default --target agent_chat
@@ -187,8 +187,6 @@ cmake --build --preset default --target test_agent
 ctest --test-dir build --output-on-failure
 ```
 
-验证金字塔：**T0** 协议纯函数 → **T1** MockServer 回放（四接口 + 工具闭环 + 难样例）→ **T2** 官方 SDK 镜像契约。
-
 ## 目录结构
 
 ```
@@ -202,14 +200,11 @@ tests/       T0/T1 测试 + fixtures + contract（T2）
 docs/        Doxygen API 文档（提交 git，[在线看](https://raw.githack.com/1cyberlangke1/agent/master/docs/html/index.html)）
 ```
 
-## 已知限制（实验性质的部分诚实交代）
+## 已知限制
 
 - **平台**：主要在 Windows + schannel + gcc 16 上开发测试；Linux/macOS 未经完整验证。
 - **工具执行**：Parallel 用 `std::async` 真并发，但同步工具无流式部分结果（`ToolExecUpdate` 事件保留不发）。
-- **压缩**：压缩后旧上下文直接丢弃（如需存档请自行读取）。
 - **Agent 并发**：同一 Agent 不支持并发 run；`abort()` 跨线程为最佳努力。
-- **Provider 覆盖**：OpenAI / DeepSeek / Agnes / 兼容端点验证最充分；Anthropic 无官方 key，
-  Gemini 走 gemma 端点，覆盖相对弱。
 
 ## 致谢 / License
 
